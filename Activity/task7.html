@@ -1,0 +1,58 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+
+    <link rel="stylesheet" href="task7.css">
+</head>
+<body>
+
+    <div class="form-container">
+        <h1>Student Registration</h1>
+        <p class="subtitle">Create your student account</p>
+
+        <form>
+            <label for="name">Full Name</label>
+            <input type="text" id="name"
+                   placeholder="Enter your full name" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email"
+                   placeholder="Enter your email" required>
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone"
+                   placeholder="Enter your phone number" required>
+
+            <label for="gender">Gender</label>
+            <select id="gender" required>
+                <option value="">Select Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+
+            <label for="course">Course</label>
+            <select id="course" required>
+                <option value="">Select Course</option>
+                <option>Computer Science</option>
+                <option>Information Technology</option>
+                <option>Electronics</option>
+            </select>
+
+            <label for="password">Password</label>
+            <input type="password" id="password"
+                   placeholder="Create a password" required>
+
+            <button type="submit">Register Now</button>
+        </form>
+
+        <p class="footer">Already registered? <a href="#">Login</a></p>
+    </div>
+
+</body>
+</html>
+```
