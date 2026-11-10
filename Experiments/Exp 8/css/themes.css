@@ -1,0 +1,14 @@
+
+.theme-home{--paper:#fff3e9;--accent:#b45139;--soft:#f7dfd1;--line:#ebd0c1}
+.theme-search{--paper:#f3f3e6;--accent:#687648;--soft:#e5e9d3;--line:#d7dfc4}
+.theme-hospitals{--paper:#f8efe2;--accent:#96613a;--soft:#f0dfc8;--line:#e4d0b6}
+.theme-doctors{--paper:#f7edf4;--accent:#824c72;--soft:#efdeea;--line:#e1cbdc}
+.theme-booking{--paper:#fff7e3;--accent:#aa741d;--soft:#f5e8bf;--line:#e9d8a7}
+.theme-checkin{--paper:#eef5e9;--accent:#52764b;--soft:#dfebd6;--line:#cfdcc7}
+.theme-patient{--paper:#f1f0e5;--accent:#5b704e;--soft:#e2e5d4;--line:#d4d9c6}
+.theme-history{--paper:#f5eee3;--accent:#8a693e;--soft:#eee1ca;--line:#e0d0b5}
+.theme-auth{--paper:#f7edef;--accent:#98495b;--soft:#f0dce1;--line:#e4c8d0}
+.theme-hospital{--paper:#edf3e9;--accent:#466d55;--soft:#dce9dc;--line:#c9ddcc}
+.theme-admin{--paper:#f2eae8;--accent:#713e46;--soft:#ead9d5;--line:#ddc5c1}
+.theme-reviews{--paper:#f8f1e2;--accent:#9a7627;--soft:#f0e5c4;--line:#e6d8ae}
+.theme-contact{--paper:#f0f0e8;--accent:#70704d;--soft:#e4e4d2;--line:#d8d8c3}
