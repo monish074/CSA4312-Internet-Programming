@@ -1,0 +1,8 @@
+[
+ {"id":1,"title":"CodeSprint","category":"coding","hall":"Hall A","day":1,"start":"2026-12-15T09:00:00","end":"2026-12-15T12:00:00","seats":100,"registered":45},
+ {"id":2,"title":"RoboRace","category":"robotics","hall":"Hall B","day":1,"start":"2026-12-15T10:00:00","end":"2026-12-15T13:00:00","seats":80,"registered":55},
+ {"id":3,"title":"Research Paper Presentation","category":"paper","hall":"Hall C","day":1,"start":"2026-12-15T13:00:00","end":"2026-12-15T15:00:00","seats":60,"registered":56},
+ {"id":4,"title":"Game Arena","category":"gaming","hall":"Lab 1","day":2,"start":"2026-12-16T09:00:00","end":"2026-12-16T12:00:00","seats":70,"registered":30},
+ {"id":5,"title":"Bug Bash","category":"coding","hall":"Hall A","day":2,"start":"2026-12-16T13:00:00","end":"2026-12-16T15:00:00","seats":50,"registered":20},
+ {"id":6,"title":"Line Follower","category":"robotics","hall":"Lab 2","day":2,"start":"2026-12-16T10:00:00","end":"2026-12-16T12:00:00","seats":40,"registered":25}
+]

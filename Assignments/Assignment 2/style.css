@@ -1,0 +1,10 @@
+body{font-family:Arial,sans-serif;margin:0;background:#f4f7fb;color:#182337}
+header{background:#152b50;color:white;padding:24px;text-align:center}
+main{max-width:950px;margin:20px auto;padding:0 16px}
+section{background:white;padding:20px;margin:16px 0;border-radius:10px;box-shadow:0 2px 8px #0001}
+.card{border:1px solid #ccd6e2;padding:14px;margin:10px 0;border-radius:8px}
+button{padding:8px 14px;margin:4px;cursor:pointer}
+label{display:block;margin:10px 0}input,textarea{display:block;padding:8px;width:min(95%,450px);margin-top:4px}
+small{color:#b42318;display:block}.answer{height:0;overflow:hidden;transition:height .25s ease}
+.faq.open .answer{height:55px}.seat{height:12px;background:#e5e7eb;border-radius:10px;overflow:hidden}
+.seat span{display:block;height:100%}.green{background:#16a34a}.amber{background:#d97706}.red{background:#dc2626}

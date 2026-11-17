@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TechVista 2026</title><link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header><h1>TechVista 2026</h1><p>Explore events and register</p></header>
+<main>
+<section><h2>Registration countdown</h2><p id="countdown">Loading...</p></section>
+<section><h2>Events</h2>
+<input id="search" placeholder="Search events">
+<div id="filters">
+<button data-filter="all">All</button><button data-filter="coding">Coding</button>
+<button data-filter="robotics">Robotics</button><button data-filter="paper">Paper</button><button data-filter="gaming">Gaming</button>
+</div>
+<div id="events"></div><p id="empty" hidden>No events found</p><aside id="details" hidden></aside>
+</section>
+<section><h2>Frequently asked questions</h2>
+<div class="faq"><button aria-expanded="false">Who can participate?</button><div class="answer"><p>Students can participate in the listed events.</p></div></div>
+<div class="faq"><button aria-expanded="false">Can I join multiple events?</button><div class="answer"><p>Yes, subject to schedule and seat availability.</p></div></div>
+</section>
+<section><h2>Registration validation demo</h2>
+<form id="regForm" novalidate>
+<label>Roll number <input id="roll" required></label><small id="rollError"></small>
+<label>College email <input id="email" required></label><small id="emailError"></small>
+<label>Mobile <input id="mobile" required></label><small id="mobileError"></small>
+<label>Password <input id="password" type="password" required></label><small id="passwordError"></small>
+<label>Team code <input id="team" required></label><small id="teamError"></small>
+<label>Feedback <textarea id="feedback"></textarea></label>
+<p id="hashtags"></p><button id="submit" disabled>Submit</button>
+</form><p id="formResult"></p>
+</section>
+<section><h2>My Agenda</h2><button id="saveAgenda">Save sample agenda</button><p id="agendaStatus"></p></section>
+<section><h2>Schedule loaded using AJAX</h2><button id="retry">Retry loading schedule</button><p id="loading" hidden>Loading schedule...</p><p id="ajaxError"></p><div id="schedule"></div></section>
+</main>
+<script src="js/dom.js"></script><script src="js/dhtml.js"></script><script src="js/validate.js"></script>
+<script src="js/ajax.js"></script><script src="js/json.js"></script>
+</body></html>

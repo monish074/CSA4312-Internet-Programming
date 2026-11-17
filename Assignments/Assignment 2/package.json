@@ -1,0 +1,1 @@
+{"scripts":{"typecheck":"tsc -p ts/tsconfig.json"},"devDependencies":{"typescript":"^5.0.0"}}
