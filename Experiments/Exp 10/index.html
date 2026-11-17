@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleHub | Premier Online Fashion Retailer</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="promo-bar">
+        <span>FLASH SALE: Up to 40% OFF Seasonal Collections! Use Code: <strong>STYLE40</strong> | Free Express Shipping on orders over $75</span>
+    </div>
+
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo" onclick="navigateTo('home')">STYLE<span>HUB</span></a>
+            
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search for clothing, footwear, accessories..." onkeyup="handleSearch(event)">
+                <select id="categoryFilter" onchange="applyFilters()">
+                    <option value="all">All Categories</option>
+                </select>
+                <button onclick="applyFilters()" aria-label="Search">🔍</button>
+            </div>
+
+            <nav class="nav-actions">
+                <button class="nav-btn" onclick="navigateTo('home')">Shop</button>
+                <button class="nav-btn" onclick="navigateTo('wishlist')">Wishlist (<span id="wishlistCount">0</span>)</button>
+                <button class="nav-btn" onclick="navigateTo('orders')" id="ordersNavBtn" style="display:none;">My Orders</button>
+                <button class="nav-btn admin-badge-btn" onclick="navigateTo('admin')" id="adminNavBtn" style="display:none;">Admin Panel</button>
+                <button class="nav-btn cart-btn" onclick="toggleCart()">
+                    🛒 Cart (<span id="cartCount">0</span>)
+                </button>
+                <div id="authArea">
+                    <button class="btn-primary btn-sm" onclick="openAuthModal()">Login / Register</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main id="mainContent">
+        <section id="homeView">
+            <div class="hero">
+                <div class="container hero-content">
+                    <span class="hero-tag">NEW ARRIVALS 2026</span>
+                    <h1>Elevate Your Everyday Wardrobe</h1>
+                    <p>Discover curated casual wear, sharp formal attire, and exclusive seasonal collections for Men, Women, and Children.</p>
+                    <div class="hero-btns">
+                        <a href="#catalogSection" class="btn-primary">Explore Collection</a>
+                        <button class="btn-outline" onclick="filterByTag('flash')">Shop Flash Deals</button>
+                    </div>
+                </div>
+            </div>
+
+            <section class="categories-showcase container">
+                <div class="section-header">
+                    <h2>Shop by Category & Subcategories</h2>
+                    <p>Most popular categories listed first for effortless browsing</p>
+                </div>
+                <div id="categoriesGrid" class="categories-grid"></div>
+            </section>
+
+            <section class="recommendations-section container" id="recommendationsSection">
+                <div class="section-header">
+                    <h2>✨ Personalized Style Recommendations</h2>
+                    <p>Curated picks based on trending styles and your browsing preferences</p>
+                </div>
+                <div id="recommendationsGrid" class="product-grid"></div>
+            </section>
+
+            <section id="catalogSection" class="catalog-section container">
+                <div class="catalog-header">
+                    <div>
+                        <h2 id="catalogTitle">All Products</h2>
+                        <p id="catalogSubtitle">Showing complete collection</p>
+                    </div>
+                    <div class="filter-controls">
+                        <select id="subCategoryFilter" onchange="applyFilters()">
+                            <option value="all">All Subcategories</option>
+                        </select>
+                        <select id="availabilityFilter" onchange="applyFilters()">
+                            <option value="all">All Stock Status</option>
+                            <option value="in-stock">In Stock Only</option>
+                        </select>
+                        <select id="sortFilter" onchange="applyFilters()">
+                            <option value="popular">Sort: Most Popular</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Highest Rated</option>
+                        </select>
+                        <button class="btn-secondary btn-sm" onclick="resetFilters()">Reset</button>
+                    </div>
+                </div>
+
+                <div id="productGrid" class="product-grid"></div>
+            </section>
+        </section>
+
+        <section id="wishlistView" class="container view-section" style="display:none;">
+            <div class="section-header">
+                <h2>My Wishlist</h2>
+                <p>Save your favorite styles for later</p>
+            </div>
+            <div id="wishlistGrid" class="product-grid"></div>
+        </section>
+
+        <section id="ordersView" class="container view-section" style="display:none;">
+            <div class="section-header">
+                <h2>Order History & Live Tracking</h2>
+                <p>Track active shipments, view past purchases, or request easy returns & exchanges</p>
+            </div>
+            <div id="ordersList" class="orders-list"></div>
+        </section>
+
+        <section id="adminView" class="container view-section" style="display:none;">
+            <div class="admin-header">
+                <div>
+                    <h2>Admin Store Management</h2>
+                    <p>Manage product catalog, pricing, descriptions, stock, and customer checkout records</p>
+                </div>
+                <div class="admin-tabs">
+                    <button class="tab-btn active" onclick="switchAdminTab('products', this)">Manage Products</button>
+                    <button class="tab-btn" onclick="switchAdminTab('customers', this)">Customer Checkouts & Orders</button>
+                </div>
+            </div>
+
+            <div id="adminProductsTab">
+                <div class="admin-card">
+                    <h3>+ Add New Product Particular</h3>
+                    <form id="addProductForm" onsubmit="handleAddProduct(event)" class="admin-form-grid">
+                        <input type="text" id="newProdName" placeholder="Product Name" required>
+                        <select id="newProdCategory" required>
+                            <option value="Women">Women (Popular #1)</option>
+                            <option value="Men">Men (Popular #2)</option>
+                            <option value="Footwear">Footwear (Popular #3)</option>
+                            <option value="Accessories">Accessories (Popular #4)</option>
+                            <option value="Children">Children (Popular #5)</option>
+                        </select>
+                        <select id="newProdSubCategory" required>
+                            <option value="Casual Wear">Casual Wear</option>
+                            <option value="Formal Attire">Formal Attire</option>
+                            <option value="Seasonal Collections">Seasonal Collections</option>
+                            <option value="Sneakers & Boots">Sneakers & Boots</option>
+                            <option value="Bags & Watches">Bags & Watches</option>
+                        </select>
+                        <input type="number" id="newProdPrice" placeholder="Price ($)" step="0.01" min="1" required>
+                        <input type="number" id="newProdStock" placeholder="Stock Quantity" min="0" required>
+                        <input type="text" id="newProdImage" placeholder="Image URL (optional - auto-generates if blank)">
+                        <textarea id="newProdDesc" placeholder="Detailed Product Description..." rows="2" required class="full-span"></textarea>
+                        <button type="submit" class="btn-primary full-span">Add Item to Catalog</button>
+                    </form>
+                </div>
+
+                <div class="admin-card">
+                    <h3>Current Inventory (Edit Price, Description, or Remove Items)</h3>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Item</th>
+                                    <th>Category / Subcategory</th>
+                                    <th>Price ($)</th>
+                                    <th>Stock</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminProductTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="adminCustomersTab" style="display:none;">
+                <div class="admin-card">
+                    <h3>Customer Checkout Records & Order Fulfillment</h3>
+                    <p class="muted-text">View detailed information for every customer who checked out items and update order statuses.</p>
+                    <div id="adminCustomerOrdersList"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="productModal" class="modal">
+        <div class="modal-content modal-lg">
+            <span class="close-modal" onclick="closeModal('productModal')">&times;</span>
+            <div id="productModalBody"></div>
+        </div>
+    </div>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content modal-sm">
+            <span class="close-modal" onclick="closeModal('authModal')">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="loginTabBtn" onclick="switchAuthMode('login')">Login</button>
+                <button class="auth-tab" id="registerTabBtn" onclick="switchAuthMode('register')">Register</button>
+            </div>
+            <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                <div id="registerFields" style="display:none;">
+                    <label>Full Name</label>
+                    <input type="text" id="authName" placeholder="Jane Doe">
+                    <label>Shipping Address</label>
+                    <input type="text" id="authAddress" placeholder="123 Fashion Ave, NY">
+                </div>
+                <label>Email Address</label>
+                <input type="email" id="authEmail" placeholder="user@stylehub.com" required>
+                <label>Password</label>
+                <input type="password" id="authPassword" placeholder="••••••••" required>
+                <div class="role-selector">
+                    <label>Account Type:</label>
+                    <select id="authRole">
+                        <option value="customer">Customer</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary full-width" id="authSubmitBtn">Sign In</button>
+            </form>
+            <div class="demo-credentials">
+                <p><strong>Quick Demo Access:</strong></p>
+                <button type="button" class="btn-outline btn-xs" onclick="quickLogin('customer')">Demo Customer</button>
+                <button type="button" class="btn-outline btn-xs" onclick="quickLogin('admin')">Demo Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cartDrawer" class="cart-drawer">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
+        </div>
+        <div id="cartItemsContainer" class="cart-items"></div>
+        <div class="cart-footer">
+            <div class="promo-code-box">
+                <input type="text" id="promoInput" placeholder="Promo code (e.g. STYLE40)">
+                <button class="btn-secondary btn-sm" onclick="applyPromoCode()">Apply</button>
+            </div>
+            <div class="cart-summary">
+                <div class="summary-row"><span>Subtotal:</span><span id="cartSubtotal">$0.00</span></div>
+                <div class="summary-row"><span>Discount:</span><span id="cartDiscount">-$0.00</span></div>
+                <div class="summary-row"><span>Shipping:</span><span id="cartShipping">$0.00</span></div>
+                <div class="summary-row total"><span>Total:</span><span id="cartTotal">$0.00</span></div>
+            </div>
+            <button class="btn-primary full-width" onclick="openCheckoutModal()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content modal-md">
+            <span class="close-modal" onclick="closeModal('checkoutModal')">&times;</span>
+            <h2>Secure Checkout</h2>
+            <form id="checkoutForm" onsubmit="processCheckout(event)">
+                <h4>1. Customer & Shipping Information</h4>
+                <div class="form-row">
+                    <input type="text" id="chkName" placeholder="Full Name" required>
+                    <input type="email" id="chkEmail" placeholder="Email Address" required>
+                </div>
+                <div class="form-row">
+                    <input type="text" id="chkPhone" placeholder="Phone Number" required>
+                    <input type="text" id="chkCity" placeholder="City & Postal Code" required>
+                </div>
+                <input type="text" id="chkAddress" placeholder="Street Address" required class="full-width-input">
+
+                <h4>2. Payment Method</h4>
+                <div class="payment-options">
+                    <label><input type="radio" name="paymentMethod" value="Credit / Debit Card" checked> 💳 Credit / Debit Card</label>
+                    <label><input type="radio" name="paymentMethod" value="Digital Wallet (Apple/Google Pay)"> 📱 Digital Wallet</label>
+                    <label><input type="radio" name="paymentMethod" value="Cash on Delivery"> 💵 Cash on Delivery</label>
+                </div>
+
+                <div class="checkout-order-preview" id="checkoutSummaryBox"></div>
+                <button type="submit" class="btn-primary full-width">Place Order & Send Confirmation</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <h3>STYLE<span>HUB</span></h3>
+                <p>Your premier destination for contemporary fashion, footwear, and accessories. Seamless shopping, easy 30-day returns & exchanges.</p>
+            </div>
+            <div>
+                <h4>Popular Categories</h4>
+                <ul>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Women')">Women's Fashion</a></li>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Men')">Men's Collection</a></li>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Footwear')">Footwear</a></li>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Accessories')">Accessories</a></li>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Children')">Children's Wear</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Customer Care</h4>
+                <ul>
+                    <li><a href="#" onclick="navigateTo('orders')">Track Your Order</a></li>
+                    <li><a href="#" onclick="showPolicyModal('returns')">30-Day Easy Returns & Exchanges</a></li>
+                    <li><a href="#" onclick="showPolicyModal('size')">Universal Size Guide</a></li>
+                    <li><a href="#" onclick="leaveSitePrompt()">Exit Storefront</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 StyleHub E-Commerce Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
