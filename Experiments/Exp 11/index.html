@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureEasy | Smart Online Insurance Management Platform</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Top Notification Banner -->
+    <div class="top-bar">
+        <span>🛡️ InsureEasy 24/7 Protection: Compare Health, Auto & Home Plans | Automated SMS Renewal Alerts & Instant Claims</span>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo" onclick="navigateTo('home')">Insure<span>Easy</span></a>
+            <nav class="nav-links">
+                <button class="nav-btn" onclick="navigateTo('home')">Explore Policies</button>
+                <button class="nav-btn" onclick="navigateTo('compare')">Compare Plans (<span id="compareCount">0</span>)</button>
+                <button class="nav-btn" id="userDashNav" style="display:none;" onclick="navigateTo('userDashboard')">My Policies & Alerts</button>
+                <button class="nav-btn" id="agentDashNav" style="display:none;" onclick="navigateTo('agentDashboard')">Agent Portal</button>
+                <button class="nav-btn" id="adminDashNav" style="display:none;" onclick="navigateTo('adminDashboard')">Admin Console</button>
+            </nav>
+            <div class="auth-controls" id="authControls">
+                <button class="btn-outline-dark btn-sm" onclick="openAuthModal('login')">Login</button>
+                <button class="btn-primary btn-sm" onclick="openAuthModal('register')">Register</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main id="mainApp">
+        <!-- HOME & POLICY CATALOG VIEW -->
+        <section id="homeView">
+            <div class="hero">
+                <div class="container hero-grid">
+                    <div class="hero-text">
+                        <span class="badge-pill">NEXT-GEN INSURANCE MANAGEMENT</span>
+                        <h1>Simplify Your Coverage, Automate Your Peace of Mind</h1>
+                        <p>Compare tailored Health, Auto, and Home insurance plans, purchase policies securely online, manage renewals, file claims, and receive real-time SMS alerts.</p>
+                        <div class="hero-actions">
+                            <a href="#policyCatalog" class="btn-primary">Browse & Compare Plans</a>
+                            <button class="btn-outline-light" onclick="openAuthModal('register')">Agent / User Sign Up</button>
+                        </div>
+                    </div>
+                    <div class="hero-card">
+                        <h3>✨ Personalized Plan Finder</h3>
+                        <p class="muted-sm">Get instant policy recommendations tailored to your profile</p>
+                        <form onsubmit="getRecommendations(event)" class="rec-form">
+                            <label>Primary Coverage Need</label>
+                            <select id="recType">
+                                <option value="Health">Health Insurance</option>
+                                <option value="Auto">Auto Insurance</option>
+                                <option value="Home">Home Insurance</option>
+                            </select>
+                            <label>Monthly Budget Limit ($)</label>
+                            <input type="number" id="recBudget" value="150" min="20" max="1000" required>
+                            <button type="submit" class="btn-primary full-width">Find Best Match</button>
+                        </form>
+                        <div id="recResultBox" class="rec-result" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Policy Catalog & Filter -->
+            <section id="policyCatalog" class="container section-block">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Insurance Policy Plans</h2>
+                        <p class="muted-text">Select up to 3 policies to compare side-by-side or apply directly online</p>
+                    </div>
+                    <div class="filter-pills">
+                        <button class="pill-btn active" onclick="filterPolicies('All', this)">All Plans</button>
+                        <button class="pill-btn" onclick="filterPolicies('Health', this)">🏥 Health</button>
+                        <button class="pill-btn" onclick="filterPolicies('Auto', this)">🚗 Auto</button>
+                        <button class="pill-btn" onclick="filterPolicies('Home', this)">🏠 Home</button>
+                    </div>
+                </div>
+                <div id="policiesGrid" class="policies-grid"></div>
+            </section>
+        </section>
+
+        <!-- POLICY COMPARISON TOOL VIEW -->
+        <section id="compareView" class="container section-block" style="display:none;">
+            <div class="section-header-row">
+                <div>
+                    <h2>Side-by-Side Policy Comparison Tool</h2>
+                    <p class="muted-text">Compare coverage limits, deductibles, premiums, and key benefits</p>
+                </div>
+                <button class="btn-secondary btn-sm" onclick="clearComparison()">Clear Selection</button>
+            </div>
+            <div id="comparisonTableContainer" class="table-card"></div>
+        </section>
+
+        <!-- USER / POLICYHOLDER DASHBOARD (Login, Manage policy details, Pay premiums, File claims, Get SMS alert) -->
+        <section id="userDashboardView" class="container section-block" style="display:none;">
+            <div class="dash-header">
+                <div>
+                    <h2>Policyholder Dashboard</h2>
+                    <p class="muted-text" id="userWelcomeSub">Manage your active policies, premium payments, claims, and SMS notifications</p>
+                </div>
+                <button class="btn-primary btn-sm" onclick="navigateTo('home')">+ Purchase New Policy</button>
+            </div>
+
+            <div class="dash-grid-2">
+                <!-- Active Policies & Payments -->
+                <div class="panel-card">
+                    <h3>📋 My Active Policies & Billing</h3>
+                    <div id="userPoliciesList"></div>
+                </div>
+
+                <!-- SMS Alerts Inbox & Claims -->
+                <div>
+                    <div class="panel-card" style="margin-bottom:20px;">
+                        <div class="flex-between">
+                            <h3>📱 SMS Alerts & Renewal Reminders</h3>
+                            <span class="badge-live" id="smsUnreadBadge">0 Alerts</span>
+                        </div>
+                        <p class="muted-sm">Automated alerts sent by your agent before and after premium due dates</p>
+                        <div id="userSmsList" class="sms-feed"></div>
+                    </div>
+
+                    <div class="panel-card">
+                        <h3>🛠️ File an Insurance Claim</h3>
+                        <form onsubmit="submitUserClaim(event)" class="stacked-form">
+                            <select id="claimPolicySelect" required></select>
+                            <input type="number" id="claimAmount" placeholder="Claim Amount ($)" min="50" required>
+                            <textarea id="claimReason" rows="2" placeholder="Describe incident or medical/repair details..." required></textarea>
+                            <button type="submit" class="btn-primary full-width">Submit Claim Request</button>
+                        </form>
+                        <div id="userClaimsHistory" style="margin-top:14px;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AGENT DASHBOARD (Register, Login, Create Customer, Manage Customer Details, Manage Policy Details, Send SMS Alert) -->
+        <section id="agentDashboardView" class="container section-block" style="display:none;">
+            <div class="dash-header">
+                <div>
+                    <h2>Agent & Manager Operations Portal</h2>
+                    <p class="muted-text" id="agentStatusBanner">Create customers, manage customer & policy records, calculate commissions, and send SMS due alerts</p>
+                </div>
+                <div class="kpi-pill-box">
+                    <span>Est. Commission Due: <strong id="agentCommissionTotal">$0.00</strong></span>
+                </div>
+            </div>
+
+            <div class="tabs-bar">
+                <button class="tab-btn active" onclick="switchAgentTab('customers', this)">1. Create & Manage Customers</button>
+                <button class="tab-btn" onclick="switchAgentTab('policies', this)">2. Manage Policy Details</button>
+                <button class="tab-btn" onclick="switchAgentTab('sms', this)">3. Send SMS Due Alerts</button>
+            </div>
+
+            <!-- Agent Tab 1: Create & Manage Customer Details -->
+            <div id="agentCustomersTab">
+                <div class="panel-card" style="margin-bottom:20px;">
+                    <h3>+ Create New Customer Account</h3>
+                    <form onsubmit="agentCreateCustomer(event)" class="grid-form">
+                        <input type="text" id="newCustName" placeholder="Customer Full Name" required>
+                        <input type="email" id="newCustEmail" placeholder="Customer Email" required>
+                        <input type="text" id="newCustPhone" placeholder="Mobile Phone (for SMS Alerts)" required>
+                        <input type="text" id="newCustAddress" placeholder="Residential Address" required>
+                        <button type="submit" class="btn-primary">Create Customer</button>
+                    </form>
+                </div>
+
+                <div class="panel-card">
+                    <h3>Manage Customer Details</h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer ID</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone (SMS)</th>
+                                    <th>Address</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agentCustomersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Tab 2: Manage Policy Details -->
+            <div id="agentPoliciesTab" style="display:none;">
+                <div class="panel-card" style="margin-bottom:20px;">
+                    <h3>Assign / Issue Policy to Customer</h3>
+                    <form onsubmit="agentAssignPolicy(event)" class="grid-form">
+                        <select id="assignCustSelect" required></select>
+                        <select id="assignPlanSelect" required></select>
+                        <input type="date" id="assignDueDate" required>
+                        <select id="assignPayStatus">
+                            <option value="Paid">Paid</option>
+                            <option value="Due Soon">Due Soon (Before Due Date)</option>
+                            <option value="Overdue">Overdue (Exceeded Due Date)</option>
+                        </select>
+                        <button type="submit" class="btn-primary">Issue Policy</button>
+                    </form>
+                </div>
+
+                <div class="panel-card">
+                    <h3>Manage Policy Details & Renewal Dates</h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Policy #</th>
+                                    <th>Policyholder</th>
+                                    <th>Plan</th>
+                                    <th>Premium ($/mo)</th>
+                                    <th>Due Date</th>
+                                    <th>Payment Status</th>
+                                    <th>Save</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agentPoliciesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Tab 3: Send SMS Alert -->
+            <div id="agentSmsTab" style="display:none;">
+                <div class="dash-grid-2">
+                    <div class="panel-card">
+                        <h3>📲 Dispatch SMS Alert to Policyholder</h3>
+                        <p class="muted-sm" style="margin-bottom:12px;">Remind policyholders before their due date or notify them when the due date is exceeded.</p>
+                        <form onsubmit="agentSendSms(event)" class="stacked-form">
+                            <label>Select Policyholder</label>
+                            <select id="smsCustomerSelect" onchange="prefillSmsTemplate()" required></select>
+                            
+                            <label>Alert Trigger Type</label>
+                            <select id="smsAlertType" onchange="prefillSmsTemplate()">
+                                <option value="Before Due Date">Reminder: Before Premium Due Date</option>
+                                <option value="Exceeded Due Date">Urgent: Premium Due Date Exceeded</option>
+                                <option value="Policy Renewal">Annual Policy Renewal Notice</option>
+                            </select>
+
+                            <label>SMS Message Content</label>
+                            <textarea id="smsMessageBody" rows="4" required></textarea>
+
+                            <button type="submit" class="btn-primary full-width">Send SMS Alert Now</button>
+                        </form>
+                    </div>
+
+                    <div class="panel-card">
+                        <h3>📤 Sent SMS Alert Log</h3>
+                        <div id="agentSentSmsLog" class="sms-feed"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN CONSOLE VIEW (Login, Approve Agent login, View all agent details) -->
+        <section id="adminDashboardView" class="container section-block" style="display:none;">
+            <div class="dash-header">
+                <div>
+                    <h2>Administrator Control Center</h2>
+                    <p class="muted-text">Review agent registrations, approve agent login access, and inspect all agent & commission records</p>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-box"><span class="stat-num" id="statTotalAgents">0</span><span>Total Agents</span></div>
+                <div class="stat-box"><span class="stat-num" id="statPendingAgents">0</span><span>Pending Approvals</span></div>
+                <div class="stat-box"><span class="stat-num" id="statTotalPolicies">0</span><span>Active Policies</span></div>
+                <div class="stat-box"><span class="stat-num" id="statTotalCommissions">$0</span><span>Total Agent Commissions</span></div>
+            </div>
+
+            <div class="panel-card">
+                <h3>All Agent Details & Login Approval Management</h3>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Agent ID</th>
+                                <th>Agent Name</th>
+                                <th>Email</th>
+                                <th>License #</th>
+                                <th>Phone</th>
+                                <th>Policies Managed</th>
+                                <th>Commission Due</th>
+                                <th>Login Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminAgentsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- POLICY DETAIL & SECURE ONLINE APPLICATION MODAL -->
+    <div id="policyDetailModal" class="modal">
+        <div class="modal-content modal-md">
+            <span class="close-modal" onclick="closeModal('policyDetailModal')">&times;</span>
+            <div id="policyDetailBody"></div>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL (Admin Login, Agent Register/Login, User Register/Login) -->
+    <div id="authModal" class="modal">
+        <div class="modal-content modal-sm">
+            <span class="close-modal" onclick="closeModal('authModal')">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin" onclick="setAuthMode('login')">Login</button>
+                <button class="auth-tab" id="tabRegister" onclick="setAuthMode('register')">Register</button>
+            </div>
+
+            <form onsubmit="handleAuth(event)" class="stacked-form">
+                <label>Select Role</label>
+                <select id="authRole" onchange="toggleRegisterRoleFields()">
+                    <option value="user">Customer / Policyholder</option>
+                    <option value="agent">Insurance Agent</option>
+                    <option value="admin">System Administrator</option>
+                </select>
+
+                <div id="registerExtraFields" style="display:none;">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="Alex Morgan">
+                    <label>Mobile Number (for SMS)</label>
+                    <input type="text" id="regPhone" placeholder="+1 555-019-2834">
+                    <div id="agentLicenseField" style="display:none;">
+                        <label>Agent License Number</label>
+                        <input type="text" id="regLicense" placeholder="LIC-90421">
+                    </div>
+                </div>
+
+                <label>Email Address</label>
+                <input type="email" id="authEmail" placeholder="name@insureeasy.com" required>
+
+                <label>Password</label>
+                <input type="password" id="authPassword" placeholder="••••••••" required>
+
+                <button type="submit" class="btn-primary full-width" id="authSubmitBtn">Sign In</button>
+            </form>
+
+            <div class="demo-box">
+                <p><strong>Instant 1-Click Demo Logins:</strong></p>
+                <div class="demo-btns">
+                    <button type="button" class="btn-secondary btn-xs" onclick="demoLogin('admin')">Admin</button>
+                    <button type="button" class="btn-secondary btn-xs" onclick="demoLogin('agent')">Approved Agent</button>
+                    <button type="button" class="btn-secondary btn-xs" onclick="demoLogin('user')">Customer (User)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <footer class="footer">
+        <div class="container footer-flex">
+            <div>
+                <h3>Insure<span>Easy</span></h3>
+                <p class="muted-sm">Comprehensive Digital Insurance Management for Policyholders, Agents, and Administrators.</p>
+            </div>
+            <p class="muted-sm">&copy; 2026 InsureEasy Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
