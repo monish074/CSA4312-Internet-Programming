@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechVista 2026 | Media and Agenda</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1B3A6B">
+  <script src="app.js" defer></script>
+</head>
+<body>
+<header class="site-header"><div class="header-inner">
+  <a class="brand" href="index.html">TECHVISTA <span>2026</span></a>
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+  <nav class="main-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="schedule.html">Schedule</a><a href="register.html">Register</a><a href="media.html" aria-current="page">Media &amp; Agenda</a></nav>
+  <button class="theme-toggle" type="button">Toggle dark mode</button>
+</div></header>
+<main class="narrow-main">
+  <section class="page-intro"><p class="eyebrow">WATCH · LISTEN · PLAN</p><h1>Media and Build My Agenda</h1></section>
+  <section class="content-section">
+    <h2>Promotional video</h2>
+    <video id="promoVideo" class="media-player" controls poster="images/poster.png" preload="metadata" muted playsinline>
+      <source src="media/promo.mp4" type="video/mp4">
+      <source src="media/promo.webm" type="video/webm">
+      <track src="captions.vtt" kind="captions" srclang="en" label="English captions" default>
+      Your browser does not support HTML video. Add the supplied MP4 or WebM media file.
+    </video>
+    <div class="button-row">
+      <button type="button" id="videoPlay">Play</button><button type="button" id="videoPause">Pause</button><button type="button" id="videoMute">Mute / unmute</button><button type="button" id="videoSkip">Skip 10 seconds</button>
+    </div>
+    <p class="notice">Add your own promo.mp4 and promo.webm files to the media folder to play the video. Captions are in captions.vtt.</p>
+  </section>
+  <section class="content-section">
+    <h2>Chief guest podcast</h2>
+    <audio class="media-player" controls>
+      <source src="media/podcast.mp3" type="audio/mpeg">
+      <source src="media/podcast.ogg" type="audio/ogg">
+      Your browser does not support HTML audio. Add the podcast audio files to the media folder.
+    </audio>
+  </section>
+  <section class="content-section">
+    <h2>Build My Agenda</h2>
+    <p>Drag an event into My Agenda, or use its Add button. Events in the same time slot cannot both be added.</p>
+    <div class="agenda-layout">
+      <div class="drop-zone" id="allEvents"><h3>All Events</h3>
+        <article class="agenda-event" draggable="true" data-event="Coding Challenge" data-time="09:00"><span><strong>Coding Challenge</strong><small>09:00–10:00</small></span><button type="button" class="add-event">Add</button></article>
+        <article class="agenda-event" draggable="true" data-event="Robotics Workshop" data-time="10:00"><span><strong>Robotics Workshop</strong><small>10:00–11:00</small></span><button type="button" class="add-event">Add</button></article>
+        <article class="agenda-event" draggable="true" data-event="Paper Presentation" data-time="11:00"><span><strong>Paper Presentation</strong><small>11:00–12:00</small></span><button type="button" class="add-event">Add</button></article>
+        <article class="agenda-event" draggable="true" data-event="Gaming Qualifier" data-time="09:00"><span><strong>Gaming Qualifier</strong><small>09:00–10:00</small></span><button type="button" class="add-event">Add</button></article>
+        <article class="agenda-event" draggable="true" data-event="Workshop 2" data-time="10:30"><span><strong>Workshop 2</strong><small>10:30–11:30</small></span><button type="button" class="add-event">Add</button></article>
+        <article class="agenda-event" draggable="true" data-event="Keynote Session" data-time="12:00"><span><strong>Keynote Session</strong><small>12:00–13:00</small></span><button type="button" class="add-event">Add</button></article>
+      </div>
+      <div class="drop-zone agenda-target" id="myAgenda" aria-label="My personal agenda"><h3>My Agenda</h3><p class="empty-agenda">Drop events here or press Add.</p></div>
+    </div>
+    <p id="agendaMessage" class="form-message" aria-live="polite"></p>
+    <button type="button" id="clearAgenda" class="secondary-button">Clear my agenda</button>
+  </section>
+</main>
+<footer class="site-footer"><p>TechVista 2026 · <a href="index.html">Back to home</a></p></footer>
+</body>
+</html>
