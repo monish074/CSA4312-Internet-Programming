@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlossomGifts | Online Flowers, Gift Baskets & Personalized Gifts</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Top Loyalty & Promo Banner -->
+    <div class="top-promo">
+        <span>🌸 Same-Day & Scheduled Delivery Available! Loyalty Promo Code: <strong>BLOOM20</strong> for 20% OFF | Free Gift Note with Every Order</span>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo" onclick="navigateTo('home')">Blossom<span>Gifts</span></a>
+
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search flowers, gift baskets, occasions..." onkeyup="handleSearch(event)">
+                <select id="navCategorySelect" onchange="applyFilters()">
+                    <option value="all">All Categories</option>
+                </select>
+                <button onclick="applyFilters()" aria-label="Search">🔍</button>
+            </div>
+
+            <nav class="nav-links">
+                <button class="nav-btn" onclick="navigateTo('home')">Shop</button>
+                <button class="nav-btn" onclick="navigateTo('orders')" id="ordersNavBtn">Track Orders</button>
+                <button class="nav-btn admin-pill" onclick="navigateTo('admin')" id="adminNavBtn" style="display:none;">Admin Panel</button>
+                <button class="nav-btn cart-pill" onclick="toggleCart()">🛍️ Cart (<span id="cartCount">0</span>)</button>
+                <div id="authArea">
+                    <button class="btn-primary btn-sm" onclick="openAuthModal()">Login / Register</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main id="mainApp">
+        <!-- HOME VIEW -->
+        <section id="homeView">
+            <!-- Hero Banner -->
+            <div class="hero">
+                <div class="container hero-content">
+                    <span class="hero-badge">HANDCRAFTED BLOOMS & CURATED GIFTS</span>
+                    <h1>Send Thoughtful Moments, Delivered Right on Time</h1>
+                    <p>Explore fresh floral arrangements, gourmet gift baskets, and personalized keepsakes organized by occasion, recipient, and price range—with custom delivery scheduling.</p>
+                    <div class="hero-btns">
+                        <a href="#catalogSection" class="btn-primary">Shop All Collections</a>
+                        <button class="btn-outline" onclick="navigateTo('orders')">Track Live Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requirement: Display all available categories (most popular first) & all subcategories on the home page -->
+            <section class="container section-space">
+                <div class="section-heading">
+                    <h2>Shop by Category & Subcategories</h2>
+                    <p>Most popular categories listed first—click any category or subcategory to filter instantly</p>
+                </div>
+                <div id="homeCategoriesGrid" class="categories-grid"></div>
+            </section>
+
+            <!-- Product Catalog with Occasion, Recipient, Subcategory & Price Range Filters -->
+            <section id="catalogSection" class="container section-space">
+                <div class="catalog-toolbar">
+                    <div>
+                        <h2 id="catalogHeading">All Flowers & Gifts</h2>
+                        <p id="catalogSubheading" class="muted-text">Showing complete catalog</p>
+                    </div>
+                    <div class="filter-group">
+                        <select id="subCategoryFilter" onchange="applyFilters()">
+                            <option value="all">All Subcategories</option>
+                        </select>
+                        <select id="recipientFilter" onchange="applyFilters()">
+                            <option value="all">All Recipients</option>
+                            <option value="Partner / Spouse">For Partner / Spouse</option>
+                            <option value="Parents & Family">For Parents & Family</option>
+                            <option value="Friends & Colleagues">For Friends & Colleagues</option>
+                            <option value="Anyone">For Anyone</option>
+                        </select>
+                        <select id="priceRangeFilter" onchange="applyFilters()">
+                            <option value="all">All Price Ranges</option>
+                            <option value="under50">Under $50</option>
+                            <option value="50to100">$50 – $100</option>
+                            <option value="over100">Over $100</option>
+                        </select>
+                        <select id="sortFilter" onchange="applyFilters()">
+                            <option value="popular">Sort: Most Popular</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                        </select>
+                        <button class="btn-secondary btn-sm" onclick="resetFilters()">Reset</button>
+                    </div>
+                </div>
+
+                <div id="productsGrid" class="products-grid"></div>
+            </section>
+        </section>
+
+        <!-- ORDER TRACKING & HISTORY VIEW -->
+        <section id="ordersView" class="container section-space" style="display:none;">
+            <div class="section-heading">
+                <h2>Real-Time Order Tracking & Scheduled Deliveries</h2>
+                <p>Track your floral and gift deliveries and review SMS/Email confirmation alerts</p>
+            </div>
+            <div id="ordersContainer"></div>
+        </section>
+
+        <!-- ADMIN PANEL VIEW (Add particulars, Remove items, Modify price, View customer checkouts) -->
+        <section id="adminView" class="container section-space" style="display:none;">
+            <div class="admin-top-bar">
+                <div>
+                    <h2>BlossomGifts Admin Management</h2>
+                    <p class="muted-text">Add new particulars, remove items, modify prices, and view customer checkout records</p>
+                </div>
+                <div class="admin-tabs">
+                    <button class="tab-btn active" onclick="switchAdminTab('items', this)">Manage Items & Prices</button>
+                    <button class="tab-btn" onclick="switchAdminTab('checkouts', this)">Customer Checkouts</button>
+                </div>
+            </div>
+
+            <!-- Admin Tab 1: Add / Modify Price / Remove Items -->
+            <div id="adminItemsTab">
+                <div class="card-panel" style="margin-bottom:24px;">
+                    <h3>+ Add New Particular to Items List</h3>
+                    <form onsubmit="adminAddItem(event)" class="admin-form-grid">
+                        <input type="text" id="addItemName" placeholder="Item Name (e.g. Velvet Red Rose Bouquet)" required>
+                        <select id="addItemCategory" required>
+                            <option value="Floral Arrangements">Floral Arrangements (#1 Popular)</option>
+                            <option value="Occasion Specials">Occasion Specials (#2 Popular)</option>
+                            <option value="Gift Baskets">Gift Baskets (#3 Popular)</option>
+                            <option value="Personalized Gifts">Personalized Gifts (#4 Popular)</option>
+                            <option value="Plants & Succulents">Plants & Succulents (#5 Popular)</option>
+                        </select>
+                        <select id="addItemSubCategory" required>
+                            <option value="Birthday & Anniversary">Birthday & Anniversary</option>
+                            <option value="Romantic Roses">Romantic Roses</option>
+                            <option value="Sympathy & Get Well">Sympathy & Get Well</option>
+                            <option value="Gourmet & Chocolate">Gourmet & Chocolate</option>
+                            <option value="Custom Engraved Keepsakes">Custom Engraved Keepsakes</option>
+                            <option value="Indoor Air-Purifying Plants">Indoor Air-Purifying Plants</option>
+                        </select>
+                        <select id="addItemRecipient" required>
+                            <option value="Partner / Spouse">Recipient: Partner / Spouse</option>
+                            <option value="Parents & Family">Recipient: Parents & Family</option>
+                            <option value="Friends & Colleagues">Recipient: Friends & Colleagues</option>
+                            <option value="Anyone">Recipient: Anyone</option>
+                        </select>
+                        <input type="number" id="addItemPrice" placeholder="Price ($)" step="0.01" min="1" required>
+                        <input type="text" id="addItemImage" placeholder="Image URL (optional - auto-generates SVG if blank)">
+                        <textarea id="addItemDesc" rows="2" placeholder="Detailed item description..." required class="full-span"></textarea>
+                        <button type="submit" class="btn-primary full-span">Add Item to Storefront</button>
+                    </form>
+                </div>
+
+                <div class="card-panel">
+                    <h3>Items List (Modify Price or Remove Items Anytime)</h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Item Name</th>
+                                    <th>Category & Subcategory</th>
+                                    <th>Recipient</th>
+                                    <th>Price ($)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminItemsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Tab 2: Customer Checkouts -->
+            <div id="adminCheckoutsTab" style="display:none;">
+                <div class="card-panel">
+                    <h3>Customer Checkout Records & Scheduled Deliveries</h3>
+                    <p class="muted-text" style="margin-bottom:14px;">Complete details of each customer who checked out items, their delivery schedule, and purchased items.</p>
+                    <div id="adminCheckoutsList"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- CUSTOMIZABLE PRODUCT DETAIL MODAL -->
+    <div id="productModal" class="modal">
+        <div class="modal-content modal-lg">
+            <span class="close-modal" onclick="closeModal('productModal')">&times;</span>
+            <div id="productModalBody"></div>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL (User Registration & Login + Admin Login) -->
+    <div id="authModal" class="modal">
+        <div class="modal-content modal-sm">
+            <span class="close-modal" onclick="closeModal('authModal')">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="loginTab" onclick="switchAuthMode('login')">Login</button>
+                <button class="auth-tab" id="registerTab" onclick="switchAuthMode('register')">Register</button>
+            </div>
+            <form onsubmit="handleAuth(event)" class="stacked-form">
+                <div id="regOnlyFields" style="display:none;">
+                    <label>Full Name</label>
+                    <input type="text" id="regFullName" placeholder="Priya Nair">
+                    <label>Mobile Number (for SMS Confirmations)</label>
+                    <input type="text" id="regPhone" placeholder="+1 555-234-9876">
+                </div>
+                <label>Email Address</label>
+                <input type="email" id="authEmail" placeholder="customer@blossomgifts.com" required>
+                <label>Password</label>
+                <input type="password" id="authPassword" placeholder="••••••••" required>
+                <label>Role</label>
+                <select id="authRole">
+                    <option value="customer">Customer</option>
+                    <option value="admin">Administrator</option>
+                </select>
+                <button type="submit" class="btn-primary full-width" id="authSubmitBtn">Sign In</button>
+            </form>
+            <div class="demo-access">
+                <p><strong>Quick Demo Access:</strong></p>
+                <button type="button" class="btn-secondary btn-xs" onclick="quickLogin('customer')">Demo Customer</button>
+                <button type="button" class="btn-secondary btn-xs" onclick="quickLogin('admin')">Demo Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE-OVER CART DRAWER -->
+    <div id="cartDrawer" class="cart-drawer">
+        <div class="cart-header">
+            <h3>Your Gift Bag</h3>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
+        </div>
+        <div id="cartItemsList" class="cart-items"></div>
+        <div class="cart-footer">
+            <div class="promo-row">
+                <input type="text" id="promoCodeInput" placeholder="Loyalty code (BLOOM20)">
+                <button class="btn-secondary btn-sm" onclick="applyPromo()">Apply</button>
+            </div>
+            <div class="totals-box">
+                <div class="t-row"><span>Subtotal:</span><span id="cartSubtotal">$0.00</span></div>
+                <div class="t-row"><span>Loyalty Discount:</span><span id="cartDiscount">-$0.00</span></div>
+                <div class="t-row"><span>Scheduled Delivery:</span><span>FREE</span></div>
+                <div class="t-row grand"><span>Total:</span><span id="cartTotal">$0.00</span></div>
+            </div>
+            <button class="btn-primary full-width" onclick="openCheckoutModal()">Schedule Delivery & Checkout</button>
+        </div>
+    </div>
+
+    <!-- CHECKOUT & DELIVERY SCHEDULING MODAL -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content modal-md">
+            <span class="close-modal" onclick="closeModal('checkoutModal')">&times;</span>
+            <h2>Schedule Delivery & Secure Checkout</h2>
+            <form onsubmit="completeCheckout(event)" class="stacked-form">
+                <h4>1. Sender & Recipient Delivery Details</h4>
+                <div class="two-col">
+                    <input type="text" id="chkCustomerName" placeholder="Your Full Name" required>
+                    <input type="email" id="chkCustomerEmail" placeholder="Your Email (for Confirmation)" required>
+                </div>
+                <div class="two-col">
+                    <input type="text" id="chkCustomerPhone" placeholder="Mobile Phone (for SMS Updates)" required>
+                    <input type="text" id="chkRecipientName" placeholder="Recipient Full Name" required>
+                </div>
+                <input type="text" id="chkDeliveryAddress" placeholder="Full Delivery Street Address, City & Zip" required>
+
+                <h4>2. Delivery Date, Time Slot & Confirmation Channel</h4>
+                <div class="two-col">
+                    <div>
+                        <label>Preferred Delivery Date</label>
+                        <input type="date" id="chkDeliveryDate" required>
+                    </div>
+                    <div>
+                        <label>Preferred Time Window</label>
+                        <select id="chkDeliveryTime" required>
+                            <option value="Morning (9:00 AM – 12:00 PM)">Morning (9:00 AM – 12:00 PM)</option>
+                            <option value="Afternoon (12:00 PM – 4:00 PM)">Afternoon (12:00 PM – 4:00 PM)</option>
+                            <option value="Evening (4:00 PM – 8:00 PM)">Evening (4:00 PM – 8:00 PM)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="two-col">
+                    <div>
+                        <label>Confirmation Alert Method</label>
+                        <select id="chkAlertChannel">
+                            <option value="Email & SMS">Both Email & SMS</option>
+                            <option value="SMS Only">SMS Text Alert</option>
+                            <option value="Email Only">Email Confirmation</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Secure Payment Method</label>
+                        <select id="chkPaymentMethod">
+                            <option value="Credit / Debit Card">Credit / Debit Card</option>
+                            <option value="UPI / Digital Wallet">UPI / Digital Wallet</option>
+                            <option value="Net Banking">Net Banking</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="checkoutReviewBox" class="review-summary"></div>
+                <button type="submit" class="btn-primary full-width">Confirm Order & Schedule Delivery</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <h3>Blossom<span>Gifts</span></h3>
+                <p>Thoughtful floral arrangements, luxury gift baskets, and personalized gifts delivered fresh on your schedule.</p>
+            </div>
+            <div>
+                <h4>Popular Categories</h4>
+                <ul>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Floral Arrangements')">Floral Arrangements</a></li>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Occasion Specials')">Occasion Specials</a></li>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Gift Baskets')">Gift Baskets</a></li>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Personalized Gifts')">Personalized Gifts</a></li>
+                    <li><a href="#catalogSection" onclick="filterByCategory('Plants & Succulents')">Plants & Succulents</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Customer Support</h4>
+                <ul>
+                    <li><a href="#" onclick="navigateTo('orders')">Track Your Delivery</a></li>
+                    <li><a href="#" onclick="openAuthModal()">Loyalty Rewards (BLOOM20)</a></li>
+                    <li><a href="#" onclick="quickLogin('admin')">Administrator Portal</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 BlossomGifts Online Florist & Gifting Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
