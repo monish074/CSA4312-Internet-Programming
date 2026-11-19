@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComplainEase | Civic Grievance & Resolution Command Center</title>
+    <link rel="stylesheet" href="styles/workspace.css">
+</head>
+<body>
+    <div class="app-shell">
+        <!-- LEFT VERTICAL NAVIGATION RAIL (Innovative Command Layout) -->
+        <aside class="side-rail">
+            <div class="brand-box">
+                <div class="brand-icon">CE</div>
+                <div>
+                    <h2>Complain<span>Ease</span></h2>
+                    <small>Grievance OES v4.0</small>
+                </div>
+            </div>
+
+            <div class="role-pill" id="activeRoleIndicator">Guest Visitor</div>
+
+            <nav class="rail-nav">
+                <button class="rail-btn active" onclick="switchWorkspace('overview', this)" data-feature="knowledgeBase">
+                    🧭 Overview & FAQ Search
+                </button>
+                <button class="rail-btn" id="navPostComplaint" onclick="switchWorkspace('lodge', this)" data-feature="postComplaint">
+                    📍 Post Complaint & Map Pin
+                </button>
+                <button class="rail-btn" id="navTrackComplaints" onclick="switchWorkspace('tracker', this)" data-feature="trackStatus">
+                    📊 Complaint Status & Feedback
+                </button>
+                <button class="rail-btn" id="navOfficerDesk" style="display:none;" onclick="switchWorkspace('officer', this)">
+                    🛠️ Officer Resolution Desk
+                </button>
+                <button class="rail-btn" id="navAdminConsole" style="display:none;" onclick="switchWorkspace('admin', this)">
+                    🛡️ Admin OES Control
+                </button>
+                <button class="rail-btn" onclick="switchWorkspace('contact', this)" data-feature="adminContact">
+                    📞 Admin Contact & Helpdesk
+                </button>
+            </nav>
+
+            <div class="rail-footer" id="railAuthFooter">
+                <button class="btn-primary full-width" onclick="openAuthDrawer('login')">Login / Register</button>
+            </div>
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="main-workspace">
+            <!-- Top Header Bar -->
+            <header class="top-utility-bar">
+                <div class="page-heading">
+                    <h1 id="workspaceTitle">Civic Grievance & Resolution Hub</h1>
+                    <p id="workspaceSubtitle">Transparent tracking, geo-tagged issue reporting, and verified officer proof-of-work</p>
+                </div>
+                <div class="quick-demo-strip">
+                    <span class="muted-xs">1-Click Role Switch:</span>
+                    <button class="chip-btn" onclick="instantDemoRole('user')">Citizen User</button>
+                    <button class="chip-btn" onclick="instantDemoRole('officer')">Field Officer</button>
+                    <button class="chip-btn chip-admin" onclick="instantDemoRole('admin')">System Admin</button>
+                </div>
+            </header>
+
+            <!-- VIEW 1: OVERVIEW, ANNOUNCEMENTS & COMMON ISSUES SEARCH -->
+            <section id="view-overview" class="workspace-panel">
+                <!-- Admin-Inserted System Information Banner (Requirement: Insert the information of available on OES) -->
+                <div class="oes-bulletin-strip" id="oesBulletinContainer"></div>
+
+                <!-- Live Metrics Strip -->
+                <div class="metrics-grid">
+                    <div class="metric-tile">
+                        <span class="metric-label">Total Registered Grievances</span>
+                        <strong class="metric-val" id="kpiTotal">0</strong>
+                    </div>
+                    <div class="metric-tile">
+                        <span class="metric-label">In Progress / Assigned</span>
+                        <strong class="metric-val text-amber" id="kpiProgress">0</strong>
+                    </div>
+                    <div class="metric-tile">
+                        <span class="metric-label">Resolved with Proof</span>
+                        <strong class="metric-val text-emerald" id="kpiResolved">0</strong>
+                    </div>
+                    <div class="metric-tile">
+                        <span class="metric-label">Active Field Officers</span>
+                        <strong class="metric-val text-indigo" id="kpiOfficers">0</strong>
+                    </div>
+                </div>
+
+                <!-- Search Common Issues & Solutions -->
+                <div class="card-surface" id="sec-knowledgeBase">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3>🔎 Search Common Issues & Instant Solutions</h3>
+                            <p class="muted-sm">Browse verified resolution guides before submitting a new ticket</p>
+                        </div>
+                        <input type="text" id="faqSearchInput" class="search-input" placeholder="Search keywords (e.g. streetlight, water, billing, road)..." onkeyup="renderKnowledgeBase()">
+                    </div>
+                    <div id="knowledgeBaseGrid" class="kb-grid"></div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: USER — POST COMPLAINT + INTERACTIVE GOOGLE MAP PIN MARKER -->
+            <section id="view-lodge" class="workspace-panel" style="display:none;">
+                <div class="two-col-split">
+                    <div class="card-surface">
+                        <h3>📝 Submit New Grievance</h3>
+                        <p class="muted-sm" style="margin-bottom:14px;">Provide category details, supporting document info, and mark the exact spot on the map.</p>
+
+                        <form onsubmit="handleComplaintSubmit(event)" class="form-stack">
+                            <div class="form-row-2">
+                                <div>
+                                    <label>Complaint Category</label>
+                                    <select id="compCategory" required>
+                                        <option value="Roads & Infrastructure">Roads & Infrastructure</option>
+                                        <option value="Water & Sanitation">Water & Sanitation</option>
+                                        <option value="Electricity & Streetlights">Electricity & Streetlights</option>
+                                        <option value="Public Safety & Traffic">Public Safety & Traffic</option>
+                                        <option value="Digital / Portal Service">Digital / Portal Service</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Notification Channel</label>
+                                    <select id="compNotify">
+                                        <option value="Email & SMS Alerts">Email & SMS Alerts</option>
+                                        <option value="SMS Only">SMS Only</option>
+                                        <option value="Email Only">Email Only</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <label>Issue Headline</label>
+                            <input type="text" id="compTitle" placeholder="e.g. Broken streetlight near Sector 4 junction" required>
+
+                            <label>Detailed Description</label>
+                            <textarea id="compDesc" rows="3" placeholder="Describe the issue clearly..." required></textarea>
+
+                            <div class="form-row-2">
+                                <div>
+                                    <label>Supporting Document / Photo Reference</label>
+                                    <input type="text" id="compDocName" placeholder="e.g. site_photo_01.jpg or PDF link">
+                                </div>
+                                <div>
+                                    <label>Pinned Map Coordinates</label>
+                                    <input type="text" id="compCoords" value="13.0285° N, 80.0112° E (Mevalurkuppam Hub)" readonly required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-primary full-width">Register Complaint & Dispatch Alert</button>
+                        </form>
+                    </div>
+
+                    <!-- Interactive Geo-Map Pin Dropper (User Requirement: Location Mark in Google Map) -->
+                    <div class="card-surface" id="sec-mapMarker">
+                        <div class="card-header-flex">
+                            <div>
+                                <h3>🗺️ Interactive Google Map Location Marker</h3>
+                                <p class="muted-sm">Click anywhere on the map grid to drop a geo-location pin</p>
+                            </div>
+                            <a id="openExternalGmaps" href="https://maps.google.com/?q=13.0285,80.0112" target="_blank" class="btn-outline-sm">Open in Google Maps ↗</a>
+                        </div>
+
+                        <div class="interactive-map-box" id="interactiveMapBox" onclick="dropMapPin(event)">
+                            <!-- Stylized Vector Street Map -->
+                            <svg viewBox="0 0 500 320" class="vector-map-svg">
+                                <rect width="500" height="320" fill="#e2e8f0"/>
+                                <!-- Parks & Water -->
+                                <path d="M0,240 Q120,210 220,270 T500,250 L500,320 L0,320 Z" fill="#bae6fd"/>
+                                <rect x="30" y="30" width="110" height="75" rx="12" fill="#bbf7d0"/>
+                                <rect x="340" y="45" width="120" height="80" rx="12" fill="#bbf7d0"/>
+                                <!-- Highways & Streets -->
+                                <line x1="0" y1="150" x2="500" y2="150" stroke="#ffffff" stroke-width="14"/>
+                                <line x1="0" y1="150" x2="500" y2="150" stroke="#f59e0b" stroke-width="2" stroke-dasharray="8,6"/>
+                                <line x1="230" y1="0" x2="230" y2="320" stroke="#ffffff" stroke-width="12"/>
+                                <line x1="110" y1="0" x2="110" y2="320" stroke="#f8fafc" stroke-width="6"/>
+                                <line x1="380" y1="0" x2="380" y2="320" stroke="#f8fafc" stroke-width="6"/>
+                                <line x1="0" y1="70" x2="500" y2="70" stroke="#f8fafc" stroke-width="6"/>
+                                <text x="245" y="142" font-size="11" fill="#475569" font-family="sans-serif" font-weight="bold">NH-48 Main Corridor</text>
+                                <text x="48" y="72" font-size="10" fill="#166534" font-family="sans-serif">Central Green Park</text>
+                                <text x="362" y="88" font-size="10" fill="#166534" font-family="sans-serif">Civic Tech Zone</text>
+                            </svg>
+                            <div class="map-pin" id="mapPinMarker" style="left: 46%; top: 47%;">📍</div>
+                        </div>
+                        <div class="map-readout" id="mapLocationLabel">
+                            Selected Landmark: <strong>NH-48 & Civic Junction (13.0285° N, 80.0112° E)</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: USER — COMPLAINT TRACKER, ADDITIONAL EVIDENCE & FEEDBACK -->
+            <section id="view-tracker" class="workspace-panel" style="display:none;">
+                <div class="card-surface">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3>📋 Real-Time Complaint History & Status Tracker</h3>
+                            <p class="muted-sm">View live status, inspect officer proof-of-work, add extra evidence, or submit resolution feedback</p>
+                        </div>
+                        <select id="statusFilterSelect" class="compact-select" onchange="renderUserComplaints()">
+                            <option value="All">All Statuses</option>
+                            <option value="Submitted">Submitted</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                    </div>
+                    <div id="userComplaintsList" class="tickets-stack"></div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: OFFICER RESOLUTION DESK (View Complaint, Update Status, Update Proof of Work) -->
+            <section id="view-officer" class="workspace-panel" style="display:none;">
+                <div class="card-surface">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3>🛠️ Officer Field Resolution Desk</h3>
+                            <p class="muted-sm">Inspect assigned citizen complaints, update resolution status, and upload proof-of-work records</p>
+                        </div>
+                        <span class="badge-indigo" id="officerBadgeInfo">Officer Mode</span>
+                    </div>
+                    <div id="officerComplaintsList" class="tickets-stack"></div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: ADMIN OES CONTROL CENTER -->
+            <section id="view-admin" class="workspace-panel" style="display:none;">
+                <div class="admin-subnav">
+                    <button class="subtab active" onclick="switchAdminSubtab('officers', this)">1. Generate Officer ID & Password</button>
+                    <button class="subtab" onclick="switchAdminSubtab('accounts', this)">2. Manage All Accounts & Passwords</button>
+                    <button class="subtab" onclick="switchAdminSubtab('features', this)">3. Hide / Show Portal Features</button>
+                    <button class="subtab" onclick="switchAdminSubtab('oesinfo', this)">4. Insert OES Information & Contact</button>
+                </div>
+
+                <!-- Admin Tab 1: Generate ID & Password for Officer -->
+                <div id="admin-tab-officers" class="card-surface">
+                    <h3>🔑 Generate Officer ID & Password</h3>
+                    <p class="muted-sm" style="margin-bottom:14px;">Create official credentials for field officers so they can log in and resolve grievances.</p>
+                    <form onsubmit="adminGenerateOfficer(event)" class="grid-4-form">
+                        <input type="text" id="genOffName" placeholder="Officer Full Name" required>
+                        <input type="text" id="genOffDept" placeholder="Department (e.g. Electrical)" required>
+                        <input type="text" id="genOffCustomId" placeholder="Officer ID (auto if blank)">
+                        <input type="text" id="genOffPassword" placeholder="Assign Password" required>
+                        <button type="submit" class="btn-primary">Generate Credentials</button>
+                    </form>
+                    <div id="generatedCredsAlert" class="creds-banner" style="display:none;"></div>
+
+                    <h4 style="margin-top:22px;">Active Officer Accounts</h4>
+                    <div class="table-wrap">
+                        <table class="clean-table">
+                            <thead>
+                                <tr>
+                                    <th>Officer ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Password</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminOfficersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Admin Tab 2: View All Accounts, Create/Delete Account, Change Password -->
+                <div id="admin-tab-accounts" class="card-surface" style="display:none;">
+                    <h3>👥 All OES Accounts (Create, View, Change Password, Delete)</h3>
+                    <form onsubmit="adminCreateAccount(event)" class="grid-4-form" style="margin-bottom:18px;">
+                        <input type="text" id="accNewName" placeholder="Full Name" required>
+                        <input type="text" id="accNewLogin" placeholder="Email or Officer ID" required>
+                        <input type="text" id="accNewPass" placeholder="Password" required>
+                        <select id="accNewRole">
+                            <option value="user">Citizen User</option>
+                            <option value="officer">Field Officer</option>
+                        </select>
+                        <button type="submit" class="btn-primary">Create Account</button>
+                    </form>
+
+                    <div class="table-wrap">
+                        <table class="clean-table">
+                            <thead>
+                                <tr>
+                                    <th>Account ID</th>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Login ID / Email</th>
+                                    <th>Change Password</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminAllAccountsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Admin Tab 3: Hide any kind of features from both users & officers -->
+                <div id="admin-tab-features" class="card-surface" style="display:none;">
+                    <h3>👁️ Feature Visibility Controls (Hide / Show Features from Users & Officers)</h3>
+                    <p class="muted-sm" style="margin-bottom:16px;">Toggle modules on or off across the Online Electronic System (OES). Hidden features immediately disappear from Citizen and Officer views.</p>
+                    <div id="featureTogglesList" class="toggle-cards-grid"></div>
+                </div>
+
+                <!-- Admin Tab 4: Insert Information available on OES & Update Admin Contact -->
+                <div id="admin-tab-oesinfo" class="card-surface" style="display:none;">
+                    <h3>📢 Insert OES Information & Admin Contact Details</h3>
+                    <form onsubmit="adminAddOesBulletin(event)" class="form-stack" style="margin-bottom:20px;">
+                        <label>Publish New OES Public Notice / Service Information</label>
+                        <div class="form-row-2">
+                            <input type="text" id="oesInfoTitle" placeholder="Notice Title (e.g. Monsoon Helpline Active)" required>
+                            <input type="text" id="oesInfoDetail" placeholder="Details / Available Services on OES..." required>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width:fit-content;">Insert Information on OES</button>
+                    </form>
+
+                    <hr style="border:none; border-top:1px solid var(--border); margin:18px 0;">
+
+                    <h4>Admin Helpdesk Contact Details (Shown to Users)</h4>
+                    <form onsubmit="adminUpdateContactDetails(event)" class="grid-4-form" style="margin-top:10px;">
+                        <input type="text" id="admContactName" placeholder="Admin Name" required>
+                        <input type="email" id="admContactEmail" placeholder="Support Email" required>
+                        <input type="text" id="admContactPhone" placeholder="Helpline Phone" required>
+                        <input type="text" id="admContactOffice" placeholder="Office Address" required>
+                        <button type="submit" class="btn-primary">Save Contact Info</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- VIEW 6: GET ADMIN CONTACT DETAILS -->
+            <section id="view-contact" class="workspace-panel" style="display:none;">
+                <div class="card-surface" style="max-width:680px;">
+                    <h3>📞 Administrator & Grievance Cell Contact Details</h3>
+                    <p class="muted-sm" style="margin-bottom:18px;">Reach out directly to the ComplainEase OES Administration for escalations or account assistance.</p>
+                    <div id="adminContactDisplayCard" class="contact-detail-box"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- AUTH DRAWER / MODAL (User Register/Login, Officer Register/Login, Admin Login) -->
+    <div id="authModal" class="modal-backdrop">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeAuthDrawer()">&times;</button>
+            <div class="auth-switch">
+                <button class="auth-tab active" id="btnModeLogin" onclick="setAuthMode('login')">Sign In</button>
+                <button class="auth-tab" id="btnModeRegister" onclick="setAuthMode('register')">Register</button>
+            </div>
+
+            <form onsubmit="processAuthForm(event)" class="form-stack">
+                <label>Select Portal Role</label>
+                <select id="loginRoleSelect" onchange="updateAuthFormFields()">
+                    <option value="user">Citizen User</option>
+                    <option value="officer">Resolution Officer</option>
+                    <option value="admin">System Administrator</option>
+                </select>
+
+                <div id="registerFieldsGroup" style="display:none;">
+                    <label>Full Name</label>
+                    <input type="text" id="regFullName" placeholder="Enter your full name">
+                    <label id="regExtraLabel">Mobile Phone (for SMS Updates)</label>
+                    <input type="text" id="regExtraInput" placeholder="+91 98765-43210">
+                </div>
+
+                <label id="loginIdLabel">Email Address / Officer ID</label>
+                <input type="text" id="loginIdentifier" placeholder="user@complainease.org or OFF-101" required>
+
+                <label>Password</label>
+                <input type="password" id="loginPasscode" placeholder="••••••••" required>
+
+                <button type="submit" class="btn-primary full-width" id="authActionBtn">Access Portal</button>
+            </form>
+
+            <div class="demo-footer">
+                <p class="muted-xs" style="margin-bottom:6px;">Quick Test Accounts:</p>
+                <button type="button" class="chip-btn" onclick="instantDemoRole('user')">User Demo</button>
+                <button type="button" class="chip-btn" onclick="instantDemoRole('officer')">Officer Demo</button>
+                <button type="button" class="chip-btn chip-admin" onclick="instantDemoRole('admin')">Admin Demo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastBanner" class="toast-banner"></div>
+
+    <script src="scripts/store.js"></script>
+    <script src="scripts/controller.js"></script>
+</body>
+</html>
