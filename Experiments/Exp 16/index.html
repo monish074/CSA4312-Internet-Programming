@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxEase | Employee Income Tax Calculator & Statutory Norms Engine</title>
+    <link rel="stylesheet" href="assets/taxease.css">
+</head>
+<body>
+    <!-- Top Financial Header -->
+    <header class="fintech-header">
+        <div class="container header-bar">
+            <div class="brand-identity">
+                <div class="logo-mark">₹</div>
+                <div>
+                    <h1>Tax<span>Ease</span></h1>
+                    <small>Statutory Income Tax & Deduction Workbench</small>
+                </div>
+            </div>
+
+            <div class="mode-switcher">
+                <button class="mode-btn active" id="navEmpBtn" onclick="switchMode('employee', this)">🧮 Employee Tax Calculator</button>
+                <button class="mode-btn" id="navAdmBtn" onclick="switchMode('admin', this)">🛡️ Admin Norms & Fields</button>
+            </div>
+
+            <div class="auth-status-box" id="authStatusBox">
+                <button class="btn-emerald btn-sm" onclick="openSocialAuthModal()">Employee / Admin Login</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-container">
+        <!-- =========================================================
+             VIEW 1: EMPLOYEE INCOME TAX CALCULATION WORKBENCH
+             ========================================================= -->
+        <section id="employeeWorkspace">
+            <!-- Authenticated Banner -->
+            <div class="welcome-strip" id="empWelcomeStrip">
+                <div>
+                    <span class="pill-tag">LIVE STATUTORY ENGINE</span>
+                    <h2 id="empGreeting">Welcome, Guest Employee</h2>
+                    <p class="muted-sm">Enter your monthly/annual earnings and deductions below. Tax is computed strictly per Admin-configured government norms.</p>
+                </div>
+                <button class="btn-outline-emerald btn-sm" onclick="openSocialAuthModal()">🔗 Login via Gmail / Social Account</button>
+            </div>
+
+            <!-- Split Wizard + Live Visual Breakdown -->
+            <div class="calculator-split">
+                <!-- LEFT: Dynamic Input Form -->
+                <div class="card-panel">
+                    <div class="panel-title-row">
+                        <h3>1. Income & Statutory Deductions</h3>
+                        <span class="norm-chip" id="activeNormBadge">Std Deduction: ₹50,000 | 80C Cap: ₹1,50,000</span>
+                    </div>
+
+                    <form id="taxCalcForm" onsubmit="calculateEmployeeTax(event)" class="tax-form">
+                        <div class="form-section-label">Earnings & Taxable Income</div>
+                        <div class="input-grid-2">
+                            <div class="field-group">
+                                <label>Monthly Gross Pay (₹) <span class="hint">× 12</span></label>
+                                <input type="number" id="inpMonthlyGross" value="95000" min="0" step="100" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Annual Bonus / Other Taxable Income (₹)</label>
+                                <input type="number" id="inpAnnualBonus" value="60000" min="0" step="100">
+                            </div>
+                        </div>
+
+                        <div class="form-section-label">Exemptions & Statutory Deductions</div>
+                        <div class="input-grid-2">
+                            <div class="field-group">
+                                <label>Monthly House Rent Allowance (HRA) (₹) <span class="hint">× 12</span></label>
+                                <input type="number" id="inpMonthlyHra" value="18000" min="0" step="100" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Monthly Pension / Retirement Contribution (₹) <span class="hint">× 12 (Max Cap Applied)</span></label>
+                                <input type="number" id="inpMonthlyPension" value="14000" min="0" step="100" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Monthly Health Insurance Premium (₹) <span class="hint">× 12</span></label>
+                                <input type="number" id="inpMonthlyHealth" value="2000" min="0" step="100" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Standard Deduction (Auto-Applied) (₹)</label>
+                                <input type="number" id="inpStdDeductionDisplay" value="50000" readonly class="readonly-input">
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Admin-Added Custom Input Fields -->
+                        <div id="dynamicCustomFieldsContainer"></div>
+
+                        <div class="form-actions-row">
+                            <button type="submit" class="btn-emerald full-width">Calculate Applicable Income Tax</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- RIGHT: Detailed Breakdown, SVG Donut Chart, Tax-Saving Tips & Report Download -->
+                <div class="card-panel results-panel">
+                    <div class="panel-title-row">
+                        <h3>2. Tax Liability & Net Income Breakdown</h3>
+                        <button class="btn-dark btn-xs" onclick="downloadTaxSummaryReport()">⬇ Download Summary Report</button>
+                    </div>
+
+                    <!-- Interactive SVG Donut Chart + Key Figures -->
+                    <div class="visual-summary-box">
+                        <div id="taxDonutChart" class="donut-holder"></div>
+                        <div class="headline-kpis">
+                            <div class="kpi-row">
+                                <span>Annual Gross + Bonus:</span>
+                                <strong id="resGrossTotal">₹0</strong>
+                            </div>
+                            <div class="kpi-row">
+                                <span>Total Allowed Deductions:</span>
+                                <strong class="text-emerald" id="resTotalDeductions">- ₹0</strong>
+                            </div>
+                            <div class="kpi-row highlight-row">
+                                <span>Net Taxable Income:</span>
+                                <strong id="resNetTaxable">₹0</strong>
+                            </div>
+                            <div class="kpi-row tax-row">
+                                <span>Total Income Tax Liability:</span>
+                                <strong class="text-rose" id="resTotalTax">₹0</strong>
+                            </div>
+                            <div class="kpi-row net-takehome-row">
+                                <span>Net Income After Tax:</span>
+                                <strong class="text-emerald" id="resNetAfterTax">₹0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slab-by-Slab Calculation Table -->
+                    <h4 style="margin:16px 0 8px;">Applicable Tax Slab Breakdown</h4>
+                    <div class="table-wrap">
+                        <table class="slab-table">
+                            <thead>
+                                <tr>
+                                    <th>Income Slab</th>
+                                    <th>Rate</th>
+                                    <th>Taxable Amount</th>
+                                    <th>Computed Tax</th>
+                                </tr>
+                            </thead>
+                            <tbody id="slabBreakdownBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Personalized Tax-Saving Tips -->
+                    <div class="tips-callout" id="taxSavingTipsBox"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             VIEW 2: ADMIN PORTAL (Login, Update Required Fields, Modify Government Norms & Slabs)
+             ========================================================= -->
+        <section id="adminWorkspace" style="display:none;">
+            <div class="admin-banner">
+                <div>
+                    <h2>🛡️ Administrator Statutory Configuration</h2>
+                    <p class="muted-sm">Modify government tax formula parameters, update slab thresholds, and add/remove employee input fields</p>
+                </div>
+                <button class="btn-outline-emerald btn-sm" onclick="resetNormsToDefault()">Reset to Default Norms</button>
+            </div>
+
+            <div class="admin-grid-2">
+                <!-- Left: Modify Calculation Values Based on Government Norms -->
+                <div class="card-panel">
+                    <h3>⚖️ Modify Government Tax Norms & Slabs</h3>
+                    <p class="muted-sm" style="margin-bottom:14px;">Formula: <code>Net Taxable = (Gross×12 + Bonus) - (HRA×12) - StdDed - min(Pension×12, MaxPension) - (Health×12)</code></p>
+
+                    <form onsubmit="adminSaveTaxNorms(event)" class="tax-form">
+                        <div class="input-grid-2">
+                            <div class="field-group">
+                                <label>Standard Deduction (₹)</label>
+                                <input type="number" id="admStdDeduction" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Max Pension / 80C Cap (₹)</label>
+                                <input type="number" id="admMaxPension" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Nil Tax Rebate Threshold (₹) <span class="hint">Below this = Nil</span></label>
+                                <input type="number" id="admRebateLimit" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Zero-Tax Base Slab Limit (₹)</label>
+                                <input type="number" id="admSlab1Limit" required>
+                            </div>
+                        </div>
+
+                        <div class="form-section-label">Progressive Slab Rates (%) & Thresholds</div>
+                        <div class="input-grid-3">
+                            <div class="field-group">
+                                <label>Slab 2 Rate (%)</label>
+                                <input type="number" id="admRate2" step="0.5" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Slab 2 Upper Limit (₹)</label>
+                                <input type="number" id="admSlab2Limit" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Slab 3 Rate (%)</label>
+                                <input type="number" id="admRate3" step="0.5" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Slab 3 Upper Limit (₹)</label>
+                                <input type="number" id="admSlab3Limit" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Top Slab Rate (> Limit) (%)</label>
+                                <input type="number" id="admRate4" step="0.5" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-emerald full-width" style="margin-top:8px;">Save & Apply Government Norms</button>
+                    </form>
+                </div>
+
+                <!-- Right: Update Fields Required for Collecting Input from Employee -->
+                <div class="card-panel">
+                    <h3>📝 Update Employee Input Fields</h3>
+                    <p class="muted-sm" style="margin-bottom:14px;">Toggle core fields or add custom exemption/income fields collected on the Employee Tax Calculator page.</p>
+
+                    <div id="coreFieldsToggleList" class="fields-checklist"></div>
+
+                    <hr style="border:none; border-top:1px solid var(--border); margin:16px 0;">
+
+                    <h4>+ Add Custom Input Field to Employee Form</h4>
+                    <form onsubmit="adminAddCustomField(event)" class="custom-field-form">
+                        <input type="text" id="newFieldLabel" placeholder="Field Label (e.g. Annual Home Loan Interest)" required>
+                        <select id="newFieldEffect">
+                            <option value="deduction">Subtracts as Deduction (Annual ₹)</option>
+                            <option value="income">Adds to Taxable Income (Annual ₹)</option>
+                        </select>
+                        <input type="number" id="newFieldCap" placeholder="Max Cap ₹ (0 = No Cap)" min="0" value="0">
+                        <button type="submit" class="btn-dark">Add Field</button>
+                    </form>
+
+                    <div id="customFieldsList" class="fields-checklist" style="margin-top:12px;"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- SOCIAL / GMAIL & ADMIN AUTHENTICATION MODAL -->
+    <div id="authModal" class="modal-backdrop">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeSocialAuthModal()">&times;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabEmpAuth" onclick="switchAuthTab('employee')">Employee Social / Gmail Login</button>
+                <button class="auth-tab" id="tabAdmAuth" onclick="switchAuthTab('admin')">Admin Login</button>
+            </div>
+
+            <!-- Employee Social / Gmail Login -->
+            <div id="empAuthBody">
+                <p class="muted-sm" style="margin-bottom:14px;">Sign in instantly using your existing authenticated Gmail or social media credentials:</p>
+                <div class="social-btns-stack">
+                    <button type="button" class="social-btn btn-google" onclick="loginWithSocial('Gmail', 'Monish Sankar', 'sm7512551@gmail.com')">
+                        <span>G</span> Continue with Gmail (Google Account)
+                    </button>
+                    <button type="button" class="social-btn btn-linkedin" onclick="loginWithSocial('LinkedIn', 'Monish Sankar', 'monish.s@linkedin.com')">
+                        <span>in</span> Continue with LinkedIn
+                    </button>
+                    <button type="button" class="social-btn btn-github" onclick="loginWithSocial('GitHub', 'Monish Sankar', 'monishs@github.com')">
+                        <span>⌘</span> Continue with GitHub
+                    </button>
+                </div>
+
+                <div class="divider-text"><span>or sign in with custom email</span></div>
+                <form onsubmit="loginWithCustomEmail(event)" class="tax-form">
+                    <input type="text" id="customEmpName" placeholder="Employee Name" required>
+                    <input type="email" id="customEmpEmail" placeholder="employee@company.com" required>
+                    <button type="submit" class="btn-emerald full-width">Sign In to Tax Calculator</button>
+                </form>
+            </div>
+
+            <!-- Admin Login -->
+            <div id="admAuthBody" style="display:none;">
+                <p class="muted-sm" style="margin-bottom:12px;">Sign in as Payroll Administrator to configure statutory tax norms and employee input fields.</p>
+                <form onsubmit="handleAdminLogin(event)" class="tax-form">
+                    <label>Admin ID / Email</label>
+                    <input type="text" id="adminUserInp" value="admin@taxease.gov.in" required>
+                    <label>Password</label>
+                    <input type="password" id="adminPassInp" value="admin123" required>
+                    <button type="submit" class="btn-dark full-width">Login as Administrator</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastBanner" class="toast-box"></div>
+
+    <script src="core/norms.js"></script>
+    <script src="core/calculator.js"></script>
+</body>
+</html>
