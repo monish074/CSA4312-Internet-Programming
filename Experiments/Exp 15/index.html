@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyToll | Pre-Paid Smart Toll Pass, eTicket & QR Gate System</title>
+    <link rel="stylesheet" href="theme/easytoll.css">
+</head>
+<body>
+    <!-- Top Highway Telemetry Header -->
+    <header class="highway-topbar">
+        <div class="container topbar-flex">
+            <div class="brand-cluster">
+                <div class="toll-shield">ET</div>
+                <div>
+                    <span class="brand-name">Easy<span>Toll</span></span>
+                    <span class="brand-sub">Expressway Pre-Pay & QR Pass Network</span>
+                </div>
+            </div>
+
+            <!-- Segmented Role Pill Switcher -->
+            <div class="role-segment" id="roleSegmentBar">
+                <button class="seg-btn active" onclick="switchRolePortal('driver', this)">🚗 Driver / User</button>
+                <button class="seg-btn" onclick="switchRolePortal('gate', this)">🚧 Toll Gate Operator</button>
+                <button class="seg-btn" onclick="switchRolePortal('admin', this)">🛡️ Admin Control</button>
+            </div>
+
+            <div class="session-cluster" id="sessionCluster">
+                <button class="btn-amber btn-sm" onclick="openAuthDialog('login')">Sign In / Register</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="container main-stage">
+        <!-- =========================================================
+             PORTAL 1: DRIVER / USER PORTAL
+             ========================================================= -->
+        <section id="portal-driver" class="portal-view">
+            <!-- Hero Split: Virtual Toll Pass Card + eWallet & Auto-Pay Control -->
+            <div class="wallet-hero-grid">
+                <!-- Interactive Virtual Smart Toll Pass Card -->
+                <div class="smart-pass-card">
+                    <div class="pass-card-top">
+                        <span class="chip-tag">FAST-LANE QR PASS</span>
+                        <span class="pass-status-pill" id="heroPassStatus">ACTIVE</span>
+                    </div>
+                    <div class="pass-plate" id="heroVehiclePlate">TN-09-CD-4821</div>
+                    <div class="pass-meta-row">
+                        <div>
+                            <small>CARDHOLDER</small>
+                            <strong id="heroHolderName">Arjun Natarajan</strong>
+                        </div>
+                        <div>
+                            <small>PASS ID</small>
+                            <strong id="heroPassId">PASS-7741</strong>
+                        </div>
+                        <div>
+                            <small>VALID UNTIL</small>
+                            <strong id="heroPassExpiry">2026-12-31</strong>
+                        </div>
+                    </div>
+                    <div class="pass-card-actions">
+                        <button class="btn-light-glass" onclick="showUserPassQR()">📱 Get QR Code for Toll Pass</button>
+                        <button class="btn-outline-glass" onclick="openDriverTab('passes')">🔄 Apply / Renew Pass</button>
+                    </div>
+                </div>
+
+                <!-- Real-Time eWallet Balance & Auto-Pay Box -->
+                <div class="wallet-control-card">
+                    <div class="wallet-head">
+                        <div>
+                            <span class="muted-label">REAL-TIME eWALLET BALANCE</span>
+                            <div class="balance-figure" id="walletBalanceDisplay">$125.50</div>
+                        </div>
+                        <label class="autopay-toggle">
+                            <input type="checkbox" id="autoPayCheckbox" checked onchange="toggleAutoPay()">
+                            <span>Auto-Pay Active</span>
+                        </label>
+                    </div>
+                    <p class="muted-sm" style="margin:8px 0 14px;">Pre-load funds or purchase advance toll eTickets so you never wait in toll booth queues.</p>
+                    <form onsubmit="handleAddMoney(event)" class="topup-row">
+                        <input type="number" id="topupAmount" placeholder="Amount ($)" min="5" max="2000" value="50" required>
+                        <select id="topupMethod">
+                            <option value="UPI / Instant Pay">UPI / Instant Pay</option>
+                            <option value="Credit / Debit Card">Credit / Debit Card</option>
+                            <option value="Net Banking">Net Banking</option>
+                        </select>
+                        <button type="submit" class="btn-amber">+ Add Money</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Driver Sub-Navigation Tabs -->
+            <div class="sub-nav-strip">
+                <button class="sub-pill active" onclick="openDriverTab('eticket', this)">🎟️ Buy Toll eTicket (Advance)</button>
+                <button class="sub-pill" onclick="openDriverTab('passes', this)">🪪 Apply & Renew Toll Pass</button>
+                <button class="sub-pill" onclick="openDriverTab('vehicles', this)">🚘 My Vehicles & Recurring Routes</button>
+                <button class="sub-pill" onclick="openDriverTab('history', this)">📜 Payment Summary & Alerts</button>
+            </div>
+
+            <!-- Driver Tab 1: Buy Toll eTicket in Advance -->
+            <div id="dtab-eticket" class="driver-tab-panel">
+                <div class="panel-box">
+                    <h3>🎟️ Pre-Book Toll eTicket (Skip the Queue)</h3>
+                    <p class="muted-sm" style="margin-bottom:16px;">Select your highway toll plaza, vehicle, and travel date to generate an instant QR eTicket paid from your eWallet.</p>
+                    <form onsubmit="handleBuyETicket(event)" class="grid-form-4">
+                        <div>
+                            <label>Select Toll Plaza / Route</label>
+                            <select id="eticketTollSelect" onchange="updateETicketFare()" required></select>
+                        </div>
+                        <div>
+                            <label>Select Vehicle</label>
+                            <select id="eticketVehicleSelect" required></select>
+                        </div>
+                        <div>
+                            <label>Trip Type</label>
+                            <select id="eticketTripType" onchange="updateETicketFare()">
+                                <option value="Single">Single Journey (1x Fare)</option>
+                                <option value="Return">Return Journey (1.8x Fare)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Travel Date</label>
+                            <input type="date" id="eticketDate" required>
+                        </div>
+                        <div class="fare-checkout-bar full-span">
+                            <span>Toll Fee Payable: <strong id="eticketFarePreview">$0.00</strong></span>
+                            <button type="submit" class="btn-primary">Pay & Generate Toll eTicket QR</button>
+                        </div>
+                    </form>
+
+                    <h4 style="margin-top:22px;">My Pre-Booked Toll eTickets</h4>
+                    <div id="userETicketsGrid" class="cards-grid-3" style="margin-top:12px;"></div>
+                </div>
+            </div>
+
+            <!-- Driver Tab 2: Apply New Toll Pass / Renewal Toll Pass / Get QR Code -->
+            <div id="dtab-passes" class="driver-tab-panel" style="display:none;">
+                <div class="two-col-grid">
+                    <div class="panel-box">
+                        <h3>🪪 Apply for New Toll Pass</h3>
+                        <p class="muted-sm" style="margin-bottom:12px;">Monthly or Annual unlimited pass for frequent commuters. Requires Admin approval before QR activation.</p>
+                        <form onsubmit="handleApplyTollPass(event)" class="stacked-fields">
+                            <label>Select Vehicle</label>
+                            <select id="passVehicleSelect" required></select>
+                            <label>Toll Plaza / Corridor</label>
+                            <select id="passTollSelect" required></select>
+                            <label>Pass Plan Duration</label>
+                            <select id="passPlanType">
+                                <option value="Monthly Commuter Pass ($45)">Monthly Commuter Pass — $45.00</option>
+                                <option value="Annual Express Pass ($420)">Annual Express Pass — $420.00</option>
+                            </select>
+                            <button type="submit" class="btn-primary full-width">Submit Toll Pass Application</button>
+                        </form>
+                    </div>
+
+                    <div class="panel-box">
+                        <h3>🔄 My Toll Passes (Renewal & QR Code)</h3>
+                        <div id="userPassesList" class="stack-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Driver Tab 3: Vehicles & Recurring Routes -->
+            <div id="dtab-vehicles" class="driver-tab-panel" style="display:none;">
+                <div class="panel-box">
+                    <h3>🚘 Manage Vehicles & Recurring Route Auto-Pay</h3>
+                    <form onsubmit="handleAddVehicle(event)" class="grid-form-4" style="margin:14px 0 20px;">
+                        <input type="text" id="vehPlateInput" placeholder="License Plate (e.g. TN-01-AB-9900)" required>
+                        <select id="vehClassInput">
+                            <option value="Car / Jeep / Van">Car / Jeep / Van</option>
+                            <option value="LCV / Minibus">LCV / Minibus</option>
+                            <option value="Heavy Truck / Bus">Heavy Truck / Bus</option>
+                        </select>
+                        <input type="text" id="vehModelInput" placeholder="Vehicle Model (e.g. Hyundai Creta)" required>
+                        <button type="submit" class="btn-primary">+ Add Vehicle</button>
+                    </form>
+                    <div id="vehiclesTableContainer" class="table-wrap"></div>
+                </div>
+            </div>
+
+            <!-- Driver Tab 4: Transaction History, Payment Summary & Notifications -->
+            <div id="dtab-history" class="driver-tab-panel" style="display:none;">
+                <div class="two-col-grid">
+                    <div class="panel-box">
+                        <h3>📜 Detailed Transaction History & Payment Summary</h3>
+                        <div id="walletTransactionsList" class="stack-list"></div>
+                    </div>
+                    <div class="panel-box">
+                        <h3>🔔 Upcoming Toll & Renewal Notifications</h3>
+                        <div id="driverNotificationsList" class="stack-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             PORTAL 2: TOLL GATE USER (OPERATOR) PORTAL
+             Login, Scan QR, Verify Toll Pass ID, Verify Toll Ticket, Update Toll Location
+             ========================================================= -->
+        <section id="portal-gate" class="portal-view" style="display:none;">
+            <div class="gate-banner">
+                <div>
+                    <h2>🚧 Toll Gate Booth Verification Terminal</h2>
+                    <p id="gateBoothIdentity">Active Booth: <strong>Chennai–Bangalore NH-48 Plaza (Lane 02)</strong> | Operator: <strong>Ramesh Kumar (GATE-01)</strong></p>
+                </div>
+                <button class="btn-outline-dark btn-sm" onclick="openAuthDialog('login', 'gate')">Switch Gate Operator Login</button>
+            </div>
+
+            <div class="two-col-grid">
+                <!-- Left: Scan QR & Verify Toll Pass ID / Verify Toll Ticket -->
+                <div class="panel-box">
+                    <h3>📷 Scan QR / Verify Toll Pass ID & Toll Ticket</h3>
+                    <p class="muted-sm" style="margin-bottom:14px;">Simulate camera QR scan or enter a Pass ID (e.g. <code>PASS-7741</code>) or eTicket ID (e.g. <code>TKT-5501</code>) to validate barrier clearance.</p>
+
+                    <div class="qr-scanner-viewport">
+                        <div class="scanner-reticle">
+                            <div class="scan-laser"></div>
+                            <span>READY TO SCAN PASS / eTICKET QR</span>
+                        </div>
+                        <div class="quick-scan-chips">
+                            <span class="muted-xs">Simulate Instant QR Scan:</span>
+                            <button type="button" class="chip-action" onclick="simulateQrScan('PASS-7741')">Scan PASS-7741</button>
+                            <button type="button" class="chip-action" onclick="simulateQrScan('TKT-5501')">Scan TKT-5501</button>
+                        </div>
+                    </div>
+
+                    <form onsubmit="verifyGateCode(event)" class="verify-bar" style="margin-top:14px;">
+                        <input type="text" id="gateCodeInput" placeholder="Enter or Scanned Pass ID / Ticket ID..." required>
+                        <button type="submit" class="btn-primary">Verify & Open Boom Barrier</button>
+                    </form>
+
+                    <div id="gateVerificationResult" class="verify-result-box" style="display:none;"></div>
+                </div>
+
+                <!-- Right: Update Toll Location & Live Gate Logs -->
+                <div>
+                    <div class="panel-box" style="margin-bottom:20px;">
+                        <h3>📍 Update Toll Gate Booth Location</h3>
+                        <p class="muted-sm" style="margin-bottom:12px;">Assign this verification terminal to a specific toll plaza and lane.</p>
+                        <form onsubmit="updateGateLocation(event)" class="stacked-fields">
+                            <label>Select Toll Plaza</label>
+                            <select id="gatePlazaSelect"></select>
+                            <div class="two-col-inputs">
+                                <input type="text" id="gateLaneInput" placeholder="Lane # (e.g. FAST-LANE 04)" value="FAST-LANE 02" required>
+                                <input type="text" id="gateGpsInput" placeholder="GPS Coordinates" value="13.0285° N, 80.0112° E" required>
+                            </div>
+                            <button type="submit" class="btn-amber full-width">Update Toll Location</button>
+                        </form>
+                    </div>
+
+                    <div class="panel-box">
+                        <h3>📋 Recent Gate Verification Log</h3>
+                        <div id="gateLogsList" class="stack-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             PORTAL 3: ADMIN CONTROL CENTER
+             Login, Manage User & Toll Pass, Manage Toll Login, Approve Toll Pass, Generate QR Code, Create Toll Details
+             ========================================================= -->
+        <section id="portal-admin" class="portal-view" style="display:none;">
+            <div class="admin-head-strip">
+                <div>
+                    <h2>🛡️ EasyToll System Administration</h2>
+                    <p class="muted-sm">Create toll plazas, approve toll passes, generate official QR codes, and manage users & toll gate logins</p>
+                </div>
+                <div class="admin-tab-pills">
+                    <button class="sub-pill active" onclick="openAdminTab('passes', this)">1. Approve Passes & Generate QR</button>
+                    <button class="sub-pill" onclick="openAdminTab('tolls', this)">2. Create Toll Details</button>
+                    <button class="sub-pill" onclick="openAdminTab('gatelogins', this)">3. Manage Toll Logins</button>
+                    <button class="sub-pill" onclick="openAdminTab('users', this)">4. Manage Users</button>
+                </div>
+            </div>
+
+            <!-- Admin Tab 1: Approve Toll Pass & Generate QR Code -->
+            <div id="atab-passes" class="admin-tab-panel">
+                <div class="two-col-grid">
+                    <div class="panel-box">
+                        <h3>✅ Approve Toll Pass Applications</h3>
+                        <div id="adminPassApprovalList" class="stack-list"></div>
+                    </div>
+                    <div class="panel-box">
+                        <h3>🏁 Generate QR Code for Toll Pass / eTicket</h3>
+                        <p class="muted-sm" style="margin-bottom:12px;">Select any approved Toll Pass or enter a custom Pass ID to generate a scannable QR code.</p>
+                        <div class="verify-bar">
+                            <input type="text" id="adminQrSeedInput" placeholder="Enter Pass ID (e.g. PASS-7741)">
+                            <button type="button" class="btn-primary" onclick="adminGenerateQrPreview()">Generate QR</button>
+                        </div>
+                        <div id="adminQrOutputBox" class="qr-display-card" style="margin-top:16px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Tab 2: Create Toll Details -->
+            <div id="atab-tolls" class="admin-tab-panel" style="display:none;">
+                <div class="panel-box" style="margin-bottom:20px;">
+                    <h3>➕ Create New Toll Plaza Details</h3>
+                    <form onsubmit="adminCreateToll(event)" class="grid-form-4">
+                        <input type="text" id="newTollName" placeholder="Toll Plaza Name (e.g. Paranur Toll Gate)" required>
+                        <input type="text" id="newTollHighway" placeholder="Highway / Route (e.g. NH-32 GST Road)" required>
+                        <input type="text" id="newTollLocation" placeholder="City / District" required>
+                        <input type="number" id="newTollFee" placeholder="Base Car Toll Fee ($)" step="0.5" min="1" required>
+                        <button type="submit" class="btn-primary full-span">Create Toll Plaza</button>
+                    </form>
+                </div>
+
+                <div class="panel-box">
+                    <h3>Configured Toll Plazas</h3>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Toll ID</th>
+                                    <th>Plaza Name</th>
+                                    <th>Highway</th>
+                                    <th>Location</th>
+                                    <th>Base Fee ($)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTollsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Tab 3: Manage Toll Gate Logins -->
+            <div id="atab-gatelogins" class="admin-tab-panel" style="display:none;">
+                <div class="panel-box">
+                    <h3>🚧 Manage Toll Gate Operator Logins</h3>
+                    <form onsubmit="adminCreateGateLogin(event)" class="grid-form-4" style="margin:12px 0 18px;">
+                        <input type="text" id="newGateOpName" placeholder="Operator Name" required>
+                        <input type="text" id="newGateOpId" placeholder="Operator Login ID (e.g. GATE-02)" required>
+                        <input type="text" id="newGateOpPass" placeholder="Password" required>
+                        <select id="newGateOpPlaza" required></select>
+                        <button type="submit" class="btn-primary full-span">Create Toll Login</button>
+                    </form>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Operator ID</th>
+                                    <th>Operator Name</th>
+                                    <th>Assigned Toll Plaza</th>
+                                    <th>Password</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminGateLoginsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Tab 4: Manage Users -->
+            <div id="atab-users" class="admin-tab-panel" style="display:none;">
+                <div class="panel-box">
+                    <h3>👥 Manage Registered Drivers & eWallet Balances</h3>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Driver Name</th>
+                                    <th>Email</th>
+                                    <th>eWallet Balance ($)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- QR CODE POPUP MODAL -->
+    <div id="qrModal" class="modal-overlay">
+        <div class="modal-card modal-sm" style="text-align:center;">
+            <span class="modal-close" onclick="closeModal('qrModal')">&times;</span>
+            <h3 id="qrModalTitle">Smart Toll Pass QR Code</h3>
+            <p class="muted-sm" id="qrModalSub" style="margin:6px 0 14px;">Present at EasyToll Fast-Lane Scanner</p>
+            <div id="qrModalGraphic" class="qr-frame"></div>
+            <p class="muted-xs" style="margin-top:12px;">Encrypted Pass Token &bull; Instant Boom Barrier Clearance</p>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL (User Register/Login, Toll Gate Login, Admin Login) -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-card modal-sm">
+            <span class="modal-close" onclick="closeModal('authModal')">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="authTabLogin" onclick="setAuthTab('login')">Login</button>
+                <button class="auth-tab" id="authTabRegister" onclick="setAuthTab('register')">User Register</button>
+            </div>
+            <form onsubmit="handleAuthSubmit(event)" class="stacked-fields">
+                <label>Account Type</label>
+                <select id="authAccountType">
+                    <option value="driver">Driver / Vehicle Owner</option>
+                    <option value="gate">Toll Gate User (Operator)</option>
+                    <option value="admin">System Administrator</option>
+                </select>
+                <div id="authRegFields" style="display:none;">
+                    <label>Full Name</label>
+                    <input type="text" id="authRegName" placeholder="Arjun Natarajan">
+                    <label>Primary Vehicle Plate</label>
+                    <input type="text" id="authRegPlate" placeholder="TN-09-CD-4821">
+                </div>
+                <label>Email or Operator ID</label>
+                <input type="text" id="authLoginId" placeholder="driver@easytoll.in or GATE-01" required>
+                <label>Password</label>
+                <input type="password" id="authLoginPass" placeholder="••••••••" required>
+                <button type="submit" class="btn-primary full-width" id="authSubmitLabel">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toastMsg" class="toast-pill"></div>
+
+    <script src="engine/data.js"></script>
+    <script src="engine/app.js"></script>
+</body>
+</html>
