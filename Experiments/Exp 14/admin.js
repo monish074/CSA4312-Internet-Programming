@@ -1,0 +1,31 @@
+let tab='users';const T={users:'Users',cats:'Categories',products:'Commodities',orders:'Orders'};
+function net(){$('#net').innerHTML=`<span class="dot ${navigator.onLine?'':'off'}"></span>${navigator.onLine?'Network connected':'Offline'}`}
+addEventListener('online',net);addEventListener('offline',net);net();
+function gate(){const u=me();$('#lo').style.display=u?'':'none';$('#lo').onclick=()=>{localStorage.removeItem('renew_session');gate()};
+ if(!u||u.role!=='admin'){$('#app').innerHTML=`<div class="box login"><h2>Administrator login</h2><label>Account</label><input id="u"><label>Password</label><input id="p" type="password"><div style="margin-top:16px"><button class="btn tag" id="go">Log in</button></div><p class="mute">Default: admin / admin123</p></div>`;
+  $('#go').onclick=()=>{const x=db.users.find(y=>y.username===$('#u').value&&y.password===$('#p').value&&y.role==='admin');if(!x)return toast('Wrong account or password');localStorage.setItem('renew_session',x.id);toast('Logged in successfully');gate()};return}
+ draw()}
+function draw(){const tabs=`<div class="tabs">${Object.keys(T).map(k=>`<button class="${k===tab?'on':''}" onclick="tab='${k}';draw()">${T[k]}</button>`).join('')}</div>`;
+ const wrap=(h,t)=>`<div class="tblwrap"><table>${h}${t}</table></div>`;let b='';
+ if(tab==='users')b=`<div class="row" style="margin-bottom:12px"><button class="btn tag" onclick="editUser()">Add account</button></div>`+wrap('<tr><th>Account</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr>',db.users.map(u=>`<tr><td>${esc(u.username)}</td><td>${esc(u.email)}</td><td>${u.role}</td><td>${u.status}</td><td><button class="btn sm ghost" onclick="editUser('${u.id}')">Edit</button> <button class="btn sm red" onclick="del('users','${u.id}')">Delete</button></td></tr>`).join(''));
+ if(tab==='cats')b=`<div class="row" style="margin-bottom:12px"><input id="nc" placeholder="New category name" style="max-width:260px"><button class="btn tag" onclick="addCat()">Add category</button></div>`+wrap('<tr><th>Category</th><th>Items</th><th></th></tr>',db.cats.map(c=>`<tr><td>${esc(c.name)}</td><td>${db.products.filter(p=>p.cat===c.id).length}</td><td><button class="btn sm red" onclick="del('cats','${c.id}')">Delete</button></td></tr>`).join(''));
+ if(tab==='products')b=wrap('<tr><th>Item</th><th>Category</th><th>Price</th><th>Seller</th><th>Status</th><th></th></tr>',db.products.map(p=>`<tr><td>${esc(p.title)}</td><td>${esc(catName(p.cat))}</td><td>${money(p.price)}</td><td>${esc(userName(p.seller))}</td><td>${p.status}</td><td><button class="btn sm ghost" onclick="editProd('${p.id}')">Edit</button> <button class="btn sm red" onclick="del('products','${p.id}')">Delete</button></td></tr>`).join(''));
+ if(tab==='orders')b=wrap('<tr><th>Item</th><th>Buyer</th><th>Price</th><th>Logistics status</th><th></th></tr>',db.orders.map(o=>`<tr><td>${esc(o.title)}</td><td>${esc(userName(o.buyer))}</td><td>${money(o.price)}</td><td><select onchange="ship('${o.id}',this.value)" aria-label="Logistics status">${['Pending','Shipped','Received'].map(s=>`<option ${o.logistics===s?'selected':''}>${s}</option>`).join('')}</select></td><td><button class="btn sm red" onclick="del('orders','${o.id}')">Delete</button></td></tr>`).join(''));
+ $('#app').innerHTML=`<h2 style="margin-top:28px">${T[tab]}</h2>${tabs}${b}${(tab!=='cats'&&!b.includes('<tr><td'))?'':''}`}
+function del(k,id){if(!confirm('Delete this record? This cannot be undone.'))return;const key=k==='cats'?'cats':k;
+ if(k==='users'&&id===me().id)return toast('You cannot delete your own account');db[key]=db[key].filter(x=>x.id!==id);save();toast('Deleted');draw()}
+function addCat(){const n=$('#nc').value.trim();if(!n)return toast('Enter a category name');db.cats.push({id:uid(),name:n});save();toast('Category added');draw()}
+function ship(id,s){const o=db.orders.find(x=>x.id===id);o.logistics=s;notify(o.buyer,`Your order "${o.title}" is now ${s}`);save();toast('Logistics status: '+s)}
+function editUser(id){const u=db.users.find(x=>x.id===id)||{username:'',email:'',password:'',role:'user',status:'active'};
+ modal(`<h3>${id?'Edit user':'Add account'}</h3><label>Account</label><input id="a" value="${esc(u.username)}"><label>Email</label><input id="b" value="${esc(u.email)}"><label>Password</label><input id="c" value="${esc(u.password)}">
+ <label>Role</label><select id="d"><option ${u.role==='user'?'selected':''}>user</option><option ${u.role==='admin'?'selected':''}>admin</option></select><label>Status</label><select id="e"><option ${u.status==='active'?'selected':''}>active</option><option ${u.status==='disabled'?'selected':''}>disabled</option></select>
+ <div class="row" style="margin-top:14px"><button class="btn tag" id="s">Save changes</button><button class="btn ghost" data-close>Cancel</button></div>`,m=>m.querySelector('#s').onclick=()=>{
+ const g=x=>m.querySelector('#'+x).value.trim();if(!g('a')||!g('c'))return toast('Account and password are required');
+ if(db.users.some(x=>x.username===g('a')&&x.id!==id))return toast('That account name is taken');
+ const r={username:g('a'),email:g('b'),password:g('c'),role:g('d'),status:g('e')};if(id)Object.assign(u,r);else db.users.push({id:uid(),...r});save();m.remove();toast('Saved');draw()})}
+function editProd(id){const p=db.products.find(x=>x.id===id);
+ modal(`<h3>Edit commodity</h3><label>Title</label><input id="a" value="${esc(p.title)}"><label>Category</label><select id="b">${db.cats.map(c=>`<option value="${c.id}" ${c.id===p.cat?'selected':''}>${esc(c.name)}</option>`).join('')}</select><label>Price (₹)</label><input id="c" type="number" value="${p.price}">
+ <label>Status</label><select id="d"><option ${p.status==='active'?'selected':''}>active</option><option ${p.status==='sold'?'selected':''}>sold</option></select><label>Description</label><textarea id="e">${esc(p.desc)}</textarea>
+ <div class="row" style="margin-top:14px"><button class="btn tag" id="s">Save changes</button><button class="btn ghost" data-close>Cancel</button></div>`,m=>m.querySelector('#s').onclick=()=>{
+ const g=x=>m.querySelector('#'+x).value;Object.assign(p,{title:g('a'),cat:g('b'),price:+g('c'),status:g('d'),desc:g('e')});save();m.remove();toast('Saved');draw()})}
+gate();
