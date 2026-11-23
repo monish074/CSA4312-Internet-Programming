@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Haven | Contemporary Fine Dining & Tasting Room</title>
+    <link rel="stylesheet" href="styles/luxury.css">
+</head>
+<body>
+    <!-- Top Evening Service Strip -->
+    <div class="service-ribbon">
+        <span>✨ Dinner Service: Tue – Sun, 6:00 PM – 11:30 PM | Autumn 7-Course Chef's Tasting Menu Now Available | Valet Parking at Entrance</span>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header class="header-bar">
+        <div class="container nav-inner">
+            <a href="#" class="brand-emblem" onclick="showPage('home')">
+                <span class="monogram">GH</span>
+                <div>
+                    <span class="brand-title">GOURMET <span>HAVEN</span></span>
+                    <span class="brand-sub">CONTEMPORARY GASTRONOMY</span>
+                </div>
+            </a>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" id="btn-home" onclick="showPage('home', this)">Home</button>
+                <button class="nav-item" id="btn-menu" onclick="showPage('menu', this)">Interactive Menu</button>
+                <button class="nav-item" id="btn-events" onclick="showPage('events', this)">Offers & Events</button>
+                <button class="nav-item" id="btn-gallery" onclick="showPage('gallery', this)">Gallery</button>
+                <button class="nav-item" id="btn-about" onclick="showPage('about', this)">About Us</button>
+                <button class="nav-item" id="btn-contact" onclick="showPage('contact', this)">Contact & Map</button>
+            </nav>
+
+            <button class="btn-gold" onclick="showPage('reserve')">Reserve a Table</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- =========================================================
+             1. HOMEPAGE (Rotating Ambiance & Dish Carousel, Welcome Philosophy, Signature Highlights, Testimonials)
+             ========================================================= -->
+        <section id="page-home" class="view-section">
+            <!-- Rotating Carousel -->
+            <div class="carousel-stage">
+                <div id="carouselSlideDisplay" class="carousel-slide"></div>
+                <button class="car-arrow car-prev" onclick="moveCarousel(-1)" aria-label="Previous Slide">&#10094;</button>
+                <button class="car-arrow car-next" onclick="moveCarousel(1)" aria-label="Next Slide">&#10095;</button>
+                <div class="carousel-dots" id="carouselDots"></div>
+            </div>
+
+            <!-- Welcoming Tone & Restaurant Highlights -->
+            <section class="container section-pad">
+                <div class="welcome-grid">
+                    <div>
+                        <span class="gold-eyebrow">A SANCTUARY OF CULINARY ARTISTRY</span>
+                        <h2>Where Seasonal Terroir Meets Modern Technique</h2>
+                        <p class="lead-text">At <strong>Gourmet Haven</strong>, every evening is choreographed as an intimate sensory journey—from candlelit velvet booths and architectural cellar pairings to wood-fired tasting courses crafted from heirloom local harvests.</p>
+                        <div class="welcome-actions">
+                            <button class="btn-gold" onclick="showPage('reserve')">Book Your Evening Table</button>
+                            <button class="btn-outline-gold" onclick="showPage('menu')">Explore Tasting & À La Carte Menu</button>
+                        </div>
+                    </div>
+                    <div class="ambiance-trio" id="homeAmbianceCards"></div>
+                </div>
+            </section>
+
+            <!-- 7. Patron Testimonials & Reviews -->
+            <section class="reviews-band">
+                <div class="container section-pad">
+                    <div class="center-heading">
+                        <span class="gold-eyebrow">CRITICS & PATRONS</span>
+                        <h2>Reflections from Our Dining Room</h2>
+                    </div>
+                    <div id="testimonialsGrid" class="reviews-grid"></div>
+                </div>
+            </section>
+        </section>
+
+        <!-- =========================================================
+             2. MENU PAGE (Dedicated Categories: Appetizers, Main Courses, Desserts, Sommelier Pairings)
+             ========================================================= -->
+        <section id="page-menu" class="view-section" style="display:none;">
+            <div class="container section-pad">
+                <div class="center-heading">
+                    <span class="gold-eyebrow">SEASONAL GASTRONOMY</span>
+                    <h2>Interactive Culinary Menu</h2>
+                    <p class="muted-light">Switch between curated courses to inspect key ingredients, dietary notes, and pricing.</p>
+                </div>
+
+                <!-- Category Switcher Tabs -->
+                <div class="menu-tabs-bar" id="menuCategoryTabs">
+                    <button class="menu-tab active" onclick="filterMenuCategory('Appetizers', this)">Appetizers & Crudos</button>
+                    <button class="menu-tab" onclick="filterMenuCategory('Main Courses', this)">Main Courses</button>
+                    <button class="menu-tab" onclick="filterMenuCategory('Desserts', this)">Artisanal Desserts</button>
+                    <button class="menu-tab" onclick="filterMenuCategory('Cellar & Elixirs', this)">Cellar & Botanical Elixirs</button>
+                </div>
+
+                <div id="menuItemsGrid" class="menu-cards-grid"></div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             4. ONLINE TABLE RESERVATION SYSTEM
+             ========================================================= -->
+        <section id="page-reserve" class="view-section" style="display:none;">
+            <div class="container section-pad">
+                <div class="reserve-layout">
+                    <div class="dark-card">
+                        <span class="gold-eyebrow">INSTANT TABLE BOOKING</span>
+                        <h2>Reserve Your Table at Gourmet Haven</h2>
+                        <p class="muted-light" style="margin-bottom:18px;">Select your preferred dining date, evening seating time, party size, and dining zone.</p>
+
+                        <form onsubmit="submitTableReservation(event)" class="luxury-form">
+                            <div class="grid-2">
+                                <div>
+                                    <label>Guest Full Name</label>
+                                    <input type="text" id="resGuestName" placeholder="Vikramaditya Menon" required>
+                                </div>
+                                <div>
+                                    <label>Email Address</label>
+                                    <input type="email" id="resGuestEmail" placeholder="guest@example.com" required>
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label>Mobile Phone</label>
+                                    <input type="text" id="resGuestPhone" placeholder="+91 98400-11223" required>
+                                </div>
+                                <div>
+                                    <label>Number of Guests</label>
+                                    <select id="resPartySize" required>
+                                        <option value="2 Guests (Intimate Table)">2 Guests (Intimate Table)</option>
+                                        <option value="4 Guests (Standard Dining)">4 Guests (Standard Dining)</option>
+                                        <option value="6 Guests (Round Booth)">6 Guests (Round Booth)</option>
+                                        <option value="8+ Guests (Private Chef's Salon)">8+ Guests (Private Chef's Salon)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label>Select Date</label>
+                                    <input type="date" id="resDate" required>
+                                </div>
+                                <div>
+                                    <label>Select Seating Time</label>
+                                    <select id="resTimeSlot" required>
+                                        <option value="6:30 PM — Early Sunset Seating">6:30 PM — Early Sunset Seating</option>
+                                        <option value="7:30 PM — Prime Candlelight Seating">7:30 PM — Prime Candlelight Seating</option>
+                                        <option value="8:30 PM — Evening Tasting Seating">8:30 PM — Evening Tasting Seating</option>
+                                        <option value="9:45 PM — Late Supper & Cellar">9:45 PM — Late Supper & Cellar</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <label>Dining Preference / Celebration Notes</label>
+                            <input type="text" id="resNotes" placeholder="e.g. Anniversary dinner, window terrace, vegetarian tasting menu...">
+
+                            <button type="submit" class="btn-gold full-width">Confirm Table Reservation</button>
+                        </form>
+                    </div>
+
+                    <!-- Confirmed Reservations Ledger -->
+                    <div class="dark-card">
+                        <h3>📅 Your Confirmed Table Reservations</h3>
+                        <p class="muted-light" style="margin-bottom:14px;">Instant digital table passes saved for your upcoming visits.</p>
+                        <div id="reservationsList" class="stack-gap"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             5. ABOUT US PAGE (History, Culinary Philosophy, Chef & Kitchen Team)
+             ========================================================= -->
+        <section id="page-about" class="view-section" style="display:none;">
+            <div class="container section-pad">
+                <div class="about-story-box">
+                    <span class="gold-eyebrow">OUR HERITAGE & PHILOSOPHY</span>
+                    <h2>Crafting Memorable Evenings Since 2014</h2>
+                    <p>Founded inside a restored 1920s heritage courtyard, <strong>Gourmet Haven</strong> began with a singular culinary conviction: fine dining should feel deeply warm, unhurried, and rooted in honest regional ingredients.</p>
+                    <p>Our kitchen partners directly with organic hill-station farms, coastal day-boat fishermen, and artisanal cheesemakers—transforming peak-season harvests over open hearth embers and precision modern techniques.</p>
+                </div>
+
+                <div class="center-heading" style="margin-top:42px;">
+                    <span class="gold-eyebrow">THE CULINARY BRIGADE</span>
+                    <h2>Meet Our Executive Chef & Kitchen Leadership</h2>
+                </div>
+                <div id="culinaryTeamGrid" class="team-grid"></div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             6. SPECIAL OFFERS, SEASONAL MENUS & UPCOMING EVENTS
+             ========================================================= -->
+        <section id="page-events" class="view-section" style="display:none;">
+            <div class="container section-pad">
+                <div class="center-heading">
+                    <span class="gold-eyebrow">CURATED EXPERIENCES</span>
+                    <h2>Special Promotions, Seasonal Menus & Celebrations</h2>
+                    <p class="muted-light">Exclusive tasting evenings, sommelier pairings, and twilight lounge privileges.</p>
+                </div>
+                <div id="eventsOffersGrid" class="events-grid"></div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             GALLERY PAGE (High-Resolution Dining & Dish Showcase)
+             ========================================================= -->
+        <section id="page-gallery" class="view-section" style="display:none;">
+            <div class="container section-pad">
+                <div class="center-heading">
+                    <span class="gold-eyebrow">VISUAL CHRONICLE</span>
+                    <h2>Dining Room, Exterior & Signature Plates Gallery</h2>
+                    <p class="muted-light">Click any photograph to inspect in full-screen high resolution.</p>
+                </div>
+                <div id="fullGalleryGrid" class="gallery-masonry"></div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             3. CONTACT INFORMATION & INTERACTIVE GOOGLE MAPS PAGE
+             ========================================================= -->
+        <section id="page-contact" class="view-section" style="display:none;">
+            <div class="container section-pad">
+                <div class="contact-split">
+                    <div class="dark-card">
+                        <span class="gold-eyebrow">CONCIERGE & LOCATION</span>
+                        <h2>Visit or Connect with Gourmet Haven</h2>
+                        <div class="contact-info-list">
+                            <p><strong>📍 Physical Address:</strong> 18 Cathedral Garden Road, Nungambakkam, Chennai 600034</p>
+                            <p><strong>📞 Reservations & Concierge:</strong> +91 44-2827-9900 / +91 98400-77889</p>
+                            <p><strong>✉️ Direct Email:</strong> concierge@gourmethaven.in</p>
+                            <p><strong>🕰️ Hours:</strong> Tuesday – Sunday | 6:00 PM – 11:30 PM (Closed Mondays)</p>
+                        </div>
+
+                        <!-- Interactive Google Maps Widget -->
+                        <div class="map-widget-box">
+                            <div class="map-widget-header">
+                                <span>🗺️ Interactive Location Map — Cathedral Garden Road</span>
+                                <a href="https://maps.google.com/?q=13.0604,80.2496" target="_blank" class="gold-link">Open in Google Maps ↗</a>
+                            </div>
+                            <iframe
+                                title="Gourmet Haven Location Map"
+                                class="gmap-iframe"
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                src="https://www.openstreetmap.org/export/embed.html?bbox=80.2420%2C13.0550%2C80.2580%2C13.0660&layer=mapnik&marker=13.0604%2C80.2496">
+                            </iframe>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form for Inquiries, Reservations or Feedback -->
+                    <div class="dark-card">
+                        <h3>✉️ Send an Inquiry, Private Dining Request or Feedback</h3>
+                        <p class="muted-light" style="margin-bottom:16px;">Our Maître D' and concierge team respond within 2 hours.</p>
+                        <form onsubmit="submitContactForm(event)" class="luxury-form">
+                            <label>Your Full Name</label>
+                            <input type="text" id="cntName" placeholder="Ananya Sharma" required>
+                            <label>Email Address</label>
+                            <input type="email" id="cntEmail" placeholder="ananya@example.com" required>
+                            <label>Inquiry Type</label>
+                            <select id="cntType">
+                                <option value="General Dining Inquiry">General Dining Inquiry</option>
+                                <option value="Private Event / Wine Cellar Booking">Private Event / Wine Cellar Booking</option>
+                                <option value="Table Reservation Assistance">Table Reservation Assistance</option>
+                                <option value="Guest Dining Feedback">Guest Dining Feedback</option>
+                            </select>
+                            <label>Message</label>
+                            <textarea id="cntMessage" rows="4" placeholder="How may we tailor your Gourmet Haven experience?" required></textarea>
+                            <button type="submit" class="btn-gold full-width">Send Message to Concierge</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Full-Screen Gallery Lightbox -->
+    <div id="galleryModal" class="lightbox-modal" onclick="closeGalleryModal()">
+        <div class="lightbox-inner" onclick="event.stopPropagation()">
+            <button class="lb-close-btn" onclick="closeGalleryModal()">&times;</button>
+            <img id="lbFullImg" src="" alt="Full Resolution View">
+            <p id="lbFullCaption" class="lb-caption-text"></p>
+        </div>
+    </div>
+
+    <div id="toastNotice" class="toast-banner"></div>
+
+    <!-- Footer -->
+    <footer class="luxury-footer">
+        <div class="container footer-row">
+            <div>
+                <span class="brand-title">GOURMET <span>HAVEN</span></span>
+                <p class="muted-light" style="margin-top:6px;">18 Cathedral Garden Road, Chennai &bull; +91 44-2827-9900</p>
+            </div>
+            <div class="footer-nav">
+                <a href="#" onclick="showPage('home')">Home</a>
+                <a href="#" onclick="showPage('menu')">Menu</a>
+                <a href="#" onclick="showPage('reserve')">Reservations</a>
+                <a href="#" onclick="showPage('about')">About Us</a>
+                <a href="#" onclick="showPage('contact')">Contact</a>
+            </div>
+            <p class="muted-light">&copy; 2026 Gourmet Haven Fine Dining. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="scripts/culinaryData.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>
