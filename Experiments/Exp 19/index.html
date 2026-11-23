@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Chronicles | Global Travel Stories, Guides & Interactive Map</title>
+    <link rel="stylesheet" href="design/editorial.css">
+</head>
+<body>
+    <!-- Top Editorial Navigation Bar -->
+    <header class="site-header">
+        <div class="container nav-flex">
+            <a href="#" class="brand-logo" onclick="openSection('home')">
+                <span class="compass-icon">🧭</span>
+                <div>
+                    <span class="brand-title">Wanderlust<span>Chronicles</span></span>
+                    <span class="brand-tagline">FIELD NOTES & GLOBAL DISPATCHES</span>
+                </div>
+            </a>
+
+            <nav class="main-nav">
+                <button class="nav-link active" id="nav-home" onclick="openSection('home', this)">Journal & Map</button>
+                <button class="nav-link" id="nav-destinations" onclick="openSection('destinations', this)">Destinations</button>
+                <button class="nav-link" id="nav-about" onclick="openSection('about', this)">About the Traveler</button>
+                <button class="nav-link" id="nav-resources" onclick="openSection('resources', this)">Travel Resources</button>
+            </nav>
+
+            <div class="social-follow-strip">
+                <a href="#follow" onclick="showToast('Following @WanderlustChronicles on Instagram!')" title="Instagram">📸 IG</a>
+                <a href="#follow" onclick="showToast('Subscribed to Wanderlust YouTube Vlogs!')" title="YouTube">▶️ YT</a>
+                <a href="#follow" onclick="showToast('Following on X / Twitter!')" title="Twitter">𝕏</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- =========================================================
+             SECTION 1: HOMEPAGE (Featured Cover Story, Interactive World Map, Categories & Recent Articles)
+             ========================================================= -->
+        <section id="section-home" class="page-section">
+            <!-- Hero Featured Cover Story -->
+            <div class="editorial-hero" id="heroCoverBox"></div>
+
+            <!-- Interactive World Map Highlighting Visited Destinations -->
+            <section class="container block-spacing">
+                <div class="section-header-split">
+                    <div>
+                        <span class="eyebrow-label">INTERACTIVE TRAVEL ATLAS</span>
+                        <h2>Explore Visited Destinations on the World Map</h2>
+                        <p class="muted-text">Click any glowing destination pin to jump directly to its travel story, photo gallery, and local guide.</p>
+                    </div>
+                    <div class="map-legend">
+                        <span><i class="pin-dot"></i> Visited Location (Click Pin to Read)</span>
+                    </div>
+                </div>
+
+                <div class="world-map-frame">
+                    <svg viewBox="0 0 1000 460" class="world-svg" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="oceanGrad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#0f2942"/>
+                                <stop offset="100%" stop-color="#1b436b"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="1000" height="460" fill="url(#oceanGrad)" rx="16"/>
+                        <!-- Latitude / Longitude Grid Lines -->
+                        <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+                            <line x1="0" y1="115" x2="1000" y2="115"/>
+                            <line x1="0" y1="230" x2="1000" y2="230"/>
+                            <line x1="0" y1="345" x2="1000" y2="345"/>
+                            <line x1="250" y1="0" x2="250" y2="460"/>
+                            <line x1="500" y1="0" x2="500" y2="460"/>
+                            <line x1="750" y1="0" x2="750" y2="460"/>
+                        </g>
+                        <!-- Stylized Continents -->
+                        <g fill="#2d5a7b" stroke="#4780a8" stroke-width="1.5">
+                            <!-- North America -->
+                            <path d="M95,85 L220,75 L275,135 L235,205 L175,220 L145,175 L90,135 Z"/>
+                            <!-- South America -->
+                            <path d="M245,245 L315,255 L340,325 L295,415 L260,400 L240,310 Z"/>
+                            <!-- Europe -->
+                            <path d="M445,75 L555,68 L575,135 L515,155 L450,140 Z"/>
+                            <!-- Africa -->
+                            <path d="M455,175 L545,170 L585,245 L540,365 L490,355 L450,255 Z"/>
+                            <!-- Asia -->
+                            <path d="M580,75 L825,80 L865,175 L785,235 L665,225 L590,165 Z"/>
+                            <!-- Australia -->
+                            <path d="M765,295 L865,290 L880,365 L780,375 Z"/>
+                        </g>
+                        <!-- Flight Path Arcs -->
+                        <g fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="5,5" opacity="0.65">
+                            <path d="M265,335 Q380,140 505,115"/>
+                            <path d="M505,115 Q610,95 695,195"/>
+                            <path d="M695,195 Q765,130 825,145"/>
+                        </g>
+                    </svg>
+
+                    <!-- Interactive Destination Markers Overlay -->
+                    <div id="mapMarkersOverlay" class="markers-layer"></div>
+                </div>
+            </section>
+
+            <!-- Category & Region Filter Bar + Recent Articles Feed -->
+            <section class="container block-spacing" id="articlesFeedSection">
+                <div class="section-header-split">
+                    <div>
+                        <span class="eyebrow-label">DISPATCHES & FIELD GUIDES</span>
+                        <h2>Recent & Featured Travel Articles</h2>
+                    </div>
+                    <div class="filter-bar">
+                        <select id="regionSelectFilter" onchange="renderArticlesFeed()">
+                            <option value="All">All Regions / Destinations</option>
+                            <option value="Asia">Asia</option>
+                            <option value="Europe">Europe</option>
+                            <option value="South America">South America</option>
+                        </select>
+                        <div class="cat-pills" id="categoryPills">
+                            <button class="cat-pill active" onclick="setCategoryFilter('All', this)">All</button>
+                            <button class="cat-pill" onclick="setCategoryFilter('Destinations', this)">Destinations</button>
+                            <button class="cat-pill" onclick="setCategoryFilter('Travel Guides', this)">Travel Guides</button>
+                            <button class="cat-pill" onclick="setCategoryFilter('Food Experiences', this)">Food Experiences</button>
+                            <button class="cat-pill" onclick="setCategoryFilter('Cultural Insights', this)">Cultural Insights</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="articlesGrid" class="editorial-grid"></div>
+            </section>
+        </section>
+
+        <!-- =========================================================
+             SECTION 2: INDIVIDUAL BLOG ARTICLE READER VIEW
+             Includes Narrative, Captions, Video Embed, Photo Gallery + Slideshow, Social Sharing & Comments
+             ========================================================= -->
+        <section id="section-article" class="page-section" style="display:none;">
+            <div class="container article-reader-wrap">
+                <button class="back-btn" onclick="openSection('home')">&larr; Back to All Travel Stories</button>
+                <article id="articleReaderContent" class="article-body-card"></article>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 3: DESTINATIONS DIRECTORY VIEW
+             ========================================================= -->
+        <section id="section-destinations" class="page-section" style="display:none;">
+            <div class="container block-spacing">
+                <span class="eyebrow-label">EXPLORE BY REGION</span>
+                <h2>Curated Travel Destinations</h2>
+                <p class="muted-text" style="margin-bottom:24px;">Browse stories organized by continent, country, and local cultural highlights.</p>
+                <div id="destinationsDirectoryGrid" class="destinations-grid"></div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 4: ABOUT THE TRAVELER PAGE
+             ========================================================= -->
+        <section id="section-about" class="page-section" style="display:none;">
+            <div class="container block-spacing">
+                <div class="about-layout">
+                    <div class="about-photo-card" id="travelerPortraitBox"></div>
+                    <div class="about-bio-card">
+                        <span class="eyebrow-label">ABOUT THE TRAVELER</span>
+                        <h2>Hi, I'm Aarav Menon — Storyteller, Photographer & Slow-Travel Explorer</h2>
+                        <p>What started as a single backpack trip through the misty hills of Tamil Nadu and Kerala turned into a decade-long mission to document authentic cultures, street-food kitchens, and off-the-beaten-path trails across 34 countries.</p>
+                        <p>Through <strong>Wanderlust Chronicles</strong>, I share honest, practical field guides, cinematic photo essays, and actionable itineraries so you can travel deeper, pack lighter, and connect meaningfully with local communities.</p>
+
+                        <div class="travel-stats-strip">
+                            <div><strong>34</strong><span>Countries Visited</span></div>
+                            <div><strong>140+</strong><span>Field Dispatches</span></div>
+                            <div><strong>18k</strong><span>Miles by Rail</span></div>
+                        </div>
+
+                        <h3>🗺️ Upcoming 2026–2027 Expeditions</h3>
+                        <ul class="expedition-list">
+                            <li><strong>Winter 2026:</strong> Overland Winter Rail Journey across Hokkaido, Japan</li>
+                            <li><strong>Spring 2027:</strong> High-Altitude Trekking & Monastery Trails in Ladakh & Spiti</li>
+                            <li><strong>Autumn 2027:</strong> Culinary & Coastal Heritage Route through Oaxaca, Mexico</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 5: TRAVEL RESOURCES, PACKING LISTS & BOOKING TOOLS
+             ========================================================= -->
+        <section id="section-resources" class="page-section" style="display:none;">
+            <div class="container block-spacing">
+                <span class="eyebrow-label">TRAVELER TOOLKIT</span>
+                <h2>Essential Travel Resources, Packing Checklists & Booking Guides</h2>
+                <p class="muted-text" style="margin-bottom:24px;">Field-tested gear, interactive packing checklist, and trusted booking platforms I use on every trip.</p>
+
+                <div class="resources-grid">
+                    <!-- Interactive Packing Checklist -->
+                    <div class="resource-card">
+                        <h3>🎒 Interactive Smart Packing List</h3>
+                        <p class="muted-sm" style="margin-bottom:12px;">Check off items as you pack for your next international or mountain adventure:</p>
+                        <div id="packingChecklistBox" class="checklist-stack"></div>
+                    </div>
+
+                    <!-- Booking Recommendations -->
+                    <div class="resource-card">
+                        <h3>✈️ Trusted Flight & Stay Booking Tools</h3>
+                        <ul class="resource-links-list">
+                            <li><strong>Multi-City Rail & Passes:</strong> Eurail Global Pass & JR East Pass for scenic overland routes.</li>
+                            <li><strong>Boutique Eco-Stays:</strong> Locally owned homestays, ryokans, and heritage courtyard guesthouses.</li>
+                            <li><strong>Offline Navigation & Maps:</strong> Download offline regional vector maps and transit schedules before departure.</li>
+                            <li><strong>Travel Medical & Gear Insurance:</strong> Comprehensive coverage for high-altitude trekking and camera gear.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Camera & Field Gear -->
+                    <div class="resource-card">
+                        <h3>📸 Photography & Minimalist Gear Kit</h3>
+                        <ul class="resource-links-list">
+                            <li><strong>Primary Camera:</strong> Full-frame mirrorless body with 24–70mm f/2.8 weather-sealed lens.</li>
+                            <li><strong>Carry-On Pack:</strong> 35L weatherproof clamshell backpack (meets strict airline cabin limits).</li>
+                            <li><strong>Power & Backup:</strong> 20,000mAh USB-C PD power bank + dual rugged SSD field backup drives.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FULL-SCREEN PHOTO GALLERY SLIDESHOW LIGHTBOX MODAL -->
+    <div id="lightboxModal" class="lightbox-backdrop">
+        <button class="lb-close" onclick="closeLightbox()">&times;</button>
+        <button class="lb-nav lb-prev" onclick="stepSlideshow(-1)">&#10094;</button>
+        <div class="lb-stage">
+            <img id="lbImage" src="" alt="Gallery Photo">
+            <div class="lb-caption-bar">
+                <span id="lbCaption"></span>
+                <span id="lbCounter"></span>
+            </div>
+        </div>
+        <button class="lb-nav lb-next" onclick="stepSlideshow(1)">&#10095;</button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastBanner" class="toast-msg"></div>
+
+    <!-- Editorial Footer -->
+    <footer class="site-footer">
+        <div class="container footer-flex">
+            <div>
+                <h3>Wanderlust<span>Chronicles</span></h3>
+                <p class="muted-sm">Stories, photography, and practical guides from across the globe.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#" onclick="openSection('home')">Home & Map</a>
+                <a href="#" onclick="openSection('destinations')">Destinations</a>
+                <a href="#" onclick="openSection('about')">About</a>
+                <a href="#" onclick="openSection('resources')">Resources</a>
+            </div>
+            <p class="muted-sm">&copy; 2026 Wanderlust Chronicles Travel Blog. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="scripts/articles.js"></script>
+    <script src="scripts/blog.js"></script>
+</body>
+</html>
