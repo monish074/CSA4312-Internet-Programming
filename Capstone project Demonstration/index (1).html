@@ -1,0 +1,4112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaniNaadu – Tamil Nadu's Direct Farmer Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* =================== DESIGN TOKENS =================== */
+:root{
+  --g:#156B3A;--g2:#1E8249;--g3:#2ECC71;--gd:#0A381E;--glight:#E8F7EE;
+  --y:#E5A812;--r:#D0392B;--orange:#E26D28;
+  --ink:#08180E;--mute:#526B5C;--on-g:#fff;
+  --bg:#F2F6F2;--surface:#fff;--surface2:#EBF3EB;--line:#CCD9CE;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.06);
+  --shadow:0 4px 20px rgba(0,0,0,.08);
+  --shadow-lg:0 12px 48px rgba(0,0,0,.14);
+  --rad-sm:8px;--rad:14px;--rad-lg:22px;--rad-xl:32px;
+  --fd:'Bricolage Grotesque',system-ui,sans-serif;
+  --fb:'Source Sans 3',system-ui,sans-serif;
+  --tr:.25s ease;
+}
+[data-theme=dark]{
+  --bg:#07140B;--surface:#0D1E13;--surface2:#13261A;--ink:#E0EFE5;--mute:#7E9E88;--line:#1B3323;
+  --g:#2ECC71;--g2:#3BD97E;--g3:#53E492;--gd:#0B2E18;--glight:#092415;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.3);
+  --shadow:0 4px 20px rgba(0,0,0,.45);
+  --shadow-lg:0 12px 48px rgba(0,0,0,.65);
+  --on-g:#07140B;
+}
+
+/* =================== RESET & GLOBAL =================== */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--fb);overflow-x:hidden;width:100%}
+h1,h2,h3,h4{font-family:var(--fd);line-height:1.14;letter-spacing:-.025em}
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font:inherit;color:inherit;border:none;outline:none}
+button{cursor:pointer;background:none}
+img{display:block;max-width:100%;height:auto;object-fit:cover}
+:focus-visible{outline:3px solid var(--y);outline-offset:3px;border-radius:4px}
+.sr{position:absolute;left:-9999px}
+
+/* =================== FULL DISPLAY (100% COVER) =================== */
+.container{width:100%;max-width:100%;padding:0 clamp(16px,3.8vw,64px);margin:0 auto}
+
+/* =================== BUTTONS =================== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--g);color:var(--on-g);padding:11px 22px;border-radius:var(--rad);font:700 .95rem var(--fb);transition:all var(--tr);white-space:nowrap;border:2px solid transparent}
+.btn:hover{background:var(--g2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(21,107,58,.35)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--g);color:var(--g);background:var(--glight)}
+.btn.white{background:#fff;color:var(--g);border-color:#fff}
+.btn.white:hover{background:var(--glight);box-shadow:0 8px 24px rgba(0,0,0,.22)}
+.btn.white-outline{background:transparent;color:#fff;border-color:rgba(255,255,255,.75)}
+.btn.white-outline:hover{background:rgba(255,255,255,.15);border-color:#fff}
+.btn.danger{background:var(--r);color:#fff}
+.btn.danger:hover{background:#b0291d}
+.btn.orange{background:var(--orange);color:#fff}
+.btn.orange:hover{background:#c45516}
+.btn.sm{padding:7px 14px;font-size:.84rem}
+.btn.lg{padding:14px 30px;font-size:1.05rem}
+.btn.xl{padding:16px 36px;font-size:1.15rem;border-radius:var(--rad-lg)}
+
+/* =================== FORMS =================== */
+input[type=text],input[type=search],input[type=number],input[type=tel],input[type=email],input[type=password],select,textarea{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--rad);
+  padding:10px 14px;width:100%;transition:border-color var(--tr),box-shadow var(--tr)
+}
+input:focus,select:focus,textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(21,107,58,.15)}
+label{font-size:.85rem;font-weight:600;display:block;margin-bottom:5px;color:var(--mute)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* =================== HEADER =================== */
+header{position:sticky;top:0;z-index:60;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 2px 14px rgba(0,0,0,.06)}
+.header-bar{display:flex;align-items:center;gap:14px;height:72px}
+.logo{font:800 1.5rem var(--fd);display:flex;gap:10px;align-items:center;flex-shrink:0;color:var(--g)}
+.logo-icon{font-size:1.8rem;display:inline-block;animation:sway 3s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.logo-text{background:linear-gradient(130deg,var(--g) 0%,var(--g3) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.nav-desktop{display:flex;gap:4px;margin-left:auto;align-items:center}
+.nav-desktop button{padding:8px 13px;border-radius:12px;font:600 .92rem var(--fb);color:var(--mute);transition:all var(--tr);display:inline-flex;align-items:center;gap:6px}
+.nav-desktop button:hover{background:var(--surface2);color:var(--g)}
+.nav-desktop button[aria-current=true]{background:var(--glight);color:var(--g);font-weight:700}
+.admin-badge{background:var(--orange);color:#fff;font-size:.68rem;padding:2px 6px;border-radius:99px;font-weight:800}
+
+.user-badge-nav{
+  display:inline-flex;align-items:center;gap:8px;padding:6px 12px;
+  background:var(--surface2);border-radius:99px;font-size:.84rem;font-weight:700;
+  border:1px solid var(--line);cursor:pointer;transition:all var(--tr)
+}
+.user-badge-nav:hover{border-color:var(--g);background:var(--glight)}
+
+.nav-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:1.05rem;transition:all var(--tr)}
+.icon-btn:hover{background:var(--surface2);border-color:var(--g)}
+.cart-btn{display:flex;align-items:center;gap:8px;background:var(--g);color:var(--on-g);padding:9px 18px;border-radius:var(--rad);font:700 .92rem var(--fb);transition:all var(--tr)}
+.cart-btn:hover{background:var(--g2)}
+.badge{background:var(--r);color:#fff;border-radius:99px;font-size:.7rem;font-weight:800;padding:2px 7px;min-width:20px;text-align:center;line-height:1.4}
+.hamburger{display:none;width:40px;height:40px;border-radius:8px;border:1.5px solid var(--line);flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.hamburger span{display:block;width:20px;height:2.5px;background:var(--ink);border-radius:2px;transition:all var(--tr)}
+.nav-mobile{display:none;position:fixed;inset:72px 0 0 0;background:var(--surface);z-index:59;overflow-y:auto;padding:20px}
+.nav-mobile.open{display:flex;flex-direction:column;gap:6px}
+.nav-mobile button{padding:14px 16px;border-radius:var(--rad);font:600 1rem var(--fb);text-align:left;width:100%;transition:all var(--tr)}
+.nav-mobile button:hover,.nav-mobile button[aria-current=true]{background:var(--glight);color:var(--g)}
+
+/* =================== VIEWS =================== */
+.view{display:none;width:100%}.view.on{display:block}
+
+/* =================== HERO SECTION (FULL SCREEN) =================== */
+.hero{
+  position:relative;width:100%;min-height:calc(100vh - 72px);
+  background:
+    linear-gradient(135deg, rgba(8, 28, 16, 0.92) 0%, rgba(18, 68, 38, 0.86) 45%, rgba(6, 20, 12, 0.94) 100%),
+    url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.hero-content{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1.15fr 1fr;
+  width:100%;flex:1;align-items:center;
+  padding:clamp(36px,5.5vw,84px) clamp(20px,4vw,64px);
+  gap:clamp(28px,4.5vw,64px);
+}
+.hero-left{display:flex;flex-direction:column;justify-content:center}
+.live-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(46,204,113,.2);color:#58ECA0;
+  border:1px solid rgba(46,204,113,.4);
+  font-size:.84rem;font-weight:700;padding:6px 16px;border-radius:99px;margin-bottom:20px;width:fit-content
+}
+.live-dot{width:8px;height:8px;background:#2ECC71;border-radius:50%;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+
+.hero h1{
+  font-size:clamp(2.4rem,5.2vw,4.4rem);font-weight:800;line-height:1.06;
+  color:#fff;margin-bottom:18px;text-shadow:0 3px 24px rgba(0,0,0,.45)
+}
+.hero h1 em{color:#4ADE80;font-style:normal}
+.hero-sub{
+  color:rgba(255,255,255,.82);font-size:clamp(1rem,1.7vw,1.2rem);
+  max-width:54ch;margin-bottom:30px;line-height:1.65;text-shadow:0 1px 12px rgba(0,0,0,.3)
+}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px}
+
+.hero-trust-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:540px}
+.htrust{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  border-radius:var(--rad);padding:12px 14px;backdrop-filter:blur(8px)
+}
+.htrust-icon{font-size:1.5rem;flex-shrink:0}
+.htrust-text b{color:#fff;font-size:.85rem;display:block;line-height:1.2}
+.htrust-text span{color:rgba(255,255,255,.68);font-size:.74rem}
+
+/* Hero Right: Harvest Card & Calculator */
+.hero-right{display:flex;flex-direction:column;gap:18px;width:100%}
+.hero-photo-card{
+  position:relative;border-radius:var(--rad-xl);overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.25);
+  height:clamp(220px,26vw,320px)
+}
+.hero-photo-card img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.hero-photo-card:hover img{transform:scale(1.04)}
+.hero-photo-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(4,16,8,.92) 0%,rgba(4,16,8,.2) 60%,transparent 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(16px,2.5vw,24px)
+}
+.hero-photo-tag{
+  background:var(--g3);color:#07140B;font-weight:800;font-size:.72rem;
+  padding:4px 12px;border-radius:99px;width:fit-content;margin-bottom:8px;text-transform:uppercase
+}
+.hero-photo-title{color:#fff;font-size:clamp(1.1rem,1.9vw,1.35rem);font-weight:800;line-height:1.2}
+.hero-photo-meta{color:rgba(255,255,255,.75);font-size:.82rem;margin-top:4px}
+
+/* Calculator inside Hero */
+.calc-card{
+  background:rgba(255,255,255,.96);backdrop-filter:blur(16px);
+  border-radius:var(--rad-xl);padding:clamp(16px,2.2vw,24px);
+  box-shadow:0 16px 48px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.8)
+}
+[data-theme=dark] .calc-card{background:rgba(13,30,19,.94);border-color:rgba(255,255,255,.12)}
+.calc-card h3{font-size:1.02rem;font-weight:700}
+.calc-card .calc-sub{font-size:.8rem;color:var(--mute);margin-bottom:10px}
+.split-label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;margin-bottom:4px}
+.track{height:24px;border-radius:8px;overflow:hidden;display:flex;background:var(--line)}
+.track i{display:block;height:100%;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.fm{background:var(--g)}.mid{background:var(--y)}.log{background:var(--r)}
+.legend{display:flex;gap:12px;font-size:.74rem;color:var(--mute);flex-wrap:wrap;margin-top:8px;font-weight:600}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend span::before{content:'';width:9px;height:9px;border-radius:3px;background:currentColor;display:block}
+.legend .a{color:var(--g)}.legend .b{color:var(--y)}.legend .c{color:var(--r)}
+.gain-box{background:var(--glight);border-radius:var(--rad);padding:10px 14px;margin-top:10px;display:flex;align-items:center;justify-content:space-between}
+.gain-num{font:800 1.4rem var(--fd);color:var(--g)}
+.gain-label{font-size:.78rem;color:var(--mute)}
+
+/* =================== MARQUEE TICKER =================== */
+.ticker{background:var(--g);color:var(--on-g);overflow:hidden;white-space:nowrap;padding:11px 0;font-size:.88rem;font-weight:600}
+.ticker-inner{display:inline-flex;gap:0;animation:ticker 35s linear infinite}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{padding:0 32px;display:inline-flex;align-items:center;gap:8px}
+.ticker-item::after{content:'🌾';margin-left:32px;opacity:.7}
+
+/* =================== STATS =================== */
+.stats-strip{background:var(--gd);color:#fff;padding:clamp(28px,4.5vw,50px) 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,3vw,36px);text-align:center}
+.stat-card b{font:800 clamp(1.8rem,4vw,3.2rem) var(--fd);display:block;color:#4ADE80;line-height:1}
+.stat-card span{font-size:.9rem;color:rgba(255,255,255,.8);display:block;margin-top:6px;font-weight:600}
+.stat-card p{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:2px}
+
+/* =================== SECTIONS =================== */
+.section{padding:clamp(44px,6.5vw,90px) 0;width:100%}
+.section-alt{background:var(--surface2)}
+.sec-label{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--g);margin-bottom:6px}
+.sec-title{font-size:clamp(1.6rem,3.6vw,2.5rem);font-weight:800;margin-bottom:10px}
+.sec-sub{color:var(--mute);font-size:clamp(.92rem,1.5vw,1.08rem);max-width:58ch;line-height:1.65}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:clamp(22px,3.8vw,40px)}
+
+/* =================== CATEGORIES (EQUAL HEIGHT & RESPONSIVE) =================== */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(130px, 11vw, 175px), 1fr));
+  gap: clamp(10px, 1.6vw, 16px);
+  width: 100%;
+}
+.cat-card {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--rad-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--tr);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.cat-card:hover, .cat-card.active {
+  border-color: var(--g);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+.cat-img-wrap, .cat-img-box {
+  position: relative;
+  width: 100%;
+  height: clamp(95px, 10vw, 120px);
+  overflow: hidden;
+  background: #EBF2EC;
+  flex-shrink: 0;
+}
+.cat-img-wrap img, .cat-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.cat-card:hover img {
+  transform: scale(1.1);
+}
+.cat-emoji-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+}
+.cat-info {
+  padding: 10px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+}
+.cat-name {
+  font: 700 clamp(0.82rem, 1vw, 0.94rem) var(--fb);
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.cat-card.active .cat-name {
+  color: var(--g);
+}
+.cat-count {
+  font-size: 0.74rem;
+  color: var(--mute);
+}
+
+/* =================== FLASH DEALS =================== */
+.flash-wrap {
+  background: linear-gradient(135deg, #06160B 0%, #11361E 50%, #091A0F 100%);
+  border-radius: var(--rad-xl);
+  padding: clamp(20px, 3.5vw, 40px);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+.flash-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: clamp(16px, 2.5vw, 24px);
+  flex-wrap: wrap;
+}
+.flash-badge {
+  background: var(--r);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.flash-title {
+  color: #fff;
+  font-size: clamp(1.2rem, 2.5vw, 1.65rem);
+  font-weight: 800;
+}
+.countdown {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+.cd-unit {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 6px 10px;
+  text-align: center;
+  min-width: 44px;
+}
+.cd-unit b {
+  color: #fff;
+  font: 700 1.15rem var(--fd);
+  display: block;
+  line-height: 1;
+}
+.cd-unit span {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+.cd-sep {
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.flash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(170px, 18vw, 230px), 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+/* =================== PRODUCT CARDS & GRID (UNIFORM & RESPONSIVE) =================== */
+.prod-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(220px, 21vw, 290px), 1fr));
+  gap: clamp(14px, 2vw, 22px);
+  width: 100%;
+}
+.card {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--rad-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all var(--tr);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--g);
+}
+.card-media, .tile {
+  position: relative;
+  width: 100%;
+  height: clamp(165px, 15vw, 195px);
+  overflow: hidden;
+  background: #EBF2EC;
+  flex-shrink: 0;
+}
+.card-media img, .tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.card:hover .card-media img, .card:hover .tile img {
+  transform: scale(1.08);
+}
+.badge-org, .tag-org {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--g);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 99px;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.badge-stock, .tag-low {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--r);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 99px;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+.flash-chip {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.card-body, .cb {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 5px;
+}
+.card-farmer-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--mute);
+  gap: 6px;
+}
+.cfl-farm {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+.cfl-farm a {
+  color: var(--g);
+  font-weight: 700;
+  text-decoration: none;
+}
+.cfl-farm a:hover {
+  text-decoration: underline;
+}
+.card-rating {
+  color: #E5A812;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.card-patta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(39, 174, 96, 0.12);
+  color: #1E824C;
+  border: 1px solid rgba(39, 174, 96, 0.3);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  width: fit-content;
+}
+[data-theme="dark"] .card-patta-badge {
+  background: rgba(39, 174, 96, 0.2);
+  color: #58ECA0;
+}
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 2px 0 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+.spark {
+  width: 100%;
+  height: 26px;
+  margin: 3px 0;
+}
+.trend-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.trend-label.up { color: var(--r); }
+.trend-label.down { color: var(--g); }
+.stock-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+.stock-label.low { color: var(--r); }
+.stock-label.ok { color: var(--g); }
+.card-price-row, .price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.card-price-row .price, .price-row .price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-family: var(--fd);
+  color: var(--ink);
+}
+.card-price-row .unit, .price-row small {
+  font-size: 0.8rem;
+  color: var(--mute);
+  font-weight: 400;
+}
+.add-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--g);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  border: 0;
+  cursor: pointer;
+  transition: all var(--tr);
+  box-shadow: 0 4px 10px rgba(21,107,58,0.25);
+  flex-shrink: 0;
+}
+.add-btn:hover {
+  background: var(--g2);
+  transform: scale(1.1);
+  box-shadow: 0 6px 14px rgba(21,107,58,0.35);
+}
+.empty {
+  padding: clamp(36px, 5vw, 64px);
+  text-align: center;
+  color: var(--mute);
+  border: 2px dashed var(--line);
+  border-radius: var(--rad-lg);
+  grid-column: 1 / -1;
+}
+
+/* =================== REAL FARMER STORY SECTION =================== */
+.story-banner {
+  position: relative;
+  border-radius: var(--rad-xl);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.story-visual-wrap {
+  position: relative;
+  min-height: 420px;
+  background: url('https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+}
+.story-visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(6,22,12,0.85) 0%, rgba(6,22,12,0.35) 60%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+}
+.story-visual-text b {
+  color: #fff;
+  font-size: 1.35rem;
+  font-family: var(--fd);
+  display: block;
+}
+.story-visual-text span {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.88rem;
+}
+.story-content {
+  padding: clamp(24px, 3.5vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.story-quote {
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  font-style: italic;
+  color: var(--g);
+  font-family: var(--fd);
+  font-weight: 700;
+  margin: 16px 0;
+  padding-left: 18px;
+  border-left: 4px solid var(--g3);
+  line-height: 1.55;
+}
+.farmer-profiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+.fp-card {
+  background: var(--surface2);
+  border: 1.5px solid var(--line);
+  border-radius: var(--rad);
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  transition: all var(--tr);
+  cursor: pointer;
+}
+.fp-card:hover {
+  border-color: var(--g);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+.fp-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2.5px solid var(--g3);
+}
+.fp-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fp-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  display: block;
+}
+.fp-loc {
+  font-size: 0.76rem;
+  color: var(--mute);
+}
+.fp-rating {
+  font-size: 0.76rem;
+  color: #E5A812;
+  font-weight: 700;
+}
+
+/* =================== HOW IT WORKS & FEATURES =================== */
+.hiw-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(14px, 2.2vw, 26px);
+  width: 100%;
+}
+.hiw-card {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--rad-lg);
+  padding: clamp(20px, 3vw, 30px);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  transition: all var(--tr);
+}
+.hiw-card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--g);
+}
+.hiw-num {
+  font: 800 2.2rem var(--fd);
+  color: var(--g3);
+  opacity: 0.7;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.hiw-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.hiw-text {
+  font-size: 0.88rem;
+  color: var(--mute);
+  line-height: 1.6;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(14px, 2.2vw, 24px);
+  width: 100%;
+}
+.feat-card {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--rad-lg);
+  padding: clamp(20px, 2.8vw, 28px);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--tr);
+}
+.feat-card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--g);
+}
+.feat-icon {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* =================== TESTIMONIALS =================== */
+.test-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(14px, 2.2vw, 24px);
+  width: 100%;
+}
+.test-card {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--rad-lg);
+  padding: clamp(18px, 2.5vw, 26px);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--tr);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.test-card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--g);
+}
+.test-stars {
+  color: #E5A812;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+.test-quote {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  font-style: italic;
+  margin-bottom: 16px;
+  color: var(--ink);
+  flex: 1;
+}
+.test-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.test-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--g);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* =================== REAL FARMERS ON LAND =================== */
+.farmer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(280px, 24vw, 360px), 1fr));
+  gap: clamp(16px, 2.2vw, 26px);
+  width: 100%;
+}
+.farmer-card, .fcard {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--rad-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--tr);
+  position: relative;
+}
+.farmer-card:hover, .fcard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--g);
+}
+.farmer-media, .fcard-photo {
+  height: 220px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background: #1C3322;
+  flex-shrink: 0;
+}
+.farmer-media img, .fcard-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.farmer-card:hover .farmer-media img, .fcard:hover .fcard-photo img {
+  transform: scale(1.06);
+}
+.farmer-land-badge, .fcard-land-tag {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 0.76rem;
+  padding: 4px 10px;
+  border-radius: 99px;
+  backdrop-filter: blur(4px);
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.farmer-body, .fcard-cb {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+}
+.farmer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+.farmer-name, .fcard-cb h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+.farmer-farm {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--g);
+  font-weight: 700;
+}
+.farmer-rating {
+  color: #E5A812;
+  font-weight: 700;
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+.farmer-bio {
+  font-size: 0.85rem;
+  color: var(--mute);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 3.8em;
+  margin: 0;
+}
+.farmer-meta-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--mute);
+  border-top: 1px dashed var(--line);
+  padding-top: 8px;
+  margin-top: auto;
+}
+.farmer-actions {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+/* =================== AUTH & LOGIN PAGE =================== */
+.auth-container {
+  max-width: 540px;
+  margin: clamp(24px, 5vw, 60px) auto;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--rad-xl);
+  padding: clamp(20px, 4vw, 36px);
+  box-shadow: var(--shadow-lg);
+}
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--surface2);
+  padding: 6px;
+  border-radius: var(--rad);
+  margin-bottom: 24px;
+}
+.auth-tab-btn {
+  padding: 10px;
+  border-radius: var(--rad-sm);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: center;
+  transition: all var(--tr);
+  color: var(--mute);
+}
+.auth-tab-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+.auth-demo-box {
+  background: var(--glight);
+  border: 1px dashed var(--g);
+  border-radius: var(--rad);
+  padding: 14px;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+}
+.auth-demo-box b {
+  color: var(--g);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* =================== DASHBOARDS & TABLES =================== */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 24px;
+  width: 100%;
+}
+.dash-card {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--rad-lg);
+  padding: clamp(18px, 2.8vw, 28px);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+.dash-card h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+.dash-profile-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.dash-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--g3);
+  flex-shrink: 0;
+}
+.dash-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.points-pill {
+  background: var(--glight);
+  color: var(--g);
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* =================== TOOLS BAR (MARKET SEARCH & SORT) =================== */
+.tools-bar {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.2fr auto;
+  gap: 14px;
+  align-items: end;
+  margin-bottom: 16px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: var(--rad);
+}
+.search-wrap {
+  position: relative;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.search-wrap input {
+  padding-left: 42px;
+}
+input[type=range] {
+  width: 100%;
+  accent-color: var(--g);
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.chip {
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  padding: 8px 18px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr);
+}
+.chip:hover, .chip.active {
+  border-color: var(--g);
+  color: var(--g);
+}
+.chip.active {
+  background: var(--g);
+  color: #fff;
+}
+
+/* =================== RESPONSIVE BREAKPOINTS =================== */
+@media(max-width:1150px){
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 24px; }
+  .dash-grid { grid-template-columns: 1fr; }
+}
+@media(max-width:960px){
+  .hero-content { grid-template-columns: 1fr; min-height: auto; gap: 32px; }
+  .story-banner { grid-template-columns: 1fr; }
+  .story-visual-wrap { min-height: 260px; }
+  .hiw-grid { grid-template-columns: repeat(2, 1fr); }
+  .test-grid { grid-template-columns: 1fr 1fr; }
+  .nl-inner { grid-template-columns: 1fr; }
+  .hamburger { display: flex; }
+  .nav-desktop { display: none; }
+  .tools-bar { grid-template-columns: 1fr 1fr; }
+  .tools-bar > div:first-child { grid-column: 1 / -1; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+}
+@media(max-width:680px){
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .test-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .farmer-profiles { grid-template-columns: 1fr; }
+  .farmer-grid { grid-template-columns: 1fr; }
+  .prod-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .nl-form { flex-direction: column; }
+  .hero-trust-grid { grid-template-columns: 1fr; }
+  .f3 { grid-template-columns: 1fr; }
+  .tools-bar { grid-template-columns: 1fr; }
+}
+@media(max-width:480px){
+  .hero h1 { font-size: 2rem; }
+  .hiw-grid { grid-template-columns: 1fr; }
+  .f2 { grid-template-columns: 1fr; }
+  .prod-grid { grid-template-columns: 1fr; }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .farmer-actions { grid-template-columns: 1fr; }
+  .card-media { height: 195px; }
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* =================== VIEW SPECIFIC AGRICULTURAL BACKGROUNDS =================== */
+.view {
+  min-height: calc(100vh - 72px);
+  width: 100%;
+  position: relative;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+#home {
+  background: 
+    linear-gradient(180deg, rgba(247,250,246,0.92) 0%, rgba(240,246,238,0.89) 50%, rgba(247,250,246,0.95) 100%),
+    url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+[data-theme="dark"] #home {
+  background: 
+    linear-gradient(180deg, rgba(8,24,15,0.94) 0%, rgba(12,32,20,0.91) 50%, rgba(8,24,15,0.96) 100%),
+    url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+#market {
+  background: 
+    linear-gradient(180deg, rgba(246,249,244,0.90) 0%, rgba(239,246,236,0.86) 60%, rgba(246,249,244,0.94) 100%),
+    url('https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+[data-theme="dark"] #market {
+  background: 
+    linear-gradient(180deg, rgba(9,24,15,0.93) 0%, rgba(13,34,21,0.90) 60%, rgba(9,24,15,0.96) 100%),
+    url('https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+#farmers {
+  background: 
+    linear-gradient(180deg, rgba(246,250,244,0.90) 0%, rgba(238,246,235,0.86) 60%, rgba(246,250,244,0.94) 100%),
+    url('https://images.unsplash.com/photo-1544860707-c352cc5a92e3?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+[data-theme="dark"] #farmers {
+  background: 
+    linear-gradient(180deg, rgba(9,24,15,0.93) 0%, rgba(13,34,21,0.90) 60%, rgba(9,24,15,0.96) 100%),
+    url('https://images.unsplash.com/photo-1544860707-c352cc5a92e3?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+#sell {
+  background: 
+    linear-gradient(180deg, rgba(247,249,244,0.90) 0%, rgba(239,246,236,0.86) 60%, rgba(247,249,244,0.94) 100%),
+    url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+[data-theme="dark"] #sell {
+  background: 
+    linear-gradient(180deg, rgba(10,24,16,0.93) 0%, rgba(14,34,21,0.90) 60%, rgba(10,24,16,0.96) 100%),
+    url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+#orders {
+  background: 
+    linear-gradient(180deg, rgba(246,249,244,0.90) 0%, rgba(238,245,236,0.86) 60%, rgba(246,249,244,0.94) 100%),
+    url('https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+[data-theme="dark"] #orders {
+  background: 
+    linear-gradient(180deg, rgba(9,23,14,0.93) 0%, rgba(13,32,20,0.90) 60%, rgba(9,23,14,0.96) 100%),
+    url('https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+#customer {
+  background: 
+    linear-gradient(180deg, rgba(247,250,245,0.90) 0%, rgba(239,246,237,0.86) 60%, rgba(247,250,245,0.94) 100%),
+    url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+[data-theme="dark"] #customer {
+  background: 
+    linear-gradient(180deg, rgba(9,24,15,0.93) 0%, rgba(14,33,21,0.90) 60%, rgba(9,24,15,0.96) 100%),
+    url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+#admin {
+  background: 
+    linear-gradient(180deg, rgba(246,249,245,0.91) 0%, rgba(238,245,237,0.88) 60%, rgba(246,249,245,0.95) 100%),
+    url('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+[data-theme="dark"] #admin {
+  background: 
+    linear-gradient(180deg, rgba(8,22,14,0.94) 0%, rgba(12,30,19,0.91) 60%, rgba(8,22,14,0.96) 100%),
+    url('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+#login {
+  background: 
+    linear-gradient(180deg, rgba(246,249,244,0.89) 0%, rgba(238,245,236,0.85) 60%, rgba(246,249,244,0.94) 100%),
+    url('https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+[data-theme="dark"] #login {
+  background: 
+    linear-gradient(180deg, rgba(9,23,14,0.93) 0%, rgba(13,31,19,0.90) 60%, rgba(9,23,14,0.96) 100%),
+    url('https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=2000&q=80') center/cover fixed no-repeat;
+}
+
+/* =================== PAGE FARM HERO BANNERS =================== */
+.page-farm-hero {
+  width: 100%;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: clamp(34px, 5vw, 68px) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+.pfh-content {
+  max-width: 950px;
+}
+.pfh-title {
+  font-size: clamp(1.8rem, 3.8vw, 3rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.55);
+}
+.pfh-sub {
+  font-size: clamp(0.95rem, 1.5vw, 1.12rem);
+  color: rgba(255, 255, 255, 0.90);
+  line-height: 1.6;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
+  max-width: 68ch;
+}
+
+/* =================== GLASSMORPHIC CARD ENHANCEMENT =================== */
+.card, .dash-card, .auth-container, .customer-card, .tools-bar {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(220, 235, 225, 0.85);
+  box-shadow: 0 10px 32px rgba(0, 25, 10, 0.06);
+}
+[data-theme="dark"] .card, 
+[data-theme="dark"] .dash-card, 
+[data-theme="dark"] .auth-container, 
+[data-theme="dark"] .customer-card,
+[data-theme="dark"] .tools-bar {
+  background: rgba(16, 36, 24, 0.90) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(40, 80, 55, 0.6);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* =================== FARMER LAND & PATTA VERIFICATION STYLES =================== */
+.farmer-verif-box {
+  background: linear-gradient(135deg, rgba(230, 248, 235, 0.95) 0%, rgba(244, 253, 246, 0.95) 100%);
+  border: 1.5px solid #2ECC71;
+  border-radius: var(--rad-lg);
+  padding: clamp(18px, 3vw, 28px);
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(46, 204, 113, 0.15);
+}
+[data-theme="dark"] .farmer-verif-box {
+  background: linear-gradient(135deg, rgba(14, 44, 24, 0.95) 0%, rgba(20, 56, 32, 0.95) 100%);
+  border-color: #27AE60;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.fvb-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.fvb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #1B8A4C;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 99px;
+  letter-spacing: 0.03em;
+}
+.fvb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.fvb-item {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 10px 14px;
+  border-radius: var(--rad);
+  border: 1px solid rgba(46, 204, 113, 0.25);
+}
+[data-theme="dark"] .fvb-item {
+  background: rgba(8, 28, 16, 0.6);
+  border-color: rgba(46, 204, 113, 0.2);
+}
+.fvb-item span {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--mute);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+.fvb-item b {
+  font-size: 0.92rem;
+  color: var(--ink);
+  font-family: monospace;
+}
+.crop-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+.crop-preset-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 6px;
+  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all var(--tr);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.crop-preset-btn:hover, .crop-preset-btn.active {
+  border-color: var(--g);
+  background: var(--glight);
+  color: var(--g);
+}
+.crop-preset-btn img {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.doc-upload-box {
+  border: 2px dashed var(--line);
+  border-radius: var(--rad);
+  padding: 22px;
+  text-align: center;
+  background: var(--bg);
+  cursor: pointer;
+  transition: all var(--tr);
+}
+.doc-upload-box:hover {
+  border-color: var(--g);
+  background: var(--glight);
+}
+
+</style>
+</head>
+<body>
+
+<!-- =================== HEADER =================== -->
+<header>
+  <div class="container header-bar">
+    <a class="logo" href="#" aria-label="KaniNaadu home">
+      <span class="logo-icon">🌾</span>
+      <span class="logo-text">KaniNaadu</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Main">
+      <button data-v="home" aria-current="true">🏠 Home</button>
+      <button data-v="market">🛒 Market</button>
+      <button data-v="farmers">👨‍🌾 Farmers</button>
+      <button data-v="sell">📦 Sell Produce</button>
+      <button data-v="orders">📋 My Orders</button>
+      <button data-v="customer">👤 Customer Hub</button>
+      <button data-v="admin">⚡ Admin <span class="admin-badge">PORTAL</span></button>
+    </nav>
+    <div class="nav-actions">
+      <!-- Dynamic Auth Badge / Login button -->
+      <div id="authNavContainer"></div>
+      <button class="icon-btn" id="theme" aria-label="Toggle dark mode" title="Toggle theme">◐</button>
+      <button class="cart-btn" id="openCart" aria-label="Open cart">🛒 Cart <span class="badge" id="cc">0</span></button>
+      <button class="hamburger" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Navigation -->
+<nav class="nav-mobile" id="navMobile" aria-label="Mobile navigation">
+  <button data-v="home" aria-current="true">🏠 Home</button>
+  <button data-v="market">🛒 Market</button>
+  <button data-v="farmers">👨‍🌾 Farmers</button>
+  <button data-v="sell">📦 Sell Produce</button>
+  <button data-v="orders">📋 My Orders</button>
+  <button data-v="customer">👤 Customer Hub & Feedback</button>
+  <button data-v="admin">⚡ Admin Portal</button>
+  <button data-v="login" id="mobileLoginBtn">🔑 Login / Account</button>
+</nav>
+
+<main>
+
+<!-- ============================================================ -->
+<!--  LOGIN & REGISTRATION VIEW (CUSTOMER & ADMIN)                -->
+<!-- ============================================================ -->
+<div id="login" class="view">
+  <!-- Farm Vista Page Hero -->
+  <div class="page-farm-hero" style="background-image:linear-gradient(135deg, rgba(8,28,16,0.85) 0%, rgba(14,56,30,0.80) 50%, rgba(6,22,12,0.90) 100%), url('https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=2000&q=80')">
+    <div class="container">
+      <div class="pfh-content" style="text-align:center">
+        <div class="live-badge" style="margin:0 auto 16px"><span class="live-dot"></span> Soil-Direct Agriculture Network</div>
+        <h1 class="pfh-title">Welcome to KaniNaadu</h1>
+        <p class="pfh-sub" style="margin:0 auto">Secure authentication portal for agricultural customers, verified farmers, and platform administrators.</p>
+      </div>
+    </div>
+  </div>
+  <section class="section" style="padding-top:clamp(30px,5vw,60px)">
+    <div class="container">
+      <div class="auth-container">
+        <div style="text-align:center;margin-bottom:20px">
+          <span style="font-size:2.4rem;display:inline-block">🌾</span>
+          <h2 style="font-size:1.8rem;margin-top:4px">Welcome to KaniNaadu</h2>
+          <p class="meta" style="font-size:.92rem">Direct farm trade platform for customers and administrators</p>
+        </div>
+
+        <!-- Role Toggle Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" data-authtab="customer">👤 Customer Login</button>
+          <button class="auth-tab-btn" data-authtab="admin">⚡ Admin Login</button>
+        </div>
+
+        <!-- CUSTOMER LOGIN FORM -->
+        <div id="authPaneCustomer">
+          <div class="auth-demo-box">
+            <b>⚡ Quick Demo Access</b>
+            <span>Click below to instantly login as a registered customer (Priya Sundaram)</span>
+            <button class="btn sm" type="button" style="width:100%;margin-top:10px;justify-content:center" onclick="quickCustomerLogin()">
+              👤 1-Click Customer Login (Priya)
+            </button>
+          </div>
+
+          <form id="customerLoginForm" style="display:grid;gap:14px">
+            <div>
+              <label for="cEmail">Email or Mobile Number</label>
+              <input type="text" id="cEmail" value="priya@kaninaadu.in" required placeholder="name@example.com or 10-digit mobile">
+            </div>
+            <div>
+              <label for="cPassword">Password</label>
+              <input type="password" id="cPassword" value="customer123" required placeholder="Enter your password">
+            </div>
+            <button class="btn" style="width:100%;justify-content:center;padding:13px">
+              👤 Login as Customer
+            </button>
+          </form>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);text-align:center">
+            <span class="meta">New to KaniNaadu? </span>
+            <a href="javascript:void(0)" onclick="toggleRegisterForm(true)" style="color:var(--g);font-weight:700">Create Customer Account</a>
+          </div>
+        </div>
+
+        <!-- NEW CUSTOMER REGISTRATION FORM -->
+        <div id="authPaneRegister" style="display:none">
+          <form id="registerForm" style="display:grid;gap:14px">
+            <div>
+              <label for="regName">Full Name</label>
+              <input type="text" id="regName" placeholder="e.g. Anand Kumar" required>
+            </div>
+            <div class="f2">
+              <div>
+                <label for="regPhone">Mobile Number</label>
+                <input type="tel" id="regPhone" pattern="[0-9]{10}" placeholder="10 digits" required>
+              </div>
+              <div>
+                <label for="regCity">District / City</label>
+                <input type="text" id="regCity" placeholder="e.g. Coimbatore" required>
+              </div>
+            </div>
+            <div>
+              <label for="regEmail">Email Address</label>
+              <input type="email" id="regEmail" placeholder="name@example.com" required>
+            </div>
+            <div>
+              <label for="regPassword">Set Password</label>
+              <input type="password" id="regPassword" required placeholder="Minimum 6 characters">
+            </div>
+            <button class="btn" style="width:100%;justify-content:center;padding:13px">
+              🌱 Create Account (+50 Harvest Tokens)
+            </button>
+          </form>
+          <div style="margin-top:16px;text-align:center">
+            <a href="javascript:void(0)" onclick="toggleRegisterForm(false)" style="color:var(--g);font-weight:700">← Back to Customer Login</a>
+          </div>
+        </div>
+
+        <!-- ADMIN LOGIN FORM -->
+        <div id="authPaneAdmin" style="display:none">
+          <div class="auth-demo-box" style="background:#FFF6EE;border-color:var(--orange)">
+            <b style="color:var(--orange)">⚡ Administrator Access</b>
+            <span>Direct access to platform metrics, catalog control, farmer payouts and customer feedback.</span>
+            <button class="btn sm orange" type="button" style="width:100%;margin-top:10px;justify-content:center" onclick="quickAdminLogin()">
+              ⚡ 1-Click Admin Access (Demo)
+            </button>
+          </div>
+
+          <form id="adminLoginForm" style="display:grid;gap:14px">
+            <div>
+              <label for="admEmail">Admin Master Email</label>
+              <input type="email" id="admEmail" value="admin@kaninaadu.in" required placeholder="admin@kaninaadu.in">
+            </div>
+            <div>
+              <label for="admPass">Security PIN / Password</label>
+              <input type="password" id="admPass" value="admin123" required placeholder="Enter administrator key">
+            </div>
+            <button class="btn orange" style="width:100%;justify-content:center;padding:13px">
+              🔒 Authenticate as Platform Administrator
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================ -->
+<!--  HOME VIEW                                                   -->
+<!-- ============================================================ -->
+<div id="home" class="view on">
+
+  <!-- ===== HERO SECTION (FULL SCREEN) ===== -->
+  <section class="hero">
+    <div class="hero-content">
+
+      <!-- Hero Copy -->
+      <div class="hero-left">
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          1,200+ Tamil Nadu farmers harvesting today
+        </div>
+        <h1>
+          Fresh from the <em>soil of Tamil Nadu</em>,<br>
+          direct to your family table.
+        </h1>
+        <p class="hero-sub">
+          Skip the wholesale mandi chain. Buy crisp vegetables, sun-ripened fruits, heritage rice, cold-pressed oils and raw forest honey — priced directly by verified farmers on their own land, harvested hours before delivery.
+        </p>
+        <div class="hero-cta">
+          <button class="btn xl" id="shopNow">🛒 Shop 50+ Farm Harvests</button>
+          <button class="btn white-outline lg" id="meetFarmers">👨‍🌾 Meet Farmers in Land</button>
+        </div>
+        <div class="hero-trust-grid">
+          <div class="htrust">
+            <span class="htrust-icon">🌱</span>
+            <div class="htrust-text"><b>100% Farm Direct</b><span>Harvested to order · No cold storage</span></div>
+          </div>
+          <div class="htrust">
+            <span class="htrust-icon">🚚</span>
+            <div class="htrust-text"><b>Same-Day Farm Delivery</b><span>Order by 10am for evening arrival</span></div>
+          </div>
+          <div class="htrust">
+            <span class="htrust-icon">🌿</span>
+            <div class="htrust-text"><b>Zero Chemical Pesticides</b><span>Third-party organic certified</span></div>
+          </div>
+          <div class="htrust">
+            <span class="htrust-icon">↩️</span>
+            <div class="htrust-text"><b>24h Freshness Guarantee</b><span>Full refund if not 100% fresh</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Right: Photo Card & Calculator -->
+      <div class="hero-right">
+        <div class="hero-photo-card">
+          <img src="https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=1000&q=80" alt="Fresh morning farm harvest basket" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80'">
+          <div class="hero-photo-overlay">
+            <div class="hero-photo-tag">Harvested This Morning</div>
+            <div class="hero-photo-title">Fresh Country Vegetables, Millets & Fruits</div>
+            <div class="hero-photo-meta">From Ilango Farm (Thiruvallur) & Meenakshi Collective (Kanchipuram)</div>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+            <span style="font-size:1.6rem">💰</span>
+            <div>
+              <h3>Where does your food rupee go?</h3>
+              <p class="calc-sub">Slide to see how direct buying empowers the farmer</p>
+            </div>
+          </div>
+          <input type="range" id="basket" min="200" max="3000" step="50" value="800" aria-label="Basket value in rupees">
+          <div style="margin:10px 0">
+            <div class="split-label"><span>Traditional mandi trader chain</span><span id="t1"></span></div>
+            <div class="track"><i class="fm" style="width:34%"></i><i class="mid" style="width:41%"></i><i class="log" style="width:25%"></i></div>
+          </div>
+          <div style="margin:10px 0">
+            <div class="split-label"><span>Direct on KaniNaadu</span><span id="t2"></span></div>
+            <div class="track"><i class="fm" style="width:82%"></i><i class="log" style="width:18%"></i></div>
+          </div>
+          <div class="legend">
+            <span class="a">Farmer's income (82%)</span><span class="b">Traders & Middlemen</span><span class="c">Delivery & packaging</span>
+          </div>
+          <div class="gain-box">
+            <div><div class="gain-num" id="gain"></div><div class="gain-label">extra earned by the farmer on this basket</div></div>
+            <span style="font-size:1.8rem">👨‍🌾</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== LIVE HARVEST TICKER ===== -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-inner">
+      <span class="ticker-item">🍅 Fresh country tomatoes harvested at 5:30 AM — Ilango Farm, Thiruvallur</span>
+      <span class="ticker-item">🥭 Sun-ripened Banganapalli Mangoes in season — Rajendran Coastal Orchard</span>
+      <span class="ticker-item">🌾 Organic Ragi, Kambu & Mappillai Samba freshly milled — Meenakshi Collective</span>
+      <span class="ticker-item">🥛 Pure native cow A2 milk & bilona ghee — Kovil Dairy, Ranipet</span>
+      <span class="ticker-item">🍯 Raw shola forest honey — Anbu Nilgiri Apiary</span>
+      <span class="ticker-item">🌿 Freshly cut Keerai bunches ₹15 — zero chemical fertilizer</span>
+      <span class="ticker-item">🥥 Coastal sweet tender coconuts — Chengalpattu Groves</span>
+      <span class="ticker-item">🛢️ Cold-pressed Chekku Groundnut & Sesame Oil — Cauvery Delta Farm</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="ticker-item">🍅 Fresh country tomatoes harvested at 5:30 AM — Ilango Farm, Thiruvallur</span>
+      <span class="ticker-item">🥭 Sun-ripened Banganapalli Mangoes in season — Rajendran Coastal Orchard</span>
+      <span class="ticker-item">🌾 Organic Ragi, Kambu & Mappillai Samba freshly milled — Meenakshi Collective</span>
+      <span class="ticker-item">🥛 Pure native cow A2 milk & bilona ghee — Kovil Dairy, Ranipet</span>
+      <span class="ticker-item">🍯 Raw shola forest honey — Anbu Nilgiri Apiary</span>
+      <span class="ticker-item">🌿 Freshly cut Keerai bunches ₹15 — zero chemical fertilizer</span>
+      <span class="ticker-item">🥥 Coastal sweet tender coconuts — Chengalpattu Groves</span>
+      <span class="ticker-item">🛢️ Cold-pressed Chekku Groundnut & Sesame Oil — Cauvery Delta Farm</span>
+    </div>
+  </div>
+
+  <!-- ===== FULL DISPLAY STATS ===== -->
+  <div class="stats-strip">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card"><b>1,200+</b><span>Verified Farmers</span><p>Covering 28 districts</p></div>
+        <div class="stat-card"><b>50,000+</b><span>Happy Families</span><p>Daily healthy eating</p></div>
+        <div class="stat-card"><b>₹2.4 Cr+</b><span>Paid to Farmers</span><p>Direct bank transfers</p></div>
+        <div class="stat-card"><b>4.8 ★</b><span>Customer Rating</span><p>Based on verified feedback</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CATEGORIES WITH REAL PHOTOS ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Harvest Collections</div>
+          <h2 class="sec-title">Explore by Farm Category</h2>
+          <p class="sec-sub">Freshly picked agricultural harvests categorized straight from the field</p>
+        </div>
+        <button class="btn ghost sm" onclick="view('market')">View all 50+ products →</button>
+      </div>
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== FLASH DEALS ===== -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="flash-wrap">
+        <div class="flash-head">
+          <div class="flash-badge">⚡ Flash Harvest Specials</div>
+          <div class="flash-title">Today's Best Farm Prices</div>
+          <div class="countdown">
+            <div class="cd-unit"><b id="cdH">00</b><span>HRS</span></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><b id="cdM">00</b><span>MIN</span></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><b id="cdS">00</b><span>SEC</span></div>
+          </div>
+        </div>
+        <div class="flash-grid" id="flashGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED PRODUCE WITH FEEDBACK LINK ===== -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Harvest of the day</div>
+          <h2 class="sec-title">Fresh Produce from Agricultural Land</h2>
+          <p id="homeCount" class="sec-sub"></p>
+        </div>
+        <button class="btn ghost sm" id="viewAllBtn">Browse all 50+ produce →</button>
+      </div>
+      <div class="prod-grid" id="homeGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== FARMER STORY SECTION (REAL FARMER IN LAND) ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="story-banner">
+        <div class="story-visual-wrap">
+          <div class="story-visual-overlay">
+            <div class="story-visual-text">
+              <b>Farmer Ilango working his fertile 4-acre land</b>
+              <span>Green Row Farm, Thiruvallur District · Verified Natural Grower</span>
+            </div>
+          </div>
+        </div>
+        <div class="story-content">
+          <div class="sec-label">The Farmer Behind Your Food</div>
+          <h2 class="sec-title">Real Farmers in Their Own Land.<br>Fair Price. Pure Soil.</h2>
+          <blockquote class="story-quote">"Before KaniNaadu, I sold tomatoes for ₹8/kg at the wholesale mandi while middlemen took ₹35. Today my buyers pay ₹32/kg and I take home ₹26 directly to my family."</blockquote>
+          <p style="color:var(--mute);font-size:.95rem;line-height:1.7">Every single rupee you spend on KaniNaadu goes directly to rural farming families across Tamil Nadu. You eat produce harvested hours ago, and our farming communities earn the fair income they rightfully deserve.</p>
+          <div class="farmer-profiles" id="farmerProfiles"></div>
+          <button class="btn" style="margin-top:24px;width:fit-content" onclick="view('farmers')">👨‍🌾 Meet All Verified Farmers in Their Land →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="section section-alt">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:clamp(28px,4vw,48px)">
+        <div class="sec-label" style="text-align:center">Simple 4-Step Journey</div>
+        <h2 class="sec-title">From Tamil Nadu Soil to Your Doorstep</h2>
+      </div>
+      <div class="hiw-grid">
+        <div class="hiw-card">
+          <div class="hiw-step-num">1</div>
+          <div class="hiw-icon">🔍</div>
+          <div class="hiw-title">Browse Verified Farms</div>
+          <p class="hiw-desc">Explore daily harvests listed by farmers with actual land photos, distances from your home, and organic certifications.</p>
+        </div>
+        <div class="hiw-card">
+          <div class="hiw-step-num">2</div>
+          <div class="hiw-icon">🛒</div>
+          <div class="hiw-title">Add to Fresh Basket</div>
+          <p class="hiw-desc">Choose home delivery or convenient farm pickup. Chat directly with farmers about custom quantities or freshness.</p>
+        </div>
+        <div class="hiw-card">
+          <div class="hiw-step-num">3</div>
+          <div class="hiw-icon">👨‍🌾</div>
+          <div class="hiw-title">Harvested Upon Order</div>
+          <p class="hiw-desc">The farmer gets notified instantly and picks your produce fresh from the field — no prolonged cold warehouse storage.</p>
+        </div>
+        <div class="hiw-card">
+          <div class="hiw-step-num">4</div>
+          <div class="hiw-icon">🚚</div>
+          <div class="hiw-title">Same-Day Doorstep Arrival</div>
+          <p class="hiw-desc">Track delivery in real-time from harvest to your home. Guaranteed 100% farm-fresh or full immediate refund.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHY CHOOSE US ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Our Commitment</div>
+          <h2 class="sec-title">Why 50,000+ Households Choose KaniNaadu</h2>
+        </div>
+      </div>
+      <div class="features-grid">
+        <div class="feat-card" style="background:#E8F7EE;border:1.5px solid #BFDEC9">
+          <div class="feat-icon">🌱</div>
+          <div class="feat-title">Zero Middlemen Markup</div>
+          <p class="feat-desc">Every rupee goes straight to the farm. No mandi commission agents, wholesale markups, or middlemen cuts.</p>
+        </div>
+        <div class="feat-card" style="background:#FFF6E5;border:1.5px solid #EDDBA4">
+          <div class="feat-icon">⏰</div>
+          <div class="feat-title">Sun-to-Plate Freshness</div>
+          <p class="feat-desc">Vegetables and fruits are picked hours before delivery. You can literally smell the earth and taste the difference.</p>
+        </div>
+        <div class="feat-card" style="background:#EBF3FE;border:1.5px solid #BFD6FB">
+          <div class="feat-icon">🤝</div>
+          <div class="feat-title">Fair Pay for Farmers</div>
+          <p class="feat-desc">Farmers earn 2.4× more per kilo on KaniNaadu than traditional mandis. Sustainable farming begins with fair income.</p>
+        </div>
+        <div class="feat-card" style="background:#FDECEE;border:1.5px solid #F3C3C9">
+          <div class="feat-icon">🔒</div>
+          <div class="feat-title">Physically Verified Farms</div>
+          <p class="feat-desc">Each farm profile is verified on-site. Soil and water testing records are audited for complete consumer trust.</p>
+        </div>
+        <div class="feat-card" style="background:#F2EDFE;border:1.5px solid #D5C8F7">
+          <div class="feat-icon">💬</div>
+          <div class="feat-title">Direct Farmer In-App Chat</div>
+          <p class="feat-desc">Chat directly with the farmer who grew your food. Ask about harvest times, bulk family orders, or pesticide-free practices.</p>
+        </div>
+        <div class="feat-card" style="background:#E7F9F9;border:1.5px solid #B8E8E8">
+          <div class="feat-icon">🌍</div>
+          <div class="feat-title">Eco-Friendly Food Miles</div>
+          <p class="feat-desc">Local district fulfillment means ultra-low transport emissions, minimal plastic packaging, and greener cities.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CUSTOMER TESTIMONIALS ===== -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Real Feedback</div>
+          <h2 class="sec-title">What Our Customers Experience</h2>
+        </div>
+        <button class="btn sm" onclick="view('customer')">✍️ Write a Review</button>
+      </div>
+      <div class="test-grid" id="testGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== NEWSLETTER ===== -->
+  <section class="nl-section">
+    <div class="container">
+      <div class="nl-inner">
+        <div>
+          <h2 class="nl-title">🌾 Get Weekly Farm Harvest Alerts</h2>
+          <p class="nl-sub">Be the first to know when seasonal mangoes, heritage millets, or cold-pressed oils are freshly listed by local farmers.</p>
+        </div>
+        <div class="nl-form">
+          <input type="email" placeholder="Enter your email address" aria-label="Email for harvest newsletter">
+          <button class="btn white" onclick="toast('🌾 Subscribed! Weekly farm harvest alerts enabled.')">Subscribe Free</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /home view -->
+
+<!-- ============================================================ -->
+<!--  MARKET VIEW (FULL DISPLAY COVER - 50+ PRODUCE)              -->
+<!-- ============================================================ -->
+<div id="market" class="view">
+  <!-- Farm Vista Page Hero -->
+  <div class="page-farm-hero" style="background-image:linear-gradient(135deg, rgba(8,28,16,0.85) 0%, rgba(14,56,30,0.80) 50%, rgba(6,22,12,0.90) 100%), url('https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=2000&q=80')">
+    <div class="container">
+      <div class="pfh-content">
+        <div class="live-badge"><span class="live-dot"></span> 54 Live Farm Harvests · 12 Agro-Climatic Districts</div>
+        <h1 class="pfh-title">Direct Agricultural Produce Market</h1>
+        <p class="pfh-sub">Explore fresh harvest vegetables, heritage rice, millets, wood-pressed oils and raw forest honey directly from verified Tamil Nadu family farms with verified land patta records.</p>
+      </div>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Direct Farm Produce</div>
+          <h2 class="sec-title">Fresh Agricultural Market</h2>
+          <p id="count" style="font-size:.92rem;color:var(--mute);margin-top:4px"></p>
+        </div>
+      </div>
+      <div class="tools-bar">
+        <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;background:var(--bg);padding:8px 14px;border-radius:8px;border:1px solid var(--line);margin-bottom:6px;flex-wrap:wrap;gap:8px">
+          <span style="font-size:.85rem;color:var(--mute)">🌾 Direct Tamil Nadu Soil Produce · 50+ Authentic Farm Harvests</span>
+          <button class="btn sm" onclick="restoreAllDemoItems()" style="padding:5px 12px;font-size:.82rem">⚡ Reset / Load All 50+ Demo Items</button>
+        </div>
+        <div class="search-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <label class="sr" for="q">Search produce, farmer or village</label>
+          <input id="q" type="search" placeholder="Search tomatoes, millets, cold pressed oil, rice, farmer name…">
+        </div>
+        <div>
+          <label for="sort">Sort Produce</label>
+          <select id="sort">
+            <option value="near">Nearest farm to me</option>
+            <option value="pl">Price: Low → High</option>
+            <option value="ph">Price: High → Low</option>
+            <option value="rt">Top customer rated</option>
+          </select>
+        </div>
+        <div>
+          <label for="max">Max price ₹<span id="mv">1500</span></label>
+          <input id="max" type="range" min="15" max="1500" step="15" value="1500" style="border:0;padding:6px 0">
+        </div>
+        <label style="margin:0 0 8px;display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap">
+          <input type="checkbox" id="org" style="width:auto;accent-color:var(--g)"> Organic certified only
+        </label>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Filter produce by category"></div>
+      <div class="prod-grid" id="grid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================ -->
+<!--  FARMERS VIEW (REAL FARMERS IN LAND)                         -->
+<!-- ============================================================ -->
+<div id="farmers" class="view">
+  <!-- Farm Vista Page Hero -->
+  <div class="page-farm-hero" style="background-image:linear-gradient(135deg, rgba(8,28,16,0.85) 0%, rgba(14,56,30,0.80) 50%, rgba(6,22,12,0.90) 100%), url('https://images.unsplash.com/photo-1544860707-c352cc5a92e3?auto=format&fit=crop&w=2000&q=80')">
+    <div class="container">
+      <div class="pfh-content">
+        <div class="live-badge"><span class="live-dot"></span> 100% Soil-Verified Tamil Nadu Landowners</div>
+        <h1 class="pfh-title">Meet Tamil Nadu's Farmers on Their Land</h1>
+        <p class="pfh-sub">Every farmer here is a verified landowner cultivating their native soil with sustainable methods. Direct trade gives them 82% of every rupee, completely bypassing wholesale middlemen.</p>
+      </div>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Our Farm Partners</div>
+          <h2 class="sec-title">Meet Tamil Nadu's Farmers on Their Land</h2>
+          <p class="sec-sub">Authentic family farmers cultivating heritage crops, practicing organic soil care and selling directly to you.</p>
+        </div>
+      </div>
+      <div class="farmer-grid" id="fgrid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================ -->
+<!--  CUSTOMER HUB & FEEDBACK VIEW                                -->
+<!-- ============================================================ -->
+<div id="customer" class="view">
+  <!-- Farm Vista Page Hero -->
+  <div class="page-farm-hero" style="background-image:linear-gradient(135deg, rgba(8,28,16,0.85) 0%, rgba(14,56,30,0.80) 50%, rgba(6,22,12,0.90) 100%), url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=2000&q=80')">
+    <div class="container">
+      <div class="pfh-content">
+        <div class="live-badge"><span class="live-dot"></span> Soil Patron Community & Customer Feedback Desk</div>
+        <h1 class="pfh-title">Customer Hub & Direct Farm Feedback</h1>
+        <p class="pfh-sub">Track active harvest deliveries, manage earned loyalty tokens, and submit honest quality feedback directly to Tamil Nadu farmers on the produce you receive.</p>
+      </div>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Customer Hub</div>
+          <h2 class="sec-title">My Account & Product Feedback Center</h2>
+          <p class="sec-sub">Manage your farm orders, track deliveries, and share valuable feedback for our farmers</p>
+        </div>
+        <div id="custHeaderActions"></div>
+      </div>
+
+      <div class="dash-grid">
+        <!-- Customer Profile & Stats -->
+        <div>
+          <div class="dash-card">
+            <div class="dash-profile-top">
+              <div class="dash-avatar">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Customer Avatar">
+              </div>
+              <div>
+                <h3 id="custProfileName" style="margin-bottom:2px">Priya Sundaram</h3>
+                <div id="custProfileLocation" class="meta">Chennai, Tamil Nadu · Member since 2024</div>
+                <div style="margin-top:8px">
+                  <span class="points-pill" id="custPointsPill">🌾 420 Harvest Tokens</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;text-align:center">
+              <div style="background:var(--surface2);padding:12px;border-radius:var(--rad)">
+                <b id="cTotalOrders" style="font-size:1.4rem;color:var(--g)">0</b>
+                <span style="font-size:.78rem;color:var(--mute);display:block">Total Orders</span>
+              </div>
+              <div style="background:var(--surface2);padding:12px;border-radius:var(--rad)">
+                <b id="cTotalReviews" style="font-size:1.4rem;color:var(--g)">0</b>
+                <span style="font-size:.78rem;color:var(--mute);display:block">Feedbacks Given</span>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--line);padding-top:16px">
+              <div style="font-weight:700;font-size:.9rem;margin-bottom:6px">Default Delivery Location</div>
+              <p class="meta" id="custDeliveryAddress">No 14, Garden Road, Kilpauk, Chennai - 600010</p>
+            </div>
+          </div>
+
+          <!-- Quick Feedback Form -->
+          <div class="dash-card">
+            <h3>✍️ Write Product Feedback</h3>
+            <p class="meta" style="margin-bottom:14px">Your reviews help farmers improve and assist fellow buyers.</p>
+            <form id="feedbackForm" style="display:grid;gap:12px">
+              <div>
+                <label for="fbProduct">Select Farm Produce</label>
+                <select id="fbProduct" required></select>
+              </div>
+              <div>
+                <label>Your Rating</label>
+                <div class="star-selector" id="starSelector">
+                  <span data-star="1">★</span>
+                  <span data-star="2">★</span>
+                  <span data-star="3">★</span>
+                  <span data-star="4">★</span>
+                  <span data-star="5" class="active">★</span>
+                </div>
+                <input type="hidden" id="fbRating" value="5">
+              </div>
+              <div>
+                <label for="fbAuthor">Your Name</label>
+                <input id="fbAuthor" value="Priya Sundaram" required>
+              </div>
+              <div>
+                <label for="fbComment">Your Review & Freshness Experience</label>
+                <textarea id="fbComment" rows="3" required placeholder="Describe aroma, freshness, packaging and taste…"></textarea>
+              </div>
+              <button class="btn" style="width:100%;justify-content:center">⭐ Submit Customer Review</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right Side: Orders & Feedback Feed -->
+        <div>
+          <div class="dash-card">
+            <h3>📦 My Recent Farm Orders</h3>
+            <div id="custOrdersList"></div>
+          </div>
+
+          <div class="dash-card">
+            <h3>💬 Community Product Reviews & Feedbacks</h3>
+            <div id="custFeedbackFeed"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================ -->
+<!--  ADMIN VIEW (PLATFORM MANAGEMENT)                            -->
+<!-- ============================================================ -->
+<div id="admin" class="view">
+  <!-- Farm Vista Page Hero -->
+  <div class="page-farm-hero" style="background-image:linear-gradient(135deg, rgba(8,28,16,0.88) 0%, rgba(14,56,30,0.84) 50%, rgba(6,22,12,0.92) 100%), url('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=2000&q=80')">
+    <div class="container">
+      <div class="pfh-content">
+        <div class="live-badge"><span class="live-dot"></span> Central Platform Administration & Governance</div>
+        <h1 class="pfh-title">Tamil Nadu Farmer Marketplace Command</h1>
+        <p class="pfh-sub">Audit farmer land documents (Patta / Chitta records), disburse 82% direct bank payouts, monitor live produce inventory, and moderate customer reviews.</p>
+      </div>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+
+      <!-- Admin Access Restricted Screen (Shown if not logged in as admin) -->
+      <div id="adminRestrictedBox" style="display:none">
+        <div class="auth-container" style="text-align:center">
+          <div style="font-size:3rem;margin-bottom:10px">🔒</div>
+          <h2 style="font-size:1.8rem;margin-bottom:8px">Admin Master Access Required</h2>
+          <p class="meta" style="margin-bottom:24px">The platform management portal contains sensitive farmer payouts and catalogue controls. Please sign in with administrator credentials.</p>
+          <div class="auth-demo-box" style="background:#FFF6EE;border-color:var(--orange)">
+            <b style="color:var(--orange)">⚡ 1-Click Platform Administrator</b>
+            <span style="display:block;margin-bottom:8px">Default master credentials: <code>admin@kaninaadu.in</code></span>
+            <button class="btn orange" style="width:100%;justify-content:center" onclick="quickAdminLogin()">
+              🔓 Authenticate as Admin Now
+            </button>
+          </div>
+          <button class="btn ghost sm" onclick="view('login')" style="margin-top:10px">Open Login Page</button>
+        </div>
+      </div>
+
+      <!-- Admin Authenticated Content -->
+      <div id="adminDashboardContent">
+        <div class="sec-head">
+          <div>
+            <div class="sec-label">Management Portal</div>
+            <h2 class="sec-title">Platform Admin Dashboard</h2>
+            <p class="sec-sub">Live monitoring of Tamil Nadu farm marketplace operations, catalog inventory, orders and customer feedbacks.</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <span class="admin-badge" style="padding:6px 14px;font-size:.82rem">ADMIN ACCESS ACTIVE</span>
+            <button class="btn sm" onclick="resetDemoData()">🔄 Reset Demo Data</button>
+          </div>
+        </div>
+
+        <!-- Admin Top Metrics -->
+        <div class="admin-metrics">
+          <div class="am-card">
+            <span>Gross Platform Volume</span>
+            <b id="admSales">₹0</b>
+            <span class="am-badge up">↑ 24% this week</span>
+          </div>
+          <div class="am-card">
+            <span>Farmer Payouts Disbursed</span>
+            <b id="admFarmerPayouts">₹0</b>
+            <span class="am-badge up">Direct to Bank</span>
+          </div>
+          <div class="am-card">
+            <span>Total Catalog Products</span>
+            <b id="admProdCount">0</b>
+            <span class="am-badge up">Active in Market</span>
+          </div>
+          <div class="am-card">
+            <span>Verified Family Farms</span>
+            <b id="admFarmerCount">0</b>
+            <span class="am-badge up">28 Districts</span>
+          </div>
+          <div class="am-card">
+            <span>Customer Feedbacks</span>
+            <b id="admFeedbackCount">0</b>
+            <span class="am-badge up">100% Genuine</span>
+          </div>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="tab-pills">
+          <button class="tab-pill active" data-atab="products">📦 Produce Inventory</button>
+          <button class="tab-pill" data-atab="payouts">👨‍🌾 Farmer Payouts</button>
+          <button class="tab-pill" data-atab="verifications">📜 Farmer Land KYC & Patta Verification</button>
+          <button class="tab-pill" data-atab="feedbacks">⭐ Customer Feedback Desk</button>
+          <button class="tab-pill" data-atab="orders">🚚 Live Orders</button>
+        </div>
+
+        <!-- Tab 1: Products -->
+        <div class="dash-card atab-pane" id="atab-products">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+            <h3>Active Produce Management</h3>
+            <button class="btn sm" onclick="view('sell')">+ Add New Produce</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>Product</th><th>Farmer</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="admProdTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 2: Payouts -->
+        <div class="dash-card atab-pane" id="atab-payouts" style="display:none">
+          <h3>Farmer Accounts & Direct Settlements</h3>
+          <p class="meta" style="margin-bottom:16px">Automated 82% direct bank settlement protocol for verified farmers.</p>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>Farmer</th><th>Farm Land & Village</th><th>Total Sales</th><th>Disbursed</th><th>Action</th></tr></thead>
+              <tbody id="admPayoutsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        
+        <!-- Tab 5: Farmer Land KYC & Patta Verification -->
+        <div class="dash-card atab-pane" id="atab-verifications" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+            <div>
+              <h3>Farmer Land Document Verification & Patta Desk</h3>
+              <p class="meta">Audit official Tamil Nadu Patta / Chitta passbooks, Kisan Credit Cards, land survey numbers and grant the marketplace Verified Landowner badge.</p>
+            </div>
+            <button class="btn sm" onclick="openFarmerDocModal()">+ Verify New Farmer Documents</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>Farmer & Photo</th><th>Location & Acreage</th><th>Patta / Chitta Passbook</th><th>Survey No</th><th>KCC / Aadhaar ID</th><th>Document Proof</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="admVerifTable"></tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Tab 3: Feedbacks -->
+        <div class="dash-card atab-pane" id="atab-feedbacks" style="display:none">
+          <h3>Customer Feedback Moderation Desk</h3>
+          <p class="meta" style="margin-bottom:16px">Review, feature or moderate customer reviews submitted on farm produce.</p>
+          <div id="admFeedbackList"></div>
+        </div>
+
+        <!-- Tab 4: Orders -->
+        <div class="dash-card atab-pane" id="atab-orders" style="display:none">
+          <h3>Live Platform Orders Processing</h3>
+          <p class="meta" style="margin-bottom:16px">Update live fulfillment stages across farm partners.</p>
+          <div id="admOrderList"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================ -->
+<!--  SELL VIEW (FARMER SELLER DASHBOARD)                         -->
+<!-- ============================================================ -->
+<div id="sell" class="view">
+  <!-- Farm Vista Page Hero -->
+  <div class="page-farm-hero" style="background-image:linear-gradient(135deg, rgba(8,28,16,0.85) 0%, rgba(14,56,30,0.80) 50%, rgba(6,22,12,0.90) 100%), url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=2000&q=80')">
+    <div class="container">
+      <div class="pfh-content">
+        <div class="live-badge"><span class="live-dot"></span> Official Tamil Nadu Farmer Land Registry & Direct Selling</div>
+        <h1 class="pfh-title">Farmer Produce & Land Verification Hub</h1>
+        <p class="pfh-sub">Verify your agricultural land documents (Patta / Chitta & Kisan ID) and list fresh crop harvests directly to 50,000+ conscious households at your own determined prices.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Farmer Selector & Identity Bar -->
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:20px;background:var(--surface);padding:14px 20px;border-radius:var(--rad);border:1px solid var(--line)">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span style="font-size:1.4rem">👨‍🌾</span>
+          <div>
+            <b style="display:block;font-size:.95rem">Active Farmer Account:</b>
+            <span class="meta" style="font-size:.82rem">Select registered farmer or register new land documents</span>
+          </div>
+          <select id="sellFarmerSelect" style="width:auto;min-width:240px;padding:8px 12px;border-radius:8px;font-weight:700" onchange="changeActiveFarmer(this.value)"></select>
+        </div>
+        <button class="btn sm" onclick="openFarmerDocModal()">
+          📜 Register / Verify New Farmer with Land Documents
+        </button>
+      </div>
+
+      <!-- Farmer Land & Patta Verification Status Box -->
+      <div id="farmerVerifBox"></div>
+
+      <!-- Main Seller Grid -->
+      <div class="dash-grid" style="grid-template-columns:1.1fr 1.5fr">
+
+        <!-- Produce Listing Form -->
+        <div class="dash-card">
+          <h3 style="margin-bottom:6px;font-size:1.25rem">📦 List New Harvest Produce</h3>
+          <p class="meta" style="font-size:.86rem;margin-bottom:18px">Publish freshly harvested crops live to KaniNaadu marketplace</p>
+
+          <form id="addf">
+            <div>
+              <label for="sellFarmerSelectInForm">Listing Farmer (Patta-Verified)</label>
+              <select id="sellFarmerSelectInForm" required style="font-weight:600"></select>
+            </div>
+
+            <div>
+              <label for="pn">Produce Name</label>
+              <input id="pn" required maxlength="40" placeholder="e.g. Country Naatu Thakkali, Keerai, Ragi, Seeraga Samba">
+            </div>
+
+            <div class="f2">
+              <div>
+                <label for="pc">Category</label>
+                <select id="pc"></select>
+              </div>
+              <div>
+                <label for="pe">Produce Icon / Emoji</label>
+                <input id="pe" value="🍅" maxlength="2">
+              </div>
+            </div>
+
+            <!-- Visual Crop Photo Picker & Presets -->
+            <div>
+              <label for="pimg">Produce Harvest Photo URL</label>
+              <input id="pimg" value="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80" required placeholder="https://images.unsplash.com/..." oninput="updatePhotoPreview(this.value)">
+
+              <span style="display:block;font-size:.8rem;color:var(--mute);margin:8px 0 4px;font-weight:700">Or click a fresh farm crop photo preset:</span>
+              <div class="crop-preset-grid">
+                <button type="button" class="crop-preset-btn active" onclick="setCropPhoto('https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80', '🍅', this)">
+                  <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=120&q=80" alt="Tomato">
+                  <span>Tomato</span>
+                </button>
+                <button type="button" class="crop-preset-btn" onclick="setCropPhoto('https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=600&q=80', '🌾', this)">
+                  <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=120&q=80" alt="Paddy">
+                  <span>Paddy/Rice</span>
+                </button>
+                <button type="button" class="crop-preset-btn" onclick="setCropPhoto('https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80', '🍆', this)">
+                  <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=120&q=80" alt="Brinjal">
+                  <span>Brinjal</span>
+                </button>
+                <button type="button" class="crop-preset-btn" onclick="setCropPhoto('https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?auto=format&fit=crop&w=600&q=80', '🥛', this)">
+                  <img src="https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?auto=format&fit=crop&w=120&q=80" alt="A2 Milk">
+                  <span>A2 Milk</span>
+                </button>
+                <button type="button" class="crop-preset-btn" onclick="setCropPhoto('https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80', '🛢️', this)">
+                  <img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=120&q=80" alt="Chekku Oil">
+                  <span>Pure Oil</span>
+                </button>
+                <button type="button" class="crop-preset-btn" onclick="setCropPhoto('https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80', '🍌', this)">
+                  <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=120&q=80" alt="Banana">
+                  <span>Banana</span>
+                </button>
+                <button type="button" class="crop-preset-btn" onclick="setCropPhoto('https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80', '🍯', this)">
+                  <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=120&q=80" alt="Honey">
+                  <span>Raw Honey</span>
+                </button>
+                <button type="button" class="crop-preset-btn" onclick="setCropPhoto('https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80', '🌿', this)">
+                  <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=120&q=80" alt="Keerai">
+                  <span>Keerai Greens</span>
+                </button>
+              </div>
+
+              <!-- Live Photo Preview Box -->
+              <div id="photoPreviewWrap" style="margin-top:10px;display:flex;align-items:center;gap:12px;background:var(--bg);padding:8px 12px;border-radius:8px;border:1px solid var(--line)">
+                <img id="photoPreviewImg" src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80" style="width:48px;height:48px;border-radius:6px;object-fit:cover" alt="Preview" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+                <div style="flex:1">
+                  <span style="font-size:.84rem;font-weight:700;display:block">Produce Image Preview</span>
+                  <span style="font-size:.76rem;color:var(--mute)">Verified photo displayed to customers in market</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Harvest Freshness Timestamp -->
+            <div>
+              <label for="phrv">Harvest Date & Freshness Time</label>
+              <select id="phrv">
+                <option value="Harvested This Morning (6:00 AM)">Harvested This Morning (6:00 AM)</option>
+                <option value="Plucked Today at Dawn">Plucked Today at Dawn</option>
+                <option value="Harvested Yesterday Evening">Harvested Yesterday Evening</option>
+                <option value="Freshly Wood-Pressed Today">Freshly Wood-Pressed Today</option>
+                <option value="Sun-Dried This Week">Sun-Dried This Week</option>
+              </select>
+            </div>
+
+            <div class="f2">
+              <div><label for="pp">Price ₹</label><input id="pp" type="number" min="1" required placeholder="0" value="45"></div>
+              <div><label for="pu">Unit</label><select id="pu"><option>kg</option><option>bunch</option><option>litre</option><option>dozen</option><option>piece</option><option>250g</option><option>500g</option><option>5kg bag</option></select></div>
+            </div>
+
+            <div class="f2">
+              <div><label for="ps">Stock Available</label><input id="ps" type="number" min="1" required placeholder="0" value="100"></div>
+              <label style="align-self:end;margin-bottom:12px;display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.92rem;font-weight:600">
+                <input type="checkbox" id="po" checked style="width:auto;accent-color:var(--g)"> 100% Organic Certified
+              </label>
+            </div>
+
+            <div style="background:var(--bg);padding:10px 14px;border-radius:8px;border:1px solid var(--line);margin-bottom:12px;font-size:.85rem;display:flex;align-items:center;gap:8px">
+              <span>🛡️</span>
+              <span>This produce will carry the farmer's <b>Patta Land Verification Seal</b></span>
+            </div>
+
+            <button class="btn" style="width:100%;justify-content:center;padding:13px">📦 Publish Farm Harvest Listing to Market</button>
+          </form>
+        </div>
+
+        <!-- Right Column: Stats & Active Listings Table -->
+        <div class="dash-card">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+            <div style="background:var(--bg);border-radius:var(--rad);padding:14px;border:1px solid var(--line)"><b id="s1" style="font:700 1.5rem var(--fd);color:var(--g)">0</b><span style="font-size:.8rem;color:var(--mute);display:block">Active Listings</span></div>
+            <div style="background:var(--bg);border-radius:var(--rad);padding:14px;border:1px solid var(--line)"><b id="s2" style="font:700 1.5rem var(--fd);color:var(--g)">0</b><span style="font-size:.8rem;color:var(--mute);display:block">Total Orders</span></div>
+            <div style="background:var(--bg);border-radius:var(--rad);padding:14px;border:1px solid var(--line)"><b id="s3" style="font:700 1.5rem var(--fd);color:var(--g)">₹0</b><span style="font-size:.8rem;color:var(--mute);display:block">Direct Earnings</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+            <h3 style="font-size:1.15rem">Your Active Produce Listings</h3>
+            <span class="meta" style="font-size:.82rem">Real-time market price updates</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>Produce</th><th>Price ₹</th><th>Stock</th><th>Action</th></tr></thead>
+              <tbody id="mine"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================ -->
+<!--  ORDERS VIEW (MY ORDERS)                                     -->
+<!-- ============================================================ -->
+<div id="orders" class="view">
+  <!-- Farm Vista Page Hero -->
+  <div class="page-farm-hero" style="background-image:linear-gradient(135deg, rgba(8,28,16,0.85) 0%, rgba(14,56,30,0.80) 50%, rgba(6,22,12,0.90) 100%), url('https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=2000&q=80')">
+    <div class="container">
+      <div class="pfh-content">
+        <div class="live-badge"><span class="live-dot"></span> Soil-to-Kitchen Harvest Logistics Route</div>
+        <h1 class="pfh-title">Direct Harvest Order Tracker</h1>
+        <p class="pfh-sub">Track your farm basket across 4 transparent stages: Morning Harvest at Farm, Quality Sorting, Transit, and Final Doorstep Delivery.</p>
+      </div>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <div class="sec-label">Order Tracker</div>
+          <h2 class="sec-title">My Farm Orders</h2>
+          <p class="sec-sub">Track harvest status, farm dispatch, and live delivery updates</p>
+        </div>
+      </div>
+      <div id="olist"></div>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<!-- ===== FOOTER (FULL WIDTH) ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="#">🌾 KaniNaadu</a>
+        <p>Tamil Nadu's direct farm-to-customer marketplace. Connecting 1,200+ family farms with 50,000+ conscious households who value authentic freshness, fair farmer wages, and healthy soil.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore Harvest</h4>
+        <a href="#" onclick="view('market')">All Farm Produce (50+)</a>
+        <a href="#" onclick="view('market')">Fresh Vegetables</a>
+        <a href="#" onclick="view('market')">Sun-Ripened Fruits</a>
+        <a href="#" onclick="view('market')">Heritage Millets & Rice</a>
+        <a href="#" onclick="view('market')">Cold-Pressed Oils</a>
+      </div>
+      <div class="footer-col">
+        <h4>Our Farmers</h4>
+        <a href="#" onclick="view('farmers')">Meet Farmers in Land</a>
+        <a href="#" onclick="view('sell')">Farmer Sell Portal</a>
+        <a href="#">On-Site Verification</a>
+        <a href="#">Farmer Welfare Fund</a>
+      </div>
+      <div class="footer-col">
+        <h4>Customer & Portal</h4>
+        <a href="#" onclick="view('customer')">Customer Hub</a>
+        <a href="#" onclick="view('customer')">Write a Review</a>
+        <a href="#" onclick="view('admin')">Admin Portal</a>
+        <a href="#" onclick="view('login')">Login / Switch User</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company & Trust</h4>
+        <a href="#">About KaniNaadu</a>
+        <a href="#">Direct Fair Trade</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 KaniNaadu · Farm data preserved locally in browser · Direct fair trade</span>
+      <span>Cultivated with ❤️ for Tamil Nadu's farming families 🌾</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== OVERLAYS ===== -->
+<div class="scrim" id="scrim"></div>
+
+<!-- Cart Drawer -->
+<aside class="drawer" id="drawer" aria-label="Shopping Cart">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <h2 style="font-size:1.45rem">🛒 Your Farm Basket</h2>
+    <button class="btn ghost sm" data-close>✕ Close</button>
+  </div>
+  <div id="citems"></div>
+  <form id="co" style="display:grid;gap:14px;margin-top:18px">
+    <div><label for="cn">Full Name</label><input id="cn" value="Priya Sundaram" required placeholder="Enter your full name"></div>
+    <div class="f2">
+      <div><label for="cp">Phone Number</label><input id="cp" value="9876543210" required pattern="[0-9]{10}" placeholder="10-digit mobile" inputmode="numeric"></div>
+      <div><label for="cm">Fulfilment</label>
+        <select id="cm">
+          <option value="30">🏠 Home Delivery ₹30</option>
+          <option value="0">🌾 Direct Farm Pickup – Free</option>
+        </select>
+      </div>
+    </div>
+    <div><label for="ca">Delivery Address</label><textarea id="ca" rows="2" placeholder="House/Flat, Street name, Area, City, Pincode">No 14, Garden Road, Kilpauk, Chennai - 600010</textarea></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--line)">
+      <span style="font-weight:700;font-size:1.1rem">Total Amount</span><span class="price" id="tot" style="color:var(--g)">₹0</span>
+    </div>
+    <button class="btn" style="width:100%;justify-content:center;padding:14px">✓ Confirm & Place Farm Order</button>
+  </form>
+</aside>
+
+<!-- Modal: Reviews, Farmer Chat & Product Info -->
+<div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+
+<!-- Farmer Land Document Verification Modal -->
+<div class="modal" id="farmerDocModal" role="dialog" aria-modal="true" style="max-width:680px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.8rem">📜</span>
+      <div>
+        <h2 style="font-size:1.35rem;margin:0">Farmer Land & Identity Verification</h2>
+        <span class="meta" style="font-size:.85rem">Tamil Nadu e-Nilam Land Registry & Kisan Verification</span>
+      </div>
+    </div>
+    <button class="btn ghost sm" onclick="closeAll()">✕ Close</button>
+  </div>
+
+  <div style="background:#EBF7EE;border:1px solid #A3E4D7;border-radius:var(--rad);padding:12px 16px;margin-bottom:18px;font-size:.88rem;color:#145A32;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+    <span>⚡ Need quick demo data? Auto-fill a verified Tamil Nadu Patta record</span>
+    <button type="button" class="btn sm" style="padding:4px 12px;font-size:.8rem" onclick="autoFillFarmerDoc()">Auto-fill Demo Patta</button>
+  </div>
+
+  <form id="farmerDocForm" style="display:grid;gap:14px">
+    <div class="f2">
+      <div><label for="fdName">Farmer Full Name</label><input id="fdName" required placeholder="e.g. Anandhan Sundaram"></div>
+      <div><label for="fdPhone">Mobile Number (Aadhaar linked)</label><input id="fdPhone" required pattern="[0-9]{10}" placeholder="10-digit mobile" value="9840123456"></div>
+    </div>
+    <div class="f2">
+      <div><label for="fdFarm">Farm Name</label><input id="fdFarm" required placeholder="e.g. Kaveri Organic Farmstead"></div>
+      <div><label for="fdDistrict">Tamil Nadu District</label>
+        <select id="fdDistrict">
+          <option>Thiruvallur</option><option>Kanchipuram</option><option>Thanjavur</option><option>Dindigul</option><option>Salem</option><option>Coimbatore</option><option>Theni</option><option>Nilgiris</option><option>Chengalpattu</option><option>Ranipet</option><option>Erode</option><option>Madurai</option><option>Tirunelveli</option><option>Cuddalore</option><option>Tiruchirappalli</option><option>Villupuram</option><option>Tiruvannamalai</option>
+        </select>
+      </div>
+    </div>
+    <div class="f2">
+      <div><label for="fdTaluk">Taluk / Village</label><input id="fdTaluk" required placeholder="e.g. Ponneri / Minjur" value="Ponneri Taluk"></div>
+      <div><label for="fdAcreage">Cultivated Extent (Acres)</label><input id="fdAcreage" required placeholder="e.g. 5.5 Acres" value="5.5 Acres"></div>
+    </div>
+    <div class="f2">
+      <div><label for="fdPatta">Patta / Chitta Passbook Number</label><input id="fdPatta" required placeholder="e.g. TN-PATTA-2024-9182" value="TN-PATTA-2024-9182-TVLR"></div>
+      <div><label for="fdSurvey">Land Survey Number & Subdivision</label><input id="fdSurvey" required placeholder="e.g. 142/3A" value="168/2B"></div>
+    </div>
+    <div class="f2">
+      <div><label for="fdKcc">Kisan Credit Card (KCC) / Aadhaar No</label><input id="fdKcc" required placeholder="e.g. KCC-SBI-882194" value="KCC-SBI-882194"></div>
+      <div><label for="fdSoil">Primary Soil & Irrigation</label>
+        <select id="fdSoil">
+          <option>Wetland Alluvial (Canal Irrigation)</option>
+          <option>Red Sandy Loam (Drip Irrigation)</option>
+          <option>Black Cotton Soil (Rainfed / Well)</option>
+          <option>Hill Terrace Plantation (Spring Fed)</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label>Upload Land Document Proof (Patta / Chitta / Land Tax Receipt)</label>
+      <div class="doc-upload-box" onclick="$('#docFileInput').click()">
+        <div style="font-size:2rem;margin-bottom:4px">📄</div>
+        <b>Click to attach Patta / Chitta Passbook Photo</b>
+        <span class="meta" style="display:block;font-size:.82rem;margin-top:4px">Simulated document capture (PNG, JPG, PDF up to 10MB)</span>
+        <input type="file" id="docFileInput" style="display:none" accept="image/*,.pdf" onchange="previewDocFile(this)">
+      </div>
+      <div id="docPreviewWrap" style="display:flex;margin-top:10px;align-items:center;gap:12px;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--line)">
+        <img id="docPreviewImg" src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=300&q=80" style="width:50px;height:50px;border-radius:6px;object-fit:cover" alt="Document">
+        <div style="flex:1">
+          <b id="docPreviewName" style="font-size:.88rem">Patta_Chitta_Passbook_TN2024.pdf</b>
+          <span style="display:block;font-size:.78rem;color:#27AE60">✓ Verified with Tamil Nadu Land Records Registry</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" style="width:100%;justify-content:center;padding:13px;margin-top:8px">
+      📜 Submit Documents & Grant Verified Landowner Status
+    </button>
+  </form>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- =================== SCRIPT =================== -->
+<script>
+const CAT_DATA = [
+  {name:'All Items',emoji:'🛒',img:'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=400&q=80'},
+  {name:'Vegetables',emoji:'🥦',img:'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80'},
+  {name:'Fruits',emoji:'🍊',img:'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?auto=format&fit=crop&w=400&q=80'},
+  {name:'Grains & Millets',emoji:'🌾',img:'https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=400&q=80'},
+  {name:'Dairy & Eggs',emoji:'🥛',img:'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?auto=format&fit=crop&w=400&q=80'},
+  {name:'Spices',emoji:'🌶️',img:'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=400&q=80'},
+  {name:'Honey & Herbs',emoji:'🍯',img:'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=400&q=80'},
+  {name:'Dry Fruits & Oils',emoji:'🌰',img:'https://images.unsplash.com/photo-1536591375315-055c5df0fcf5?auto=format&fit=crop&w=400&q=80'}
+];
+const CATS = CAT_DATA.slice(1).map(c=>c.name);
+
+/* REAL FARMERS ON THEIR LAND WITH VERIFIED PATTA RECORDS */
+const FARMERS = [
+  {id:'f1',name:'Ilango',fullName:'Ilango Sundaram',farm:'Green Row Farm',place:'Thiruvallur',district:'Thiruvallur',km:18,land:'4.5 Acres Drip Farm',acres:'4.5 Acres',patta:'TN-PATTA-2024-8841-TVLR',surveyNo:'142/3A',kccId:'KCC-SBI-684291',soil:'Rich Alluvial & Drip Irrigation',docVerified:true,docImg:'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',emoji:'👨‍🌾',img:'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=800&q=80',bio:'Third-generation farmer in Thiruvallur. Drip irrigation, zero synthetic chemicals since 2019. Tends to country tomatoes, green brinjal, okra and heirloom keerai in his soil.',rating:4.8,verified:true},
+  {id:'f2',name:'Meenakshi',fullName:'Meenakshi Ammal',farm:'Amma Millet Collective',place:'Kanchipuram',district:'Kanchipuram',km:62,land:'12 Acres Rainfed Land',acres:'12 Acres',patta:'TN-PATTA-2023-4109-KCPM',surveyNo:'88/1C',kccId:'KCC-IOB-992144',soil:'Black Cotton Soil (Rainfed Organic)',docVerified:true,docImg:'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',emoji:'👩‍🌾',img:'https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?auto=format&fit=crop&w=800&q=80',bio:'Leads a 24-woman organic farming collective in Kanchipuram. Heritage millets and traditional red rice grown on rich black cotton soil with zero chemical inputs.',rating:4.9,verified:true},
+  {id:'f3',name:'Rajendran',fullName:'Rajendran Vembuli',farm:'Coastal Coconut Grove',place:'Chengalpattu',district:'Chengalpattu',km:45,land:'8 Acres Coastal Orchard',acres:'8 Acres',patta:'TN-PATTA-2022-7731-CGLP',surveyNo:'204/5',kccId:'KCC-CANARA-331092',soil:'Coastal Sandy Loam (Compost Enriched)',docVerified:true,docImg:'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',emoji:'🧑‍🌾',img:'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=800&q=80',bio:'Four-generation coastal orchard farmer. Tends sweet tender coconut palms, Nendran banana and mango trees nurtured by sea breeze and organic compost.',rating:4.6,verified:true},
+  {id:'f4',name:'Selvi',fullName:'Selvi Thangadurai',farm:'Kovil Dairy & Pasture',place:'Ranipet',district:'Ranipet',km:95,land:'6 Acres Open Grassland',acres:'6 Acres',patta:'TN-PATTA-2023-1192-RNPT',surveyNo:'63/2A',kccId:'KCC-SBI-441920',soil:'Grassland Pasture & Native Cattle Care',docVerified:true,docImg:'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',emoji:'👩‍🌾',img:'https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=800&q=80',bio:'Native Gir and Kangayam cows grazing on open rural pasture. Produces pure A2 raw milk, slow-churned desi ghee, homemade curd, and free-range country eggs.',rating:4.7,verified:true},
+  {id:'f5',name:'Karthik',fullName:'Karthik Raja',farm:'Shevaroy Hill Spice Estate',place:'Yercaud',district:'Salem',km:310,land:'15 Acres Hill Plantation',acres:'15 Acres',patta:'TN-PATTA-2024-5510-YRCD',surveyNo:'312/1',kccId:'KCC-IB-771829',soil:'Red Hill Humus (Rainfed & Spring)',docVerified:true,docImg:'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',emoji:'🧑‍🌾',img:'https://images.unsplash.com/photo-1592417817098-8f3d6910985b?auto=format&fit=crop&w=800&q=80',bio:'Shade-grown organic spices on the misty Shevaroy hills — Malabar black pepper, green cardamom, sun-dried chillies and golden turmeric fingers.',rating:4.8,verified:true},
+  {id:'f6',name:'Anbu',fullName:'Anbuchelvan N.',farm:'Nilgiri Tribal Honey Apiary',place:'Ooty',district:'Nilgiris',km:380,land:'Wild Shola Forest Belt',acres:'Forest Apiary',patta:'TN-PATTA-2023-3398-NTBA',surveyNo:'71/4',kccId:'KCC-TNSC-991204',soil:'Indigenous Wild Flora Apiary Zone',docVerified:true,docImg:'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',emoji:'👨‍🌾',img:'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80',bio:'Wild raw honey from Nilgiri shola forests. Indigenous bee colonies foraging on 200+ wild medicinal flora. 100% cold-extracted, unheated, unfiltered.',rating:4.9,verified:true},
+  {id:'f7',name:'Vasantha',fullName:'Vasantha Shanmugam',farm:'Delta Groundnut & Oil Mill',place:'Thanjavur',district:'Thanjavur',km:290,land:'10 Acres Delta Farmland',acres:'10 Acres',patta:'TN-PATTA-2022-9014-TNJV',surveyNo:'156/2B',kccId:'KCC-SBI-109283',soil:'Cauvery Delta Alluvium (Canal Irrigated)',docVerified:true,docImg:'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',emoji:'👩‍🌾',img:'https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80',bio:'Sun-dried cashews, peanuts and traditional wood-pressed oils (Kadala Ennai & Nallennai) nurtured by the rich Cauvery delta soil. Zero chemical refining.',rating:4.6,verified:true},
+  {id:'f8',name:'Murugesan',fullName:'Murugesan Palanisamy',farm:'Cauvery Paddy Fields',place:'Thiruvarur',district:'Thiruvarur',km:330,land:'14 Acres Wetland Paddy',acres:'14 Acres',patta:'TN-PATTA-2023-8822-TVRR',surveyNo:'94/3A',kccId:'KCC-IOB-883921',soil:'Deep Clay Loam (Wetland Paddy)',docVerified:true,docImg:'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',emoji:'👨‍🌾',img:'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=800&q=80',bio:'Heritage rice conservator in the Cauvery delta. Cultivates nutrient-rich traditional rice varieties: Mappillai Samba, Karuppu Kavuni, and Seeraga Samba without chemicals.',rating:4.9,verified:true}
+];
+
+const SEED = [
+  // Vegetables (cat: 0)
+  ['Country Tomato','🍅',0,32,'kg','f1',120,1,4.8,[28,30,35,31,29,33,32],20,'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80'],
+  ['Green Brinjal (Kathirikai)','🍆',0,40,'kg','f1',80,1,4.6,[38,42,41,39,40,44,40],0,'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80'],
+  ['Siru Keerai (Fresh Spinach)','🥬',0,15,'bunch','f1',60,1,4.9,[12,14,15,13,16,15,15],15,'https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=600&q=80'],
+  ['Fresh Okra (Vendakkai)','🌿',0,55,'kg','f1',45,0,4.4,[50,52,58,56,54,57,55],0,'https://images.unsplash.com/photo-1525607551316-4a8e16d1f9ba?auto=format&fit=crop&w=600&q=80'],
+  ['Ooty Farm Carrot','🥕',0,48,'kg','f1',90,1,4.7,[44,45,47,48,47,49,48],0,'https://images.unsplash.com/photo-1598170845058-32b9d6a5c317?auto=format&fit=crop&w=600&q=80'],
+  ['Drumstick (Murungakkai)','🌱',0,60,'bunch','f1',30,0,4.3,[55,57,60,58,61,59,60],10,'https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&w=600&q=80'],
+  ['Bitter Gourd (Pavakkai)','🫛',0,45,'kg','f1',55,1,4.6,[40,42,45,43,46,44,45],0,'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=600&q=80'],
+  ['Ash Gourd (Poosanikai)','🫙',0,30,'kg','f1',70,0,4.2,[27,29,30,28,31,30,30],0,'https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?auto=format&fit=crop&w=600&q=80'],
+  ['Raw Plantain (Vazhaikkai)','🍌',0,35,'bunch','f3',40,1,4.5,[30,32,34,35,35,36,35],0,'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80'],
+  ['Farm Fresh Tapioca (Maravalli)','🥔',0,38,'kg','f1',60,1,4.6,[35,36,38,38,37,39,38],0,'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80'],
+  ['Aromatic Curry Leaves (Kariveppilai)','🌿',0,12,'bunch','f1',80,1,4.8,[10,12,12,12,13,12,12],0,'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80'],
+  ['Fresh Mint & Coriander (Pudina)','🌱',0,20,'bunch','f1',75,1,4.7,[18,18,20,20,20,22,20],0,'https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=600&q=80'],
+  ['Banana Flower (Vazhaipoo)','🌺',0,28,'piece','f3',35,1,4.7,[25,26,28,27,28,29,28],0,'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?auto=format&fit=crop&w=600&q=80'],
+
+  // Fruits (cat: 1)
+  ['Nendran Banana (Organic)','🍌',1,60,'kg','f3',90,1,4.6,[55,58,60,62,59,61,60],25,'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80'],
+  ['Banganapalli Mango (Tree Ripened)','🥭',1,110,'kg','f3',30,1,4.9,[140,130,125,120,115,112,110],0,'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80'],
+  ['Coastal Sweet Tender Coconut','🥥',1,35,'piece','f3',200,1,4.7,[30,32,33,35,34,36,35],0,'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?auto=format&fit=crop&w=600&q=80'],
+  ['Red Guava (Koyya)','🍐',1,55,'kg','f3',60,1,4.5,[50,52,55,53,56,54,55],0,'https://images.unsplash.com/photo-1536511135899-73132cf985e1?auto=format&fit=crop&w=600&q=80'],
+  ['Ruby Pomegranate','🍎',1,120,'kg','f3',40,0,4.8,[110,112,115,118,116,120,120],18,'https://images.unsplash.com/photo-1541344999736-83eca272f6fc?auto=format&fit=crop&w=600&q=80'],
+  ['Sweet Sapota (Chiku)','🟤',1,70,'kg','f3',50,0,4.3,[65,66,68,70,69,71,70],0,'https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&w=600&q=80'],
+  ['Ripe Farm Jackfruit (Pala Pazham)','🍈',1,85,'kg','f3',25,1,4.8,[80,82,85,85,84,86,85],0,'https://images.unsplash.com/photo-1546548970-71785318a17b?auto=format&fit=crop&w=600&q=80'],
+  ['Country Papaya (Pappali)','🍈',1,45,'kg','f3',35,1,4.6,[40,42,45,44,45,46,45],0,'https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?auto=format&fit=crop&w=600&q=80'],
+  ['Custard Apple (Seetha Pazham)','🍈',1,95,'kg','f3',20,1,4.7,[90,92,95,95,94,96,95],0,'https://images.unsplash.com/photo-1546548970-71785318a17b?auto=format&fit=crop&w=600&q=80'],
+
+  // Grains, Millets & Heritage Rice (cat: 2)
+  ['Pearl Millet (Kambu)','🌾',2,70,'kg','f2',150,1,4.8,[65,66,68,70,69,71,70],0,'https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=600&q=80'],
+  ['Finger Millet (Ragi)','🌾',2,85,'kg','f2',110,1,4.9,[80,82,84,83,85,86,85],12,'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80'],
+  ['Samai (Little Millet)','🌾',2,95,'kg','f2',12,1,4.7,[90,92,93,95,94,96,95],0,'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'],
+  ['Thinai (Foxtail Millet)','🌾',2,80,'kg','f2',80,1,4.6,[75,76,78,80,79,81,80],0,'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80'],
+  ['Varagu (Kodo Millet)','🌾',2,75,'kg','f2',65,1,4.5,[70,71,73,75,74,76,75],0,'https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=600&q=80'],
+  ['Kuthiraivali (Barnyard Millet)','🌾',2,85,'kg','f2',50,1,4.8,[80,82,85,84,85,86,85],0,'https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=600&q=80'],
+  ['Mappillai Samba (Red Heritage Rice)','🌾',2,120,'kg','f8',90,1,4.9,[115,118,120,120,119,122,120],0,'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80'],
+  ['Karuppu Kavuni (Forbidden Black Rice)','🌾',2,180,'kg','f8',45,1,5.0,[170,175,180,180,178,182,180],0,'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80'],
+  ['Seeraga Samba (Biryani Rice)','🌾',2,130,'kg','f8',70,1,4.9,[125,128,130,130,128,132,130],0,'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80'],
+  ['Traditional Ponni Boiled Rice','🌾',2,65,'kg','f8',200,1,4.7,[60,62,65,64,65,66,65],0,'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80'],
+
+  // Dairy & Free-Range Eggs (cat: 3)
+  ['Native Pasture Country Eggs','🥚',3,12,'piece','f4',300,1,4.8,[11,11,12,12,12,13,12],0,'https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=600&q=80'],
+  ['Native Gir Cow Pure A2 Milk','🥛',3,70,'litre','f4',50,1,4.9,[66,68,68,70,70,71,70],8,'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80'],
+  ['Claypot Homemade Farm Curd','🍶',3,55,'litre','f4',40,1,4.7,[50,52,54,55,53,56,55],0,'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=600&q=80'],
+  ['Pure Bilona Desi Ghee (Cow)','🫙',3,850,'500g','f4',20,1,5.0,[820,830,840,850,845,855,850],0,'https://images.unsplash.com/photo-1628088062854-d1870b4553da?auto=format&fit=crop&w=600&q=80'],
+  ['Fresh Churned White Butter (Vennai)','🧈',3,240,'250g','f4',15,1,4.8,[230,235,240,240,238,242,240],0,'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80'],
+
+  // Spices (cat: 4)
+  ['Shevaroy Black Pepper (Tellicherry)','⚫',4,640,'kg','f5',20,0,4.5,[600,610,620,630,635,640,640],0,'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&w=600&q=80'],
+  ['Organic Turmeric Finger (Manjal)','🟡',4,180,'kg','f5',35,1,4.7,[170,172,175,178,176,180,180],0,'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80'],
+  ['Green Cardamom Pods (Elachi)','🫚',4,1200,'100g','f5',15,0,4.8,[1100,1150,1180,1200,1190,1210,1200],0,'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80'],
+  ['Sun-Dried Guntur Red Chilli','🌶️',4,220,'kg','f5',45,0,4.5,[200,208,212,220,215,222,220],15,'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=600&q=80'],
+  ['Whole Coriander Seeds (Dhaniya)','🫘',4,90,'kg','f5',60,0,4.4,[85,86,88,90,89,91,90],0,'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80'],
+  ['Black Mustard Seeds (Kadugu)','⚫',4,65,'500g','f5',40,1,4.6,[60,62,65,65,64,66,65],0,'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80'],
+
+  // Honey, Jaggery & Herbs (cat: 5)
+  ['Nilgiri Wild Forest Raw Honey','🍯',5,480,'500g','f6',25,1,4.9,[450,455,460,470,475,480,480],0,'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80'],
+  ['Infused Sacred Tulsi Honey','🍯',5,520,'500g','f6',18,1,4.8,[490,495,500,510,515,520,520],10,'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=600&q=80'],
+  ['Organic Nattu Sakkarai (Cane Sugar)','🟤',5,85,'kg','f2',80,1,4.8,[80,82,85,84,85,86,85],0,'https://images.unsplash.com/photo-1628088062854-d1870b4553da?auto=format&fit=crop&w=600&q=80'],
+  ['Palm Jaggery Blocks (Karupatti)','🟤',5,190,'500g','f3',40,1,4.9,[180,185,190,190,188,192,190],0,'https://images.unsplash.com/photo-1628088062854-d1870b4553da?auto=format&fit=crop&w=600&q=80'],
+  ['Fresh Organic Moringa Leaves','🌿',5,30,'bunch','f6',40,1,4.7,[27,28,29,30,30,31,30],0,'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80'],
+
+  // Dry Fruits & Wood-Pressed Oils (cat: 6)
+  ['Delta Whole Cashews (W240)','🌰',6,750,'250g','f7',30,0,4.8,[720,730,740,750,745,755,750],20,'https://images.unsplash.com/photo-1536591375315-055c5df0fcf5?auto=format&fit=crop&w=600&q=80'],
+  ['Sun-Dried Raw Peanut (Groundnut)','🥜',6,120,'kg','f7',100,0,4.5,[112,114,116,118,119,120,120],0,'https://images.unsplash.com/photo-1567892323423-e9842ed23fa9?auto=format&fit=crop&w=600&q=80'],
+  ['Cold-Pressed Chekku Groundnut Oil','🛢️',6,260,'litre','f7',60,1,4.9,[250,255,260,260,258,265,260],0,'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80'],
+  ['Wood-Pressed Pure Sesame Oil (Nallennai)','🛢️',6,380,'litre','f7',40,1,4.9,[370,375,380,380,378,385,380],0,'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80'],
+  ['Sun-Dried Golden Raisins','🫇',6,280,'250g','f7',45,0,4.6,[260,265,270,275,278,280,280],0,'https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&w=600&q=80'],
+];
+
+
+
+
+/* INITIAL FEEDBACK SEED */
+const INITIAL_REVIEWS = [
+  {id:'rev1',pid:'p0',author:'Priya Sundaram',rating:5,comment:'These tomatoes had that wonderful earthy smell you never find in cold storage supermarkets. Made Rasam with them and the flavor was extraordinary!',date:'2026-11-20'},
+  {id:'rev2',pid:'p20',author:'Karthi Rajan',rating:5,comment:'Selvi akka\'s pure A2 cow milk has been a blessing. The cream on top is thick and natural. Highly recommended for children!',date:'2026-11-19'},
+  {id:'rev3',pid:'p29',author:'Deepa Murugan',rating:5,comment:'The Mappillai Samba red rice gives tremendous stamina. My family switched to it 2 weeks ago and we can already feel the vitality.',date:'2026-11-18'},
+  {id:'rev4',pid:'p45',author:'Anand Swaminathan',rating:5,comment:'Nilgiri raw forest honey is the real deal. Dark amber color with distinct herbal notes. 100% natural and pure.',date:'2026-11-17'},
+  {id:'rev5',pid:'p51',author:'Meera Venkatesh',rating:5,comment:'The Chekku groundnut oil smells of freshly roasted peanuts. Cooks food to perfection without heaviness.',date:'2026-11-16'}
+];
+
+const KEY = 'kaninaadu.v8';
+let S = {
+  products: SEED.map((p,i) => ({
+    id:'p'+i,name:p[0],emoji:p[1],cat:p[2],price:p[3],unit:p[4],
+    fid:p[5],stock:p[6],org:!!p[7],rating:p[8],trend:p[9],flash:p[10]||0,
+    img:p[11],harvestTime:'Harvested This Morning (6:00 AM)',status:'active'
+  })),
+  farmers: FARMERS,
+  activeFarmerId: 'f1',
+  farmerDocs: FARMERS.map(f => ({
+    id: 'doc_' + f.id,
+    fid: f.id,
+    name: f.fullName || f.name,
+    farm: f.farm,
+    district: f.district || f.place,
+    acres: f.acres || f.land,
+    patta: f.patta,
+    surveyNo: f.surveyNo,
+    kccId: f.kccId,
+    soil: f.soil,
+    status: 'Verified Landowner ✅',
+    docImg: f.docImg
+  })),
+  cart:{},orders:[],chats:{},reviews:INITIAL_REVIEWS,
+  user:null,
+  theme:null
+};
+
+try{
+  const r=localStorage.getItem(KEY);
+  if(r){
+    const loaded=JSON.parse(r);
+    if(!loaded.products || loaded.products.length < SEED.length){
+      loaded.products = S.products;
+    }
+    if(!loaded.farmers || loaded.farmers.length < FARMERS.length){
+      loaded.farmers = S.farmers;
+    }
+    S=Object.assign(S,loaded);
+  }
+}catch(e){}
+
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const F=id=>(S.farmers||FARMERS).find(f=>f.id===id)||{name:'You',fullName:'Verified Farmer',farm:'My Farm',place:'Tamil Nadu',district:'Tamil Nadu',km:0,id,emoji:'🧑‍🌾',img:'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=400&q=80',land:'Farm Land',acres:'5 Acres',patta:'TN-PATTA-2024-VERIF',surveyNo:'101/A',kccId:'KCC-LINKED',soil:'Native Fertile Soil',docVerified:true};
+let cat=-1;
+
+
+/* 7-Day Sparkline Trend Generator */
+function spark(t, c){
+  if(!t || !t.length) t = [30, 31, 32, 33, 32, 34, 32];
+  const mx = Math.max(...t), mn = Math.min(...t), w = 180, h = 26;
+  const range = (mx - mn) || 1;
+  const pts = t.map((v, i) => `${(i * w / (t.length - 1)).toFixed(1)},${(h - 2 - (v - mn) / range * (h - 4)).toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" role="img" aria-label="7-day price trend"><polyline points="${pts}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+
+/* Quick Fill Demo Produce in Sell Form */
+function quickFillDemoProduct(){
+  const demoSamples = [
+    { name: 'Country Tomato (Naatu Thakkali)', cat: 0, emoji: '🍅', price: 32, unit: 'kg', stock: 120, org: true, img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80' },
+    { name: 'Pure A2 Cow Milk (Naatu Pasu Paal)', cat: 3, emoji: '🥛', price: 70, unit: 'litre', stock: 50, org: true, img: 'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?auto=format&fit=crop&w=600&q=80' },
+    { name: 'Siru Keerai (Fresh Farm Greens)', cat: 0, emoji: '🥬', price: 15, unit: 'bunch', stock: 60, org: true, img: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=600&q=80' },
+    { name: 'Traditional Desi Ghee (Pasu Nei)', cat: 3, emoji: '🫙', price: 850, unit: '500g', stock: 20, org: true, img: 'https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=600&q=80' },
+    { name: 'Wild Nilgiri Raw Honey', cat: 5, emoji: '🍯', price: 480, unit: '500g', stock: 25, org: true, img: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80' },
+    { name: 'Cold-Pressed Chekku Sesame Oil', cat: 6, emoji: '🛢️', price: 380, unit: 'litre', stock: 40, org: true, img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80' },
+    { name: 'Mappillai Samba Traditional Red Rice', cat: 2, emoji: '🍚', price: 120, unit: 'kg', stock: 85, org: true, img: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=600&q=80' }
+  ];
+  const s = demoSamples[Math.floor(Math.random() * demoSamples.length)];
+  if($('#pn')) $('#pn').value = s.name;
+  if($('#pc')) $('#pc').value = s.cat;
+  if($('#pe')) $('#pe').value = s.emoji;
+  if($('#pp')) $('#pp').value = s.price;
+  if($('#pu')) $('#pu').value = s.unit;
+  if($('#ps')) $('#ps').value = s.stock;
+  if($('#po')) $('#po').checked = s.org;
+  if($('#pimg')) $('#pimg').value = s.img;
+  updatePhotoPreview(s.img);
+  toast('Demo produce details loaded: ' + s.name);
+}
+
+/* Restore all demo products & farmers */
+function restoreAllDemoItems(){
+  S.products = SEED.map((p,i) => ({
+    id:'p'+i,name:p[0],emoji:p[1],cat:p[2],price:p[3],unit:p[4],
+    fid:p[5],stock:p[6],org:!!p[7],rating:p[8],trend:p[9]||Array(7).fill(p[3]),flash:p[10]||0,
+    img:p[11],harvestTime:'Harvested This Morning (6:00 AM)',status:'active'
+  }));
+  S.farmers = [...FARMERS];
+  S.activeFarmerId = 'f1';
+  S.farmerDocs = FARMERS.map(f => ({
+    id: 'doc_' + f.id,
+    fid: f.id,
+    name: f.fullName || f.name,
+    farm: f.farm,
+    district: f.district || f.place,
+    acres: f.acres || f.land,
+    patta: f.patta,
+    surveyNo: f.surveyNo,
+    kccId: f.kccId,
+    soil: f.soil,
+    status: 'Verified Landowner ✅',
+    docImg: f.docImg
+  }));
+  save();
+  renderGrid();
+  renderHomeGrid();
+  renderFarmers();
+  renderSell();
+  renderChips();
+  renderFlash();
+  renderCategoryCards();
+  renderTestimonials();
+  toast('All 50+ demo produce items & farmers loaded into market! 🌾');
+}
+
+/* Universal Fallback Image Handler */
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80';
+
+/* Toast */
+let tt;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800)}
+
+/* Overlays */
+function openOverlay(el){$('#scrim').classList.add('open');el.classList.add('open');document.body.style.overflow='hidden'}
+function closeAll(){$('#scrim').classList.remove('open');$$('.drawer,.modal').forEach(e=>e.classList.remove('open'));document.body.style.overflow=''}
+$('#scrim').onclick=closeAll;
+$$('[data-close]').forEach(b=>b.onclick=closeAll);
+document.onkeydown=e=>{if(e.key==='Escape')closeAll()};
+
+/* Farmer Produce Photo Helpers */
+function updatePhotoPreview(url){
+  const img = $('#photoPreviewImg');
+  if(img && url) img.src = url;
+}
+function setCropPhoto(url, emoji, btn){
+  if($('#pimg')) $('#pimg').value = url;
+  if($('#pe')) $('#pe').value = emoji;
+  updatePhotoPreview(url);
+  $$('.crop-preset-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+function previewDocFile(input){
+  if(input.files && input.files[0]){
+    const file = input.files[0];
+    if($('#docPreviewName')) $('#docPreviewName').textContent = file.name;
+    if($('#docPreviewWrap')) $('#docPreviewWrap').style.display = 'flex';
+    toast('Document file attached ✓');
+  }
+}
+function openFarmerDocModal(){
+  openOverlay($('#farmerDocModal'));
+}
+function autoFillFarmerDoc(){
+  const randNum = Math.floor(1000 + Math.random() * 9000);
+  $('#fdName').value = 'Kalyanasundaram Veerappan';
+  $('#fdPhone').value = '98765' + randNum;
+  $('#fdFarm').value = 'Marutham Organic Paddy & Keerai Farm';
+  $('#fdDistrict').value = 'Thanjavur';
+  $('#fdTaluk').value = 'Kumbakonam Taluk';
+  $('#fdAcreage').value = '6.8 Acres';
+  $('#fdPatta').value = 'TN-PATTA-2024-' + randNum + '-TNJV';
+  $('#fdSurvey').value = '178/4A';
+  $('#fdKcc').value = 'KCC-SBI-' + randNum;
+  $('#fdSoil').value = 'Wetland Alluvial (Canal Irrigation)';
+  $('#docPreviewWrap').style.display = 'flex';
+  $('#docPreviewName').textContent = 'Patta_Chitta_Passbook_Marutham.pdf';
+  toast('Demo Patta document details filled! Click submit to verify.');
+}
+function changeActiveFarmer(fid){
+  S.activeFarmerId = fid;
+  save();
+  renderSell();
+  toast('Switched to farmer: ' + F(fid).name);
+}
+
+/* Patta Certificate Modal */
+function viewPattaCert(fid){
+  const f = F(fid);
+  const certModal = $('#modal');
+  certModal.innerHTML = `
+    <div style="max-width:640px;margin:0 auto;text-align:left">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;border-bottom:2px solid var(--g);padding-bottom:12px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:2.4rem">🏛️</span>
+          <div>
+            <b style="font-size:1.05rem;color:var(--g);display:block;text-transform:uppercase;letter-spacing:.05em">Government of Tamil Nadu</b>
+            <span style="font-size:.84rem;color:var(--mute)">Revenue Administration & Land Records e-Services</span>
+          </div>
+        </div>
+        <button class="btn ghost sm" onclick="closeAll()">✕ Close</button>
+      </div>
+
+      <div style="background:#FAFDFB;border:1px solid #D4EFDF;border-radius:var(--rad);padding:18px;margin-bottom:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <span style="background:#1B8A4C;color:#fff;font-size:.78rem;font-weight:800;padding:4px 12px;border-radius:99px">
+            ✓ OFFICIALLY AUDITED & VERIFIED
+          </span>
+          <span style="font-size:.82rem;color:var(--mute);font-family:monospace">e-Nilam Ref: TN/REV/2026/${f.patta || '8821'}</span>
+        </div>
+
+        <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px">
+          <img src="${f.img}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #2ECC71" alt="${esc(f.name)}">
+          <div>
+            <h3 style="font-size:1.3rem;margin-bottom:2px">${esc(f.fullName || f.name)}</h3>
+            <span style="font-size:.9rem;color:var(--g);font-weight:700">${esc(f.farm)}</span>
+            <span style="display:block;font-size:.82rem;color:var(--mute)">${esc(f.place)}, Tamil Nadu</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:.88rem">
+          <div style="background:var(--surface);padding:10px;border-radius:8px;border:1px solid var(--line)">
+            <span class="meta" style="font-size:.76rem;display:block">PATTA / CHITTA NO</span>
+            <b>${f.patta || 'TN-PATTA-2024-8841-TVLR'}</b>
+          </div>
+          <div style="background:var(--surface);padding:10px;border-radius:8px;border:1px solid var(--line)">
+            <span class="meta" style="font-size:.76rem;display:block">SURVEY NUMBER</span>
+            <b>${f.surveyNo || '142/3A'}</b>
+          </div>
+          <div style="background:var(--surface);padding:10px;border-radius:8px;border:1px solid var(--line)">
+            <span class="meta" style="font-size:.76rem;display:block">TOTAL CULTIVATED LAND</span>
+            <b>${f.acres || f.land}</b>
+          </div>
+          <div style="background:var(--surface);padding:10px;border-radius:8px;border:1px solid var(--line)">
+            <span class="meta" style="font-size:.76rem;display:block">KISAN / AADHAAR ID</span>
+            <b>${f.kccId || 'KCC-VERIFIED-6842'}</b>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;background:var(--surface);padding:10px;border-radius:8px;border:1px solid var(--line);font-size:.86rem">
+          <span class="meta" style="font-size:.76rem;display:block">SOIL & IRRIGATION PROFILE</span>
+          <span>${f.soil || 'Wetland Alluvial soil with canal irrigation and bio-compost fertilization'}</span>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:.82rem;color:var(--mute);border-top:1px dashed var(--line);padding-top:12px">
+        <span>🌱 KaniNaadu Verified Soil Seal · Direct Farmer Protection</span>
+        <button class="btn sm" onclick="closeAll()">Done</button>
+      </div>
+    </div>
+  `;
+  openOverlay(certModal);
+}
+
+/* Farmer Document Form Submit */
+if($('#farmerDocForm')){
+  $('#farmerDocForm').onsubmit = e => {
+    e.preventDefault();
+    const newFid = 'f_' + Date.now();
+    const name = $('#fdName').value.trim();
+    const farm = $('#fdFarm').value.trim();
+    const district = $('#fdDistrict').value;
+    const taluk = $('#fdTaluk').value.trim();
+    const acres = $('#fdAcreage').value.trim();
+    const patta = $('#fdPatta').value.trim();
+    const survey = $('#fdSurvey').value.trim();
+    const kcc = $('#fdKcc').value.trim();
+    const soil = $('#fdSoil').value;
+
+    const newFarmer = {
+      id: newFid,
+      name: name.split(' ')[0],
+      fullName: name,
+      farm: farm,
+      place: taluk + ', ' + district,
+      district: district,
+      km: Math.floor(20 + Math.random() * 80),
+      land: acres + ' Certified Farmland',
+      acres: acres,
+      patta: patta,
+      surveyNo: survey,
+      kccId: kcc,
+      soil: soil,
+      docVerified: true,
+      docImg: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80',
+      emoji: '👨‍🌾',
+      img: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=800&q=80',
+      bio: `Verified Tamil Nadu landowner in ${district}. Cultivating ${acres} with sustainable practices and certified land records.`,
+      rating: 4.9,
+      verified: true
+    };
+
+    if(!S.farmers) S.farmers = [...FARMERS];
+    S.farmers.unshift(newFarmer);
+
+    if(!S.farmerDocs) S.farmerDocs = [];
+    S.farmerDocs.unshift({
+      id: 'doc_' + newFid,
+      fid: newFid,
+      name: name,
+      farm: farm,
+      district: district,
+      acres: acres,
+      patta: patta,
+      surveyNo: survey,
+      kccId: kcc,
+      soil: soil,
+      status: 'Verified Landowner ✅',
+      docImg: newFarmer.docImg
+    });
+
+    S.activeFarmerId = newFid;
+    save();
+
+    closeAll();
+    renderSell();
+    renderFarmers();
+    renderAdminPortal();
+    toast('🎉 Land documents verified & farmer registered successfully!');
+  };
+}
+
+/* Navigation & Views */
+function view(v){
+  if(v==='admin' && (!S.user || S.user.role!=='admin')){
+    $('#adminRestrictedBox').style.display='block';
+    $('#adminDashboardContent').style.display='none';
+  } else if(v==='admin'){
+    $('#adminRestrictedBox').style.display='none';
+    $('#adminDashboardContent').style.display='block';
+  }
+
+  $$('.view').forEach(s=>s.classList.toggle('on',s.id===v));
+  $$('[data-v]').forEach(b=>b.setAttribute('aria-current',b.dataset.v===v));
+  if(v==='orders')renderOrders();
+  if(v==='sell')renderSell();
+  if(v==='home')renderHomeGrid();
+  if(v==='customer')renderCustomerHub();
+  if(v==='admin' && S.user && S.user.role==='admin')renderAdminPortal();
+  closeAll();
+  $('#navMobile').classList.remove('open');
+  $('#menuBtn').setAttribute('aria-expanded','false');
+  scrollTo({top:0,behavior:'smooth'});
+}
+$$('[data-v]').forEach(b=>b.onclick=()=>view(b.dataset.v));
+
+/* Theme */
+$('#theme').onclick=()=>{
+  const dark=document.documentElement.dataset.theme==='dark';
+  S.theme=dark?'light':'dark';
+  document.documentElement.dataset.theme=S.theme;save();
+};
+if(S.theme)document.documentElement.dataset.theme=S.theme;
+
+/* Mobile Menu */
+$('#menuBtn').onclick=()=>{
+  const open=$('#navMobile').classList.toggle('open');
+  $('#menuBtn').setAttribute('aria-expanded',open);
+};
+
+/* Auth & Role Navigation */
+function updateAuthUI(){
+  const container = $('#authNavContainer');
+  if(!container) return;
+  if(S.user){
+    const roleBadge = S.user.role === 'admin' 
+      ? '<span class="admin-badge" style="margin-right:6px">⚡ ADMIN</span>' 
+      : '<span style="font-size:.82rem;font-weight:700;color:var(--g);margin-right:6px">👤 ' + esc(S.user.name.split(' ')[0]) + '</span>';
+    container.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px">
+        ${roleBadge}
+        <button class="btn sm ghost" style="padding:4px 10px;font-size:.78rem" onclick="logoutUser()">Logout</button>
+      </div>`;
+  } else {
+    container.innerHTML = `<button class="btn sm" onclick="view('login')" style="padding:6px 14px">🔑 Login</button>`;
+  }
+}
+function logoutUser(){
+  S.user = null;
+  save();
+  updateAuthUI();
+  toast('Signed out successfully');
+  view('home');
+}
+function quickCustomerLogin(){
+  S.user = { role: 'customer', name: 'Priya Sundaram', email: 'priya@kaninaadu.in', place: 'Kilpauk, Chennai', points: 140 };
+  save(); updateAuthUI(); toast('Logged in as Priya Sundaram (Customer) ✓'); view('customer');
+}
+function quickAdminLogin(){
+  S.user = { role: 'admin', name: 'Admin Master', email: 'admin@kaninaadu.in' };
+  save(); updateAuthUI(); toast('Authenticated as Platform Administrator ⚡'); view('admin');
+}
+$('#customerLoginForm').onsubmit=e=>{
+  e.preventDefault();
+  const email = $('#cEmail').value.trim();
+  S.user = { role: 'customer', name: email.split('@')[0] || 'Customer', email: email, place: 'Tamil Nadu', points: 50 };
+  save(); updateAuthUI(); toast('Welcome back, ' + S.user.name + '! 🎉'); view('customer');
+};
+$('#adminLoginForm').onsubmit=e=>{
+  e.preventDefault();
+  const pass = $('#admPass').value.trim();
+  if(pass === 'admin123' || pass.length >= 4){
+    S.user = { role: 'admin', name: 'Master Admin', email: $('#admEmail').value };
+    save(); updateAuthUI(); toast('Admin authorization granted ⚡'); view('admin');
+  } else {
+    toast('Invalid Administrator Key');
+  }
+};
+$('#registerForm').onsubmit=e=>{
+  e.preventDefault();
+  const name = $('#regName').value.trim();
+  const email = $('#regEmail').value.trim();
+  const place = $('#regCity').value.trim();
+  S.user = { role: 'customer', name: name, email: email, place: place, points: 100 };
+  save(); updateAuthUI(); toast('Welcome to KaniNaadu, ' + name + '! Harvest gift credited 🌱'); view('customer');
+};
+$$('.auth-tab-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    $$('.auth-tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const role = btn.dataset.authtab;
+    $('#authPaneCustomer').style.display = role==='customer' ? 'block' : 'none';
+    $('#authPaneAdmin').style.display = role==='admin' ? 'block' : 'none';
+    $('#authPaneRegister').style.display = 'none';
+  };
+});
+function toggleRegisterForm(show){
+  $('#authPaneCustomer').style.display = show ? 'none' : 'block';
+  $('#authPaneRegister').style.display = show ? 'block' : 'none';
+}
+
+/* Category Filter Chips & Cards */
+// CATS is derived from CAT_DATA
+function renderChips(){
+  $('#chips').innerHTML = '<button class="chip '+(cat===-1?'active':'')+'" data-c="-1">All ('+S.products.length+')</button>' +
+    CATS.map((c,i)=>{
+      const cnt = S.products.filter(p=>p.cat===i).length;
+      return '<button class="chip '+(cat===i?'active':'')+'" data-c="'+i+'">'+c+' ('+cnt+')</button>';
+    }).join('');
+  $$('#chips .chip').forEach(b=>b.onclick=()=>{cat=+b.dataset.c;renderChips();renderGrid()});
+}
+function renderCategoryCards(){
+  const container = $('#catGrid') || $('#homeCatGrid');
+  if(!container) return;
+  container.innerHTML = CAT_DATA.map((c, i) => {
+    const isAll = i === 0;
+    const catIndex = i - 1;
+    const count = isAll ? S.products.length : S.products.filter(p=>p.cat===catIndex).length;
+    return `
+      <div class="cat-card ${cat===catIndex?'active':''}" onclick="filterByCatCard(${catIndex})" style="cursor:pointer">
+        <div class="cat-img-wrap">
+          <img src="${c.img}" alt="${c.name}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+          <span class="cat-emoji-badge">${c.emoji}</span>
+        </div>
+        <div class="cat-info">
+          <div class="cat-name">${c.name}</div>
+          <span class="cat-count">${count} items</span>
+        </div>
+      </div>`;
+  }).join('');
+}
+function filterByCatCard(catIdx){
+  cat = catIdx;
+  view('market');
+  renderChips();
+  renderGrid();
+}
+
+/* Produce Grid Rendering (Market & Home) */
+function filterProds(){
+  const q=$('#q').value.trim().toLowerCase();
+  const max=+$('#max').value;
+  const org=$('#org').checked;
+  const sort=$('#sort').value;
+  let list=S.products.filter(p=>p.status!=='paused').filter(p=>{
+    if(cat!==-1 && p.cat!==cat)return false;
+    if(p.price>max)return false;
+    if(org && !p.org)return false;
+    if(q){
+      const f=F(p.fid);
+      const m=p.name.toLowerCase().includes(q) || f.name.toLowerCase().includes(q) || f.place.toLowerCase().includes(q);
+      if(!m)return false;
+    }
+    return true;
+  });
+  if(sort==='pl')list.sort((a,b)=>a.price-b.price);
+  else if(sort==='ph')list.sort((a,b)=>b.price-a.price);
+  else if(sort==='rt')list.sort((a,b)=>b.rating-a.rating);
+  else if(sort==='near')list.sort((a,b)=>F(a.fid).km-F(b.fid).km);
+  return list;
+}
+function renderGrid(){
+  const list=filterProds();
+  $('#count').textContent='Showing '+list.length+' of '+S.products.length+' farm harvests direct from soil';
+  $('#grid').innerHTML=list.length ? list.map(cardHtml).join('') : '<div class="empty" style="grid-column:1/-1;text-align:center;padding:48px 20px"><div style="font-size:3rem">🌾</div><h3>No produce found</h3><p class="meta">Try resetting filters or searching another village</p></div>';
+  attachCardEvents('#grid');
+}
+function renderHomeGrid(){
+  const el = $('#homeGrid');
+  if(!el) return;
+  const list = S.products.filter(p=>p.status!=='paused').slice(0, 16);
+  el.innerHTML = list.map(cardHtml).join('');
+  attachCardEvents('#homeGrid');
+}
+function renderFlash(){
+  const fprods = S.products.filter(p=>p.flash && p.flash>0).slice(0,4);
+  const fc = $('#flashCards');
+  if(!fc) return;
+  fc.innerHTML = fprods.map(p=>{
+    const f=F(p.fid);
+    const revCount = S.reviews.filter(r=>r.pid===p.id).length;
+    return `
+      <div class="card" data-pid="${p.id}">
+        <div class="card-media">
+          <img src="${p.img||FALLBACK_IMG}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+          <span class="flash-chip">⚡ Harvest Rush -${p.flash}%</span>
+          ${p.org?'<span class="badge-org" style="top:38px">Organic</span>':''}
+        </div>
+        <div class="card-body">
+          <div class="card-farmer-line">
+            <span class="cfl-farm">${f.emoji} ${esc(f.name)} · ${esc(f.place)}</span>
+            <span class="card-rating">★ ${p.rating.toFixed(1)} (${revCount})</span>
+          </div>
+          <div class="card-patta-badge">✅ Patta #${f.patta || 'TN-PATTA-VERIFIED'}</div>
+          <h3 class="card-title">${esc(p.name)}</h3>
+          <div class="card-price-row">
+            <div>
+              <span class="price">${inr(p.price)}</span>
+              <span class="unit">/${p.unit}</span>
+            </div>
+            <button class="add-btn" data-add="${p.id}" aria-label="Add ${esc(p.name)} to basket">+</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  attachCardEvents('#flashCards');
+}
+function cardHtml(p){
+  const f = F(p.fid);
+  const up = (p.trend && p.trend[6] >= p.trend[0]) || false;
+  const low = p.stock > 0 && p.stock < 25;
+  const revCount = S.reviews ? S.reviews.filter(r => r.pid === p.id).length : 0;
+  return `
+    <article class="card" data-pid="${p.id}">
+      <div class="card-media">
+        <img src="${p.img||FALLBACK_IMG}" alt="${esc(p.name)}" loading="lazy" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+        ${p.org ? '<span class="badge-org">Organic</span>' : ''}
+        ${low ? '<span class="badge-stock">Only ' + p.stock + ' ' + p.unit + ' left</span>' : ''}
+        ${p.flash && p.flash > 0 ? '<span class="flash-chip">⚡ Harvest Rush -' + p.flash + '%</span>' : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-farmer-line">
+          <span class="cfl-farm" title="${esc(f.farm)}">${f.emoji} <a href="javascript:void(0)" onclick="filterByFarmer('${f.id}')" style="color:var(--g);font-weight:700">${esc(f.name)}</a> · ${f.km}km · ${esc(f.place)}</span>
+          <span class="card-rating" onclick="openReviewsModal('${p.id}')" title="Read customer reviews">★ ${p.rating ? p.rating.toFixed(1) : '4.8'} (${revCount})</span>
+        </div>
+        <div class="card-patta-badge">✅ Patta #${f.patta || 'TN-PATTA-VERIFIED'}</div>
+        <h3 class="card-title">${esc(p.name)}</h3>
+        <span class="meta" style="font-size:.78rem;color:var(--g);display:block;margin-bottom:4px">🌱 ${p.harvestTime || 'Harvested This Morning'}</span>
+        ${spark(p.trend, up ? 'var(--r)' : 'var(--g)')}
+        <div class="trend-label ${up ? 'up' : 'down'}" style="margin-bottom:6px">
+          ${up ? '↑ Price rising this week' : '↓ Fair direct farm rate'}
+        </div>
+        <div class="stock-label ${p.stock < 1 ? 'low' : low ? 'low' : 'ok'}" style="margin-bottom:8px">
+          ${p.stock < 1 ? 'Sold out' : low ? 'Only ' + p.stock + ' ' + p.unit + ' left' : p.stock + ' ' + p.unit + ' in stock'}
+        </div>
+        <div class="card-price-row">
+          <div>
+            <span class="price">${inr(p.price)}</span>
+            <span class="unit">/${p.unit}</span>
+          </div>
+          <button class="add-btn" data-add="${p.id}" aria-label="Add ${esc(p.name)} to basket" ${p.stock < 1 ? 'disabled' : ''}>+</button>
+        </div>
+      </div>
+    </article>`;
+}
+function attachCardEvents(selector){
+  $$(selector + ' .card').forEach(c=>{
+    c.onclick=e=>{
+      if(e.target.closest('.add-btn') || e.target.closest('.card-rating') || e.target.closest('.card-patta-badge')) return;
+      openProductModal(c.dataset.pid);
+    };
+  });
+  $$(selector + ' .add-btn').forEach(b=>{
+    b.onclick=e=>{
+      e.stopPropagation();
+      addToCart(b.dataset.add);
+    };
+  });
+}
+
+/* Modals: Product Detail, Reviews & Farmer Chat */
+function openProductModal(pid){
+  const p=S.products.find(x=>x.id===pid);
+  if(!p)return;
+  const f=F(p.fid);
+  const pReviews = S.reviews.filter(r=>r.pid===pid);
+  const m=$('#modal');
+  m.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:2.2rem">${p.emoji}</span>
+        <div>
+          <h2 style="font-size:1.45rem;margin-bottom:2px">${esc(p.name)}</h2>
+          <span class="meta">${p.org?'🌱 100% Certified Organic · ':''}${CATS[p.cat]}</span>
+        </div>
+      </div>
+      <button class="btn ghost sm" data-close>✕</button>
+    </div>
+
+    <div style="width:100%;height:220px;border-radius:var(--rad);overflow:hidden;margin-bottom:16px;background:var(--bg)">
+      <img src="${p.img||FALLBACK_IMG}" style="width:100%;height:100%;object-fit:cover" alt="${esc(p.name)}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+    </div>
+
+    <div class="f2" style="margin-bottom:16px">
+      <div style="background:var(--bg);padding:12px;border-radius:var(--rad)">
+        <span class="meta" style="font-size:.8rem;display:block">DIRECT FARM PRICE</span>
+        <span class="price" style="font-size:1.6rem">${inr(p.price)}</span><span class="unit">/${p.unit}</span>
+      </div>
+      <div style="background:var(--bg);padding:12px;border-radius:var(--rad)">
+        <span class="meta" style="font-size:.8rem;display:block">AVAILABLE HARVEST</span>
+        <b style="font-size:1.3rem;color:var(--g)">${p.stock} ${p.unit} in stock</b>
+      </div>
+    </div>
+
+    <div style="background:var(--bg);padding:14px;border-radius:var(--rad);margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <b>${f.emoji} ${esc(f.name)} · ${esc(f.farm)}</b>
+        <button class="btn ghost sm" onclick="viewPattaCert('${f.id}')">📜 Patta Record</button>
+      </div>
+      <p style="font-size:.88rem;color:var(--mute);margin-bottom:6px">${esc(f.bio)}</p>
+      <div class="card-patta-badge">✅ Patta #${f.patta || 'TN-PATTA-VERIFIED'} · Survey ${f.surveyNo || '142/3A'} (${f.acres || f.land})</div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <b>⭐ Customer Reviews (${pReviews.length})</b>
+        <button class="btn ghost sm" onclick="openReviewsModal('${p.id}')">+ Write Review</button>
+      </div>
+      <div style="max-height:140px;overflow-y:auto;display:grid;gap:8px">
+        ${pReviews.length ? pReviews.map(r=>`
+          <div style="background:var(--surface);padding:8px 12px;border-radius:8px;border:1px solid var(--line);font-size:.85rem">
+            <div style="display:flex;justify-content:space-between">
+              <b>${esc(r.author)}</b>
+              <span style="color:#F59E0B">★ ${r.rating}</span>
+            </div>
+            <p style="margin:4px 0 0;color:var(--ink)">${esc(r.comment)}</p>
+          </div>`).join('') : '<span class="meta" style="font-size:.85rem">No reviews yet. Be the first customer to review this harvest!</span>'}
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <button class="btn" style="flex:1;justify-content:center" onclick="addToCart('${p.id}');closeAll()">🛒 Add ${esc(p.name)} to Basket</button>
+      <button class="btn ghost" onclick="openChatModal('${f.id}')">💬 Ask Farmer</button>
+    </div>`;
+  openOverlay(m);
+  m.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeAll);
+}
+
+function openReviewsModal(pid){
+  const p=S.products.find(x=>x.id===pid);
+  if(!p) return;
+  const pReviews = S.reviews.filter(r=>r.pid===pid);
+  const m=$('#modal');
+  m.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div>
+        <h2 style="font-size:1.35rem;margin:0">⭐ Customer Feedback Desk</h2>
+        <span class="meta" style="font-size:.85rem">${p.emoji} ${esc(p.name)}</span>
+      </div>
+      <button class="btn ghost sm" data-close>✕</button>
+    </div>
+
+    <div style="margin-bottom:18px">
+      <h3 style="font-size:1.05rem;margin-bottom:8px">Customer Feedback (${pReviews.length})</h3>
+      <div style="max-height:160px;overflow-y:auto;display:grid;gap:8px;padding-right:4px">
+        ${pReviews.map(r=>`
+          <div style="background:var(--bg);padding:10px 14px;border-radius:var(--rad);font-size:.88rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <b>${esc(r.author)}</b>
+              <span style="color:#F59E0B;font-weight:700">★ ${r.rating}.0</span>
+            </div>
+            <p style="margin:0;color:var(--ink);line-height:1.45">${esc(r.comment)}</p>
+            <span style="font-size:.74rem;color:var(--mute);display:block;margin-top:4px">${r.date} · Verified Buyer</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <form id="prodReviewForm" style="display:grid;gap:12px;border-top:1px solid var(--line);padding-top:14px">
+      <h4 style="margin:0">Share Your Produce Experience</h4>
+      <div class="f2">
+        <div>
+          <label for="revAuthor">Your Name</label>
+          <input id="revAuthor" required placeholder="e.g. Priya Sundaram" value="${S.user ? S.user.name : ''}">
+        </div>
+        <div>
+          <label for="revRating">Rating</label>
+          <select id="revRating">
+            <option value="5">★★★★★ (5/5) Superb Freshness</option>
+            <option value="4">★★★★☆ (4/5) Very Good</option>
+            <option value="3">★★★☆☆ (3/5) Average</option>
+            <option value="2">★★☆☆☆ (2/5) Below expectation</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="revComment">Honest Feedback for the Farmer</label>
+        <textarea id="revComment" rows="2" required placeholder="Tell us about the aroma, taste, freshness or cooking quality..."></textarea>
+      </div>
+      <button class="btn" style="justify-content:center;padding:12px">✓ Post Verified Review</button>
+    </form>`;
+
+  openOverlay(m);
+  m.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeAll);
+
+  $('#prodReviewForm').onsubmit=e=>{
+    e.preventDefault();
+    const newRev = {
+      id: 'rev_' + Date.now(),
+      pid: pid,
+      author: $('#revAuthor').value.trim() || 'Customer',
+      rating: +$('#revRating').value,
+      comment: $('#revComment').value.trim(),
+      date: new Date().toISOString().split('T')[0]
+    };
+    S.reviews.unshift(newRev);
+
+    const allRevsForP = S.reviews.filter(r=>r.pid===pid);
+    const avg = allRevsForP.reduce((a,b)=>a+b.rating,0) / allRevsForP.length;
+    p.rating = avg;
+
+    save();
+    renderGrid();
+    renderHomeGrid();
+    renderTestimonials();
+    closeAll();
+    toast('Thank you! Your feedback was shared with the farmer ⭐');
+  };
+}
+
+function openChatModal(fid){
+  const f=F(fid);
+  const m=$('#modal');
+  const chatKey = fid;
+  if(!S.chats[chatKey]) S.chats[chatKey] = [
+    {from:'farmer',text:`Vanakkam! I am ${f.fullName || f.name} from ${f.farm} in ${f.place}. How can I help you today?`,time:'Now'}
+  ];
+  m.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:2rem">${f.emoji}</span>
+        <div>
+          <h2 style="font-size:1.25rem;margin:0">${esc(f.fullName || f.name)}</h2>
+          <span class="meta" style="font-size:.82rem">${esc(f.farm)} · ${esc(f.place)} · ${f.patta || 'Patta Verified'}</span>
+        </div>
+      </div>
+      <button class="btn ghost sm" data-close>✕</button>
+    </div>
+    <div id="chatBox" style="height:220px;overflow-y:auto;background:var(--bg);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+      ${S.chats[chatKey].map(c=>`
+        <div style="align-self:${c.from==='user'?'flex-end':'flex-start'};max-width:80%;background:${c.from==='user'?'var(--g)':'var(--surface)'};color:${c.from==='user'?'#fff':'var(--ink)'};padding:8px 14px;border-radius:12px;font-size:.9rem;border:1px solid var(--line)">
+          <div>${esc(c.text)}</div>
+          <span style="font-size:.7rem;opacity:.7;display:block;text-align:right;margin-top:2px">${c.time}</span>
+        </div>`).join('')}
+    </div>
+    <form id="chatForm" style="display:flex;gap:8px">
+      <input id="chatInput" placeholder="Ask about harvest time, pesticide-free methods..." required style="flex:1">
+      <button class="btn" style="padding:10px 18px">Send</button>
+    </form>`;
+  openOverlay(m);
+  m.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeAll);
+  $('#chatForm').onsubmit=e=>{
+    e.preventDefault();
+    const inp = $('#chatInput');
+    const msg = inp.value.trim();
+    if(!msg) return;
+    S.chats[chatKey].push({from:'user',text:msg,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})});
+    inp.value='';
+    save();
+    openChatModal(fid);
+    setTimeout(()=>{
+      S.chats[chatKey].push({from:'farmer',text:`Thank you for asking! We harvested fresh from our soil and it is 100% natural.`,time:'Just now'});
+      save();
+      if($('#chatBox')) openChatModal(fid);
+    }, 1200);
+  };
+}
+
+/* Cart Management */
+function addToCart(pid){
+  S.cart[pid]=(S.cart[pid]||0)+1;
+  save();renderCart();
+  toast('Added to your harvest basket 🧺');
+}
+function renderCart(){
+  const entries=Object.entries(S.cart);
+  const count=entries.reduce((a,[,q])=>a+q,0);
+  $('#cc').textContent=count;
+  if($('#openCart .badge')) $('#openCart .badge').textContent=count;
+  if(!entries.length){
+    $('#citems').innerHTML='<div class="empty" style="text-align:center;padding:32px 10px"><div style="font-size:2.8rem">🧺</div><p class="meta">Your harvest basket is empty.</p></div>';
+    $('#tot').textContent='₹0';
+    return;
+  }
+  let subtotal=0;
+  $('#citems').innerHTML=entries.map(([id,qty])=>{
+    const p=S.products.find(x=>x.id===id);
+    if(!p)return '';
+    const line=p.price*qty;
+    subtotal+=line;
+    return `
+      <div class="citem" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <img src="${p.img||FALLBACK_IMG}" style="width:44px;height:44px;border-radius:6px;object-fit:cover" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+          <div>
+            <b style="font-size:.95rem">${esc(p.name)}</b>
+            <span class="meta" style="display:block;font-size:.82rem">${inr(p.price)}/${p.unit}</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="btn ghost sm" onclick="changeQty('${id}', -1)" style="padding:2px 8px">-</button>
+          <span style="font-weight:700">${qty}</span>
+          <button class="btn ghost sm" onclick="changeQty('${id}', 1)" style="padding:2px 8px">+</button>
+          <span style="font-weight:700;margin-left:6px;min-width:55px;text-align:right">${inr(line)}</span>
+        </div>
+      </div>`;
+  }).join('');
+  const delFee=+$('#cm').value;
+  $('#tot').textContent=inr(subtotal+delFee);
+}
+function changeQty(pid, delta){
+  if(!S.cart[pid]) return;
+  S.cart[pid] += delta;
+  if(S.cart[pid] <= 0) delete S.cart[pid];
+  save(); renderCart();
+}
+$('#openCart').onclick=()=>{openOverlay($('#drawer'))};
+$('#cm').onchange=renderCart;
+$('#co').onsubmit=e=>{
+  e.preventDefault();
+  const entries=Object.entries(S.cart);
+  if(!entries.length){toast('Your basket is empty');return;}
+  const items=entries.map(([id,qty])=>{
+    const p=S.products.find(x=>x.id===id);
+    return {id,name:p.name,price:p.price,unit:p.unit,qty,fid:p.fid};
+  });
+  const subtotal=items.reduce((a,b)=>a+b.price*b.qty,0);
+  const fee=+$('#cm').value;
+  const newOrder={
+    id:'ORD-'+Date.now().toString().slice(-6),
+    date:new Date().toISOString().split('T')[0],
+    items,subtotal,fee,total:subtotal+fee,
+    status:'Harvested at Farm',
+    step:1,
+    customer:{name:$('#cn').value,phone:$('#cp').value,addr:$('#ca').value}
+  };
+  S.orders.unshift(newOrder);
+  S.cart={};
+  save();renderCart();closeAll();
+  view('orders');
+  toast('Order placed successfully! Track harvest delivery below 🎉');
+};
+
+/* Customer Hub Logic */
+function renderCustomerHub(){
+  if(S.user){
+    $('#custProfileName').textContent = S.user.name;
+    $('#custProfileEmail').textContent = S.user.email;
+    $('#custProfilePlace').textContent = S.user.place || 'Tamil Nadu';
+    $('#custTokenCount').textContent = S.user.points || 120;
+    $('#custHeaderActions').innerHTML = `<button class="btn sm ghost" onclick="logoutUser()">Logout (${esc(S.user.name)})</button>`;
+  } else {
+    $('#custProfileName').textContent = 'Guest Customer';
+    $('#custProfileEmail').textContent = 'Sign in to sync farm tokens and reviews';
+    $('#custHeaderActions').innerHTML = `<button class="btn sm" onclick="view('login')">🔑 Sign In to Customer Account</button>`;
+  }
+
+  // Active customer orders in Hub
+  const container = $('#custActiveOrders');
+  if(!container) return;
+  if(!S.orders.length){
+    container.innerHTML = '<div class="empty" style="text-align:center;padding:24px"><p class="meta">No active farm orders. Visit the Market to buy directly from farmers!</p></div>';
+  } else {
+    container.innerHTML = S.orders.slice(0, 3).map(o=>`
+      <div style="background:var(--bg);padding:14px;border-radius:var(--rad);border:1px solid var(--line);margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <b>${o.id}</b>
+          <span style="background:var(--glight);color:var(--g);padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700">${o.status}</span>
+        </div>
+        <span class="meta" style="font-size:.84rem">${o.items.map(i=>i.name+' ('+i.qty+' '+i.unit+')').join(', ')}</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+          <span class="price" style="font-size:1.1rem">${inr(o.total)}</span>
+          <button class="btn sm ghost" onclick="view('orders')">Track Live Delivery →</button>
+        </div>
+      </div>`).join('');
+  }
+
+  // Feedback form produce select
+  const pSelect = $('#fbProduce');
+  if(pSelect){
+    pSelect.innerHTML = S.products.slice(0, 25).map(p=>`<option value="${p.id}">${p.emoji} ${p.name} (${F(p.fid).name})</option>`).join('');
+  }
+
+  // Recent reviews submitted
+  const rList = $('#custRecentReviews');
+  if(rList){
+    rList.innerHTML = S.reviews.slice(0, 5).map(r=>{
+      const p = S.products.find(x=>x.id===r.pid) || {name:'Farm Produce',emoji:'🌱'};
+      return `
+        <div style="background:var(--bg);padding:12px;border-radius:var(--rad);border:1px solid var(--line);margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between">
+            <b>${p.emoji} ${esc(p.name)}</b>
+            <span style="color:#F59E0B">★ ${r.rating}.0</span>
+          </div>
+          <p style="font-size:.88rem;margin:4px 0;color:var(--ink)">"${esc(r.comment)}"</p>
+          <span class="meta" style="font-size:.75rem">By ${esc(r.author)} · ${r.date}</span>
+        </div>`;
+    }).join('');
+  }
+}
+
+$('#customerFeedbackForm').onsubmit=e=>{
+  e.preventDefault();
+  const pid = $('#fbProduce').value;
+  const p = S.products.find(x=>x.id===pid);
+  const newRev = {
+    id: 'rev_' + Date.now(),
+    pid: pid,
+    author: $('#fbAuthor').value.trim() || (S.user ? S.user.name : 'Customer'),
+    rating: +$('#fbRating').value,
+    comment: $('#fbComment').value.trim(),
+    date: new Date().toISOString().split('T')[0]
+  };
+  S.reviews.unshift(newRev);
+
+  const pRevs = S.reviews.filter(r=>r.pid===pid);
+  p.rating = pRevs.reduce((a,b)=>a+b.rating,0)/pRevs.length;
+
+  if(S.user){
+    S.user.points = (S.user.points || 100) + 20;
+  }
+  save();
+  e.target.reset();
+  renderCustomerHub();
+  renderGrid();
+  renderHomeGrid();
+  renderTestimonials();
+  toast('Thank you for supporting our farmers! +20 Harvest Tokens awarded 🌱');
+};
+
+/* Orders View */
+function renderOrders(){
+  const oc=$('#ordersContainer');
+  if(!oc) return;
+  if(!S.orders.length){
+    oc.innerHTML='<div class="empty" style="text-align:center;padding:48px 20px"><div style="font-size:3.5rem">📋</div><h3>No farm orders placed yet</h3><p class="meta">Order fresh vegetables, grains and cold-pressed oils from our farmers!</p><button class="btn" style="margin-top:16px" onclick="view(\'market\')">Browse Fresh Market</button></div>';
+    return;
+  }
+  const stages = [
+    {title:'Harvested at Farm',desc:'Harvested fresh from soil by verified farmer',icon:'🌱'},
+    {title:'Quality Checked & Packed',desc:'Inspected for chemical-free purity',icon:'📦'},
+    {title:'In Transit',desc:'Dispatched direct from farm gate to your area',icon:'🚚'},
+    {title:'Delivered',desc:'Handed fresh to your family table',icon:'🏡'}
+  ];
+  oc.innerHTML=S.orders.map(o=>`
+    <div class="order-card" style="background:var(--surface);border:1px solid var(--line);border-radius:var(--rad-lg);padding:22px;margin-bottom:20px;box-shadow:var(--shadow)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <span style="font-family:monospace;font-weight:700;color:var(--g)">${o.id}</span>
+          <h3 style="font-size:1.2rem;margin-top:2px">Farm Order · ${o.date}</h3>
+          <span class="meta" style="font-size:.85rem">Delivering to: ${esc(o.customer.name)} (${esc(o.customer.addr)})</span>
+        </div>
+        <div style="text-align:right">
+          <span class="price" style="font-size:1.4rem">${inr(o.total)}</span>
+          <span class="meta" style="display:block;font-size:.82rem">${o.items.length} farm items</span>
+        </div>
+      </div>
+
+      <!-- 4 Stage Farm Delivery Stepper -->
+      <div class="order-stepper" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;position:relative">
+        ${stages.map((st,idx)=>{
+          const done = (o.step || 1) >= (idx+1);
+          return `
+            <div style="text-align:center;position:relative">
+              <div style="width:36px;height:36px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;background:${done?'var(--g)':'var(--bg)'};color:${done?'#fff':'var(--mute)'};border:2px solid ${done?'var(--g)':'var(--line)'};font-size:1.1rem">
+                ${st.icon}
+              </div>
+              <b style="font-size:.82rem;display:block;color:${done?'var(--ink)':'var(--mute)'}">${st.title}</b>
+              <span style="font-size:.72rem;color:var(--mute);display:block">${st.desc}</span>
+            </div>`;
+        }).join('')}
+      </div>
+
+      <div style="background:var(--bg);border-radius:var(--rad);padding:12px 16px">
+        <b>Items in this harvest basket:</b>
+        <div style="display:grid;gap:6px;margin-top:8px">
+          ${o.items.map(i=>`
+            <div style="display:flex;justify-content:space-between;font-size:.9rem">
+              <span>${esc(i.name)} × ${i.qty} ${i.unit} <span class="meta">(${F(i.fid).name})</span></span>
+              <b>${inr(i.price * i.qty)}</b>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* Admin Portal Logic */
+function renderAdminPortal(){
+  const totalRev = S.orders.reduce((a,b)=>a+b.total,0);
+  const farmerPayouts = S.orders.reduce((a,b)=>a+(b.total-b.fee)*0.82,0);
+
+  $('#admSales').textContent = inr(totalRev);
+  $('#admFarmerPayouts').textContent = inr(farmerPayouts);
+  $('#admProdCount').textContent = S.products.length;
+  $('#admFarmerCount').textContent = (S.farmers || FARMERS).length;
+  $('#admFeedbackCount').textContent = S.reviews.length;
+
+  // Admin Tab Switching
+  $$('.tab-pill').forEach(btn=>{
+    btn.onclick=()=>{
+      $$('.tab-pill').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.atab;
+      $$('.atab-pane').forEach(p=>p.style.display='none');
+      const target = $('#atab-'+tab);
+      if(target) target.style.display='block';
+    };
+  });
+
+  // Tab 1: Products Table
+  $('#admProdTable').innerHTML = S.products.map(p=>`
+    <tr>
+      <td><b>${p.emoji} ${esc(p.name)}</b></td>
+      <td>${esc(F(p.fid).name)}</td>
+      <td>${CATS[p.cat]||'Farm'}</td>
+      <td>
+        <input type="number" min="1" value="${p.price}" style="width:75px;padding:4px 6px" onchange="admUpdatePrice('${p.id}', this.value)">
+      </td>
+      <td>${p.stock} ${p.unit}</td>
+      <td>
+        <span style="background:${p.status==='active'?'var(--glight)':'var(--surface2)'};color:${p.status==='active'?'var(--g)':'var(--mute)'};padding:2px 8px;border-radius:99px;font-size:.78rem;font-weight:700">
+          ${p.status==='active'?'Active':'Paused'}
+        </span>
+      </td>
+      <td>
+        <button class="btn sm ghost" onclick="admToggleStatus('${p.id}')">${p.status==='active'?'Pause':'Activate'}</button>
+      </td>
+    </tr>`).join('');
+
+  // Tab 2: Farmer Payouts
+  const currentFarmers = S.farmers || FARMERS;
+  $('#admPayoutsTable').innerHTML = currentFarmers.map(f=>{
+    const fOrders = S.orders.flatMap(o=>o.items).filter(i=>i.fid===f.id);
+    const gross = fOrders.reduce((a,b)=>a+b.price*b.qty,0);
+    const net = Math.round(gross * 0.82);
+    return `<tr>
+      <td><b>${f.emoji} ${esc(f.fullName || f.name)}</b></td>
+      <td>${esc(f.farm)}, ${esc(f.place)}</td>
+      <td>${inr(gross)}</td>
+      <td><b style="color:var(--g)">${inr(net)} (82%)</b></td>
+      <td>
+        <button class="btn sm ghost" onclick="toast('Payout receipt generated for ${esc(f.name)}')">Disburse Settlement</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Tab 3: Verifications Table
+  renderAdminVerifications();
+
+  // Tab 4: Feedbacks Moderation
+  $('#admFeedbackList').innerHTML = S.reviews.map(r=>{
+    const p = S.products.find(x=>x.id===r.pid) || {name:'Produce',emoji:'🌱'};
+    return `
+      <div style="background:var(--bg);border-radius:var(--rad);padding:14px;border:1px solid var(--line);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div>
+          <b>${p.emoji} ${esc(p.name)}</b> · <span style="color:#F59E0B">★ ${r.rating}</span>
+          <p style="margin:4px 0;font-size:.9rem">"${esc(r.comment)}"</p>
+          <span class="meta" style="font-size:.78rem">By ${esc(r.author)} · ${r.date}</span>
+        </div>
+        <button class="btn sm ghost" style="color:var(--r);border-color:var(--r)" onclick="admDeleteReview('${r.id}')">Delete Review</button>
+      </div>`;
+  }).join('');
+
+  // Tab 5: Orders
+  $('#admOrderList').innerHTML = S.orders.length ? S.orders.map(o=>`
+    <div style="background:var(--bg);border-radius:var(--rad);padding:14px;border:1px solid var(--line);margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <b>${o.id} · ${o.customer.name}</b>
+        <span class="price">${inr(o.total)}</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span class="meta" style="font-size:.84rem">Fulfillment Stage:</span>
+        <button class="btn sm ${o.step===1?'':'ghost'}" onclick="admAdvanceOrder('${o.id}', 1)">1. Harvested</button>
+        <button class="btn sm ${o.step===2?'':'ghost'}" onclick="admAdvanceOrder('${o.id}', 2)">2. Quality Packed</button>
+        <button class="btn sm ${o.step===3?'':'ghost'}" onclick="admAdvanceOrder('${o.id}', 3)">3. In Transit</button>
+        <button class="btn sm ${o.step===4?'':'ghost'}" onclick="admAdvanceOrder('${o.id}', 4)">4. Delivered</button>
+      </div>
+    </div>`).join('') : '<p class="meta">No customer orders placed yet.</p>';
+}
+
+function renderAdminVerifications(){
+  const docs = S.farmerDocs || (S.farmers || FARMERS).map(f => ({
+    id: 'doc_' + f.id,
+    fid: f.id,
+    name: f.fullName || f.name,
+    farm: f.farm,
+    district: f.district || f.place,
+    acres: f.acres || f.land,
+    patta: f.patta,
+    surveyNo: f.surveyNo,
+    kccId: f.kccId,
+    soil: f.soil,
+    status: 'Verified Landowner ✅',
+    docImg: f.docImg
+  }));
+
+  const table = $('#admVerifTable');
+  if(!table) return;
+
+  table.innerHTML = docs.map(d => {
+    const f = F(d.fid);
+    return `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <img src="${f.img}" style="width:38px;height:38px;border-radius:50%;object-fit:cover" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+            <div>
+              <b style="display:block">${esc(d.name)}</b>
+              <span class="meta" style="font-size:.78rem">${esc(d.farm)}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span>${esc(d.district)}</span>
+          <span class="meta" style="font-size:.76rem;display:block">${esc(d.acres)}</span>
+        </td>
+        <td><b style="font-family:monospace;color:var(--g)">${d.patta || 'TN-PATTA-VERIF'}</b></td>
+        <td><code>${d.surveyNo || '142/3A'}</code></td>
+        <td><span style="font-size:.82rem">${d.kccId || 'KCC-LINKED'}</span></td>
+        <td>
+          <span style="background:var(--glight);color:var(--g);padding:3px 8px;border-radius:6px;font-size:.76rem;font-weight:700">
+            📄 Patta Record Verified
+          </span>
+        </td>
+        <td>
+          <span style="background:#EBF7EE;color:#1B8A4C;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:800">
+            ${d.status || 'Verified Landowner ✅'}
+          </span>
+        </td>
+        <td>
+          <button class="btn sm ghost" onclick="viewPattaCert('${d.fid}')">Inspect Record</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function admUpdatePrice(pid, val){
+  const p = S.products.find(x=>x.id===pid);
+  if(p){ p.price = Math.max(1, +val); save(); renderGrid(); renderHomeGrid(); toast('Produce price updated'); }
+}
+function admToggleStatus(pid){
+  const p = S.products.find(x=>x.id===pid);
+  if(p){ p.status = p.status==='active'?'paused':'active'; save(); renderAdminPortal(); renderGrid(); toast('Status changed'); }
+}
+function admAdvanceOrder(oid, step){
+  const o = S.orders.find(x=>x.id===oid);
+  if(o){
+    o.step = step;
+    const labels = ['','Harvested at Farm','Quality Packed','In Transit','Delivered'];
+    o.status = labels[step];
+    save(); renderAdminPortal(); renderOrders(); renderCustomerHub();
+    toast('Order '+oid+' updated to: '+o.status);
+  }
+}
+function admDeleteReview(rid){
+  S.reviews = S.reviews.filter(r=>r.id!==rid);
+  save(); renderAdminPortal(); renderCustomerHub(); renderTestimonials(); toast('Review removed from desk');
+}
+function resetDemoData(){
+  localStorage.removeItem(KEY);
+  location.reload();
+}
+
+/* Sell Dashboard */
+$('#pc').innerHTML=CATS.map((c,i)=>`<option value="${i}">${c}</option>`).join('');
+
+function renderSell(){
+  const farmersList = S.farmers || FARMERS;
+  const activeFid = S.activeFarmerId || 'f1';
+  const f = F(activeFid);
+
+  // Populate Farmer Selectors
+  const selectHtml = farmersList.map(item => `
+    <option value="${item.id}" ${item.id === activeFid ? 'selected' : ''}>
+      ${item.emoji} ${esc(item.fullName || item.name)} · ${esc(item.farm)} (${item.district || item.place})
+    </option>
+  `).join('');
+
+  if($('#sellFarmerSelect')) $('#sellFarmerSelect').innerHTML = selectHtml;
+  if($('#sellFarmerSelectInForm')) $('#sellFarmerSelectInForm').innerHTML = selectHtml;
+
+  // Render Farmer Land Verification Box
+  if($('#farmerVerifBox')){
+    $('#farmerVerifBox').innerHTML = `
+      <div class="farmer-verif-box">
+        <div class="fvb-top">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <span class="fvb-badge">✅ VERIFIED TAMIL NADU LANDOWNER</span>
+            <span style="font-size:.88rem;color:var(--g);font-weight:700">Official Patta / Chitta Verified</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn sm white" onclick="viewPattaCert('${f.id}')">📜 View Official Patta Certificate</button>
+          </div>
+        </div>
+
+        <div class="fvb-grid">
+          <div class="fvb-item">
+            <span>Farmer & Farmland</span>
+            <b>${esc(f.fullName || f.name)} · ${esc(f.farm)}</b>
+          </div>
+          <div class="fvb-item">
+            <span>Patta / Chitta Passbook</span>
+            <b>${f.patta || 'TN-PATTA-2024-8841-TVLR'}</b>
+          </div>
+          <div class="fvb-item">
+            <span>Land Survey & Extent</span>
+            <b>Survey #${f.surveyNo || '142/3A'} · ${f.acres || f.land}</b>
+          </div>
+          <div class="fvb-item">
+            <span>Kisan / Identity Linked</span>
+            <b>${f.kccId || 'KCC-SBI-684291'} (Verified)</b>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:.84rem;color:var(--mute);flex-wrap:wrap;gap:8px">
+          <span>🌿 Cultivation Soil: <b>${f.soil || 'Alluvial Red Loam with Drip System'}</b></span>
+          <span style="color:#1B8A4C;font-weight:700">✓ Eligible for Unlimited Direct Produce Listings</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Active listings for this farmer
+  const mine = S.products.filter(p => p.fid === activeFid);
+  const sold = S.orders.flatMap(o => o.items).filter(i => i.fid === activeFid);
+
+  if($('#s1')) $('#s1').textContent = mine.length;
+  if($('#s2')) $('#s2').textContent = sold.length;
+  if($('#s3')) $('#s3').textContent = inr(sold.reduce((a, b) => a + b.price * b.qty, 0));
+
+  if($('#mine')){
+    if(mine.length === 0){
+      $('#mine').innerHTML = `<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--mute)">No active listings yet for ${esc(f.name)}. Use the form on the left to list fresh harvest produce!</td></tr>`;
+    } else {
+      $('#mine').innerHTML = mine.map(p => `<tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <img src="${p.img || FALLBACK_IMG}" style="width:38px;height:38px;border-radius:6px;object-fit:cover" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+            <div>
+              <span style="font-weight:700;display:block">${esc(p.emoji + ' ' + p.name)}</span>
+              <span class="card-patta-badge">Patta #${f.patta || 'TN-VERIF'}</span>
+            </div>
+          </div>
+        </td>
+        <td><input type="number" min="1" value="${p.price}" data-pr="${p.id}" style="width:85px;padding:6px 10px" aria-label="Price of ${esc(p.name)}"></td>
+        <td>${p.stock} ${p.unit}</td>
+        <td><button class="btn ghost sm" data-del="${p.id}">Remove</button></td>
+      </tr>`).join('');
+
+      $$('[data-pr]').forEach(i => i.onchange = () => {
+        const p = S.products.find(x => x.id === i.dataset.pr);
+        if(p){
+          p.price = Math.max(1, +i.value);
+          p.trend = [...p.trend.slice(1), p.price];
+          save();
+          renderGrid();
+          toast('Price updated ✓');
+        }
+      });
+
+      $$('[data-del]').forEach(b => b.onclick = () => {
+        S.products = S.products.filter(p => p.id !== b.dataset.del);
+        delete S.cart[b.dataset.del];
+        save();
+        renderSell();
+        renderGrid();
+        renderCart();
+        toast('Listing removed');
+      });
+    }
+  }
+}
+
+if($('#addf')){
+  $('#addf').onsubmit = e => {
+    e.preventDefault();
+    const pr = +$('#pp').value;
+    const fid = $('#sellFarmerSelectInForm') ? $('#sellFarmerSelectInForm').value : (S.activeFarmerId || 'f1');
+    const farmer = F(fid);
+    const photoUrl = $('#pimg').value.trim() || FALLBACK_IMG;
+    const harvestTime = $('#phrv') ? $('#phrv').value : 'Harvested This Morning (6:00 AM)';
+
+    const newProd = {
+      id: 'u' + Date.now(),
+      name: $('#pn').value.trim(),
+      emoji: $('#pe').value || '🥬',
+      cat: +$('#pc').value,
+      price: pr,
+      unit: $('#pu').value,
+      fid: fid,
+      stock: +$('#ps').value,
+      org: $('#po').checked,
+      rating: 4.8,
+      trend: Array(7).fill(pr),
+      flash: 0,
+      img: photoUrl,
+      harvestTime: harvestTime,
+      status: 'active'
+    };
+
+    S.products.unshift(newProd);
+    save();
+    e.target.reset();
+    $('#pe').value = '🍅';
+    $('#pimg').value = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80';
+    updatePhotoPreview($('#pimg').value);
+
+    renderSell();
+    renderGrid();
+    renderHomeGrid();
+    renderFlash();
+    renderCategoryCards();
+    toast('Fresh harvest produce listed to live market! 🎉');
+  };
+}
+
+/* Farmers View Rendering */
+function renderFarmers(){
+  const list = S.farmers || FARMERS;
+  $('#fgrid').innerHTML = list.map(f=>{
+    const pCount = S.products.filter(p=>p.fid===f.id).length;
+    return `
+      <div class="farmer-card">
+        <div class="farmer-media">
+          <img src="${f.img}" alt="${esc(f.name)}" loading="lazy" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+          <span class="farmer-land-badge">🚜 ${f.acres || f.land}</span>
+        </div>
+        <div class="farmer-body">
+          <div class="farmer-header">
+            <div>
+              <h3 class="farmer-name">${f.emoji} ${esc(f.fullName || f.name)}</h3>
+              <span class="farmer-farm">${esc(f.farm)}</span>
+            </div>
+            <span class="farmer-rating">★ ${f.rating.toFixed(1)}</span>
+          </div>
+
+          <div style="margin:8px 0 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span class="card-patta-badge">Patta #${f.patta || 'TN-PATTA-2024'}</span>
+            <span style="font-size:.78rem;color:var(--mute)">Survey: ${f.surveyNo || '142/3A'}</span>
+          </div>
+
+          <p class="farmer-bio">${esc(f.bio)}</p>
+          <div class="farmer-meta-line">
+            <span>📍 ${esc(f.place)} · ${f.km}km from city</span>
+            <span>📦 ${pCount} fresh crops</span>
+          </div>
+          <div class="farmer-actions">
+            <button class="btn sm" onclick="filterByFarmer('${f.id}')">🛒 View Harvests</button>
+            <button class="btn sm ghost" onclick="viewPattaCert('${f.id}')">📜 Land Patta</button>
+            <button class="btn sm ghost" onclick="openChatModal('${f.id}')">💬 Chat</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+function filterByFarmer(fid){
+  const f = F(fid);
+  $('#q').value = f.name;
+  view('market');
+  renderChips();
+  renderGrid();
+}
+
+/* Home Section Profiles & Testimonials */
+function renderFarmerProfiles(){
+  const container = $('#farmerProfiles') || $('#homeFarmerProfiles');
+  if(!container) return;
+  const featured = (S.farmers || FARMERS).slice(0, 4);
+  container.innerHTML = featured.map(f=>`
+    <div class="fp-card" onclick="viewPattaCert('${f.id}')">
+      <div class="fp-avatar">
+        <img src="${f.img}" alt="${esc(f.name)}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
+      </div>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="fp-name">${f.emoji} ${esc(f.fullName || f.name)}</span>
+          <span class="fp-rating">★ ${f.rating.toFixed(1)}</span>
+        </div>
+        <div class="fp-loc">${esc(f.farm)} · ${esc(f.place)}</div>
+        <div class="card-patta-badge" style="margin-top:4px;font-size:.7rem;padding:2px 6px">Patta #${f.patta || 'TN-VERIF'}</div>
+      </div>
+    </div>`).join('');
+}
+function renderTestimonials(){
+  const container = $('#testGrid') || $('#homeTestimonials');
+  if(!container) return;
+  const recent = S.reviews.slice(0, 3);
+  container.innerHTML = recent.map(r=>{
+    const p = S.products.find(x=>x.id===r.pid) || {name:'Farm Harvest',emoji:'🌱'};
+    return `
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"${esc(r.comment)}"</p>
+        <div class="test-author">
+          <div class="test-avatar" style="width:38px;height:38px;border-radius:50%;background:var(--g);color:#fff;display:grid;place-items:center;font-weight:700">${r.author.charAt(0)}</div>
+          <div>
+            <b style="font-size:.92rem;display:block">${esc(r.author)}</b>
+            <span class="meta" style="font-size:.76rem">Verified buyer of ${p.emoji} ${esc(p.name)}</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* Money Flow Slider on Home */
+function updateCalc(val){
+  $('#sliderVal').textContent = inr(val);
+  const fShare = Math.round(val * 0.82);
+  const tShare = Math.round(val * 0.34);
+  $('#fEarn').textContent = inr(fShare);
+  $('#tEarn').textContent = inr(tShare);
+  const fBar = $('#fBar');
+  if(fBar) fBar.style.width = '82%';
+}
+const basketSlider = $('#basket');
+if(basketSlider){
+  basketSlider.oninput = e => updateCalc(+e.target.value);
+  updateCalc(+basketSlider.value);
+}
+
+/* Home Quick Links */
+if($('#shopNow')) $('#shopNow').onclick=()=>view('market');
+if($('#meetFarmers')) $('#meetFarmers').onclick=()=>view('farmers');
+if($('#mobileLoginBtn')) $('#mobileLoginBtn').onclick=()=>view('login');
+if($('#openLoginNav')) $('#openLoginNav').onclick=()=>view('login');
+
+/* Search and Filters */
+$('#q').oninput=renderGrid;
+$('#max').oninput=()=>{
+  $('#mv').textContent=$('#max').value;
+  renderGrid();
+};
+$('#org').onchange=renderGrid;
+$('#sort').onchange=renderGrid;
+
+/* INITIALIZATION */
+updateAuthUI();
+renderCategoryCards();
+renderChips();
+renderGrid();
+renderFarmers();
+renderCart();
+renderHomeGrid();
+renderFlash();
+renderFarmerProfiles();
+renderTestimonials();
+</script>
+</body>
+</html>
